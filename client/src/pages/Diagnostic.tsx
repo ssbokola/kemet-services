@@ -23,6 +23,7 @@ const diagnosticSchema = z.object({
   location: z.string().min(2, 'La localisation est requise'),
   pharmacyType: z.string().min(1, 'Veuillez sélectionner le type de pharmacie'),
   yearsOperation: z.string().min(1, 'Veuillez indiquer les années d\'activité'),
+  teamSize: z.string().min(1, 'Veuillez indiquer la taille de votre équipe'),
   challenges: z.array(z.string()).min(1, 'Veuillez sélectionner au moins un défi'),
   description: z.string().min(10, 'Veuillez décrire vos besoins en détail'),
   contactPreference: z.string().min(1, 'Veuillez choisir votre préférence de contact')
@@ -55,6 +56,7 @@ export default function Diagnostic() {
       location: '',
       pharmacyType: '',
       yearsOperation: '',
+      teamSize: '',
       challenges: [],
       description: '',
       contactPreference: ''
@@ -288,6 +290,26 @@ export default function Diagnostic() {
                     {form.formState.errors.yearsOperation && (
                       <p className="text-sm text-destructive">
                         {form.formState.errors.yearsOperation.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="teamSize">Taille de l'équipe officinale *</Label>
+                    <Select onValueChange={(value) => form.setValue('teamSize', value)}>
+                      <SelectTrigger data-testid="select-team-size">
+                        <SelectValue placeholder="Nombre d'employés" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="moins-5">Moins de 5 employés</SelectItem>
+                        <SelectItem value="5-10">5 à 10 employés</SelectItem>
+                        <SelectItem value="10-20">10 à 20 employés</SelectItem>
+                        <SelectItem value="plus-20">Plus de 20 employés</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {form.formState.errors.teamSize && (
+                      <p className="text-sm text-destructive">
+                        {form.formState.errors.teamSize.message}
                       </p>
                     )}
                   </div>
