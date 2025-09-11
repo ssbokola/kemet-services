@@ -15,6 +15,7 @@ import Consulting from "@/pages/Consulting";
 import APropos from "@/pages/APropos";
 import Ressources from "@/pages/Ressources";
 import Contact from "@/pages/Contact";
+import InscriptionFormation from "@/pages/InscriptionFormation";
 import NotFound from "@/pages/not-found";
 import MentionsLegales from "@/pages/MentionsLegales";
 import Confidentialite from "@/pages/Confidentialite";
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/a-propos" component={APropos} />
       <Route path="/ressources" component={Ressources} />
       <Route path="/contact" component={Contact} />
+      <Route path="/inscription-formation" component={InscriptionFormation} />
       <Route path="/mentions-legales" component={MentionsLegales} />
       <Route path="/confidentialite" component={Confidentialite} />
       <Route path="/politique-cookies" component={PolitiqueCookies} />

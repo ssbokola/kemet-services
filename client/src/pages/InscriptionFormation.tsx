@@ -519,10 +519,11 @@ export default function InscriptionFormation() {
                     {/* Submit Button */}
                     <div className="flex flex-col sm:flex-row gap-4 pt-6">
                       <Button
-                        type="submit"
+                        type="button"
                         size="lg"
                         className="flex-1"
                         disabled={mutation.isPending}
+                        onClick={form.handleSubmit(onSubmit)}
                         data-testid="button-submit-registration"
                       >
                         {mutation.isPending ? 'Inscription en cours...' : (
