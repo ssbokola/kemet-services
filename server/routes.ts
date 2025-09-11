@@ -5,6 +5,7 @@ import { insertTrainingRegistrationSchema } from "@shared/schema";
 import { z } from "zod";
 // import { sendRegistrationNotification } from "./email"; // Unused - file logging active
 import { logRegistrationNotification } from "./notifications";
+import { sendGmailNotification } from "./gmail";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Training registration endpoint
@@ -17,18 +18,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const registration = await storage.createTrainingRegistration(validatedData);
       
       // Send notification (asynchronously, don't block response)
-      // Use file logging since no email service is configured
-      console.log('Attempting to log registration notification...');
-      try {
-        const notificationSuccess = logRegistrationNotification(registration);
-        if (notificationSuccess) {
-          console.log('✅ Notification enregistrée dans les fichiers de log');
-        } else {
-          console.log('❌ Échec de l\'enregistrement de la notification');
+      // Try Gmail first, fallback to file logging
+      Promise.resolve().then(async () => {
+        try {
+          const gmailSuccess = await sendGmailNotification(registration);
+          if (gmailSuccess) {
+            console.log('✅ Notification Gmail envoyée avec succès');
+          } else {
+            console.log('📧 Gmail non configuré - utilisation des fichiers de log');
+            const fileSuccess = logRegistrationNotification(registration);
+            if (fileSuccess) {
+              console.log('✅ Notification enregistrée dans les fichiers de log');
+            }
+          }
+        } catch (error) {
+          console.error('❌ Erreur notification Gmail:', error);
+          console.log('📁 Utilisation du système de fichiers en secours');
+          try {
+            logRegistrationNotification(registration);
+          } catch (fileError) {
+            console.error('❌ Erreur système de fichiers:', fileError);
+          }
         }
-      } catch (error) {
-        console.error('❌ Erreur lors de l\'enregistrement de la notification:', error);
-      }
+      });
       
       // Return success response (no PII logging for privacy)
       console.log('Training registration created successfully');
