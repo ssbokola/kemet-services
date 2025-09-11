@@ -95,7 +95,7 @@ export function WhatsAppCallout({
             <div className="space-y-2">
               <Button 
                 onClick={handleWhatsAppClick}
-                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                className="w-full bg-green-600 dark:bg-green-500"
                 data-testid="button-whatsapp-chat"
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
@@ -119,30 +119,28 @@ export function WhatsAppCallout({
             onClick={toggleExpanded}
             data-testid="button-expand-callout"
           >
-            <div className="text-xs font-medium text-foreground px-2">
-              💬 Une question ?
+            <div className="text-xs font-medium text-foreground px-2 flex items-center gap-1">
+              <MessageCircle className="w-3 h-3" />
+              Une question ?
             </div>
           </div>
         )}
         
         {/* WhatsApp Button */}
         <Button
+          size="icon"
           onClick={isExpanded ? handleWhatsAppClick : toggleExpanded}
-          className={cn(
-            'rounded-full w-14 h-14 bg-green-600 hover:bg-green-700 shadow-lg',
-            'hover:scale-110 transition-all duration-200',
-            'border-4 border-white'
-          )}
+          className="rounded-full bg-green-600 dark:bg-green-500 shadow-lg"
           data-testid="button-whatsapp-main"
         >
-          <MessageCircle className="w-6 h-6 text-white" />
+          <MessageCircle className="w-6 h-6" />
         </Button>
       </div>
 
       {/* Pulse Animation Ring */}
       <div className={cn(
-        'absolute inset-0 rounded-full',
-        'bg-green-600/20 animate-ping',
+        'absolute inset-0 rounded-full -z-10',
+        'bg-green-600/20 animate-ping pointer-events-none',
         isExpanded && 'hidden'
       )} />
     </div>

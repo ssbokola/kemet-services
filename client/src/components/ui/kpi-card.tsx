@@ -38,16 +38,16 @@ const sizeClasses = {
 
 const trendColors = {
   up: {
-    value: 'text-green-600',
-    icon: 'bg-green-50 text-green-600'
+    value: 'text-green-600 dark:text-green-400',
+    icon: 'bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400'
   },
   down: {
-    value: 'text-red-600',
-    icon: 'bg-red-50 text-red-600'
+    value: 'text-red-600 dark:text-red-400',
+    icon: 'bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400'
   },
   neutral: {
-    value: 'text-blue-600',
-    icon: 'bg-blue-50 text-blue-600'
+    value: 'text-blue-600 dark:text-blue-400',
+    icon: 'bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400'
   }
 };
 

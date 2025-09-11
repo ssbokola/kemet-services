@@ -26,11 +26,23 @@ export function Timeline({
   showConnectors = true,
   className 
 }: TimelineProps) {
+  // Static grid classes for production builds
+  const getHorizontalGridClasses = (stepCount: number) => {
+    const cols = Math.min(stepCount, 4);
+    switch (cols) {
+      case 1: return 'grid-cols-1 md:grid-cols-1';
+      case 2: return 'grid-cols-1 md:grid-cols-2';
+      case 3: return 'grid-cols-1 md:grid-cols-3';
+      case 4: return 'grid-cols-1 md:grid-cols-4';
+      default: return 'grid-cols-1 md:grid-cols-4';
+    }
+  };
+
   return (
     <div className={cn(
       'w-full',
       orientation === 'horizontal' ? 'grid gap-6' : 'space-y-6',
-      orientation === 'horizontal' && steps.length > 0 && `grid-cols-1 md:grid-cols-${Math.min(steps.length, 4)}`,
+      orientation === 'horizontal' && steps.length > 0 && getHorizontalGridClasses(steps.length),
       className
     )} data-testid="timeline-container">
       {steps.map((step, index) => {
