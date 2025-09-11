@@ -357,6 +357,7 @@ export default function Contact() {
                   <div>
                     <p className="font-medium text-foreground">Localisation</p>
                     <p className="text-sm text-muted-foreground">
+                      Mamie Adjoua, Yopougon<br />
                       Abidjan, Côte d'Ivoire<br />
                       Interventions sur tout le territoire
                     </p>

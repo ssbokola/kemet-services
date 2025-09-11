@@ -217,7 +217,7 @@ export function DownloadCatalog({
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     const modalites = [
-      '- Lieu: Abidjan, Cote d\'Ivoire (formations sur site disponibles)',
+      '- Lieu: Mamie Adjoua, Yopougon - Abidjan, Cote d\'Ivoire (formations sur site disponibles)',
       '- Duree: 1 a 3 jours selon la formation',
       '- Participants: 8 a 15 personnes maximum',
       '- Certification: Attestation de formation Kemet Services',

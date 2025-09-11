@@ -82,7 +82,7 @@ export default function Footer() {
                 data-testid="button-footer-location"
               >
                 <MapPin className="w-4 h-4 mr-3" />
-                Abidjan, Côte d'Ivoire
+                Mamie Adjoua, Yopougon - Abidjan, Côte d'Ivoire
               </button>
             </div>
           </div>

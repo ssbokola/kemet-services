@@ -33,7 +33,7 @@ export default function MentionsLegales() {
                   <div>
                     <p><strong>Dénomination sociale :</strong> Kemet Services</p>
                     <p><strong>Forme juridique :</strong> Entreprise individuelle / Cabinet de formation et consultance</p>
-                    <p><strong>Siège social :</strong> Abidjan, Côte d'Ivoire</p>
+                    <p><strong>Siège social :</strong> Mamie Adjoua, Yopougon - Abidjan, Côte d'Ivoire</p>
                     <p><strong>Email :</strong> infos@kemetservices.com</p>
                     <p><strong>Téléphone :</strong> +225 0759 068 xxx</p>
                   </div>
