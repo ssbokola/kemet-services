@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Mail, MapPin, Linkedin } from 'lucide-react';
-import logoImage from '@assets/generated_images/Kemet_Services_professional_logo_1f803c6b.png';
+import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 const footerLinks = {
   services: [

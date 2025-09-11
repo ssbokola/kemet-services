@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MessageCircle } from 'lucide-react';
 import heroImage from '@assets/generated_images/Pharmacy_training_classroom_scene_13267b56.png';
-import logoImage from '@assets/generated_images/Kemet_Services_professional_logo_1f803c6b.png';
+import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 export default function Hero() {
   const handleDiagnosticClick = () => {
