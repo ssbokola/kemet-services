@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { Menu, X, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { KemetCatalog } from '@/components/DownloadCatalog';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
@@ -15,7 +14,6 @@ const navigation = [
 ];
 
 export default function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [location] = useLocation();
 
   const handleWhatsAppClick = () => {
@@ -24,33 +22,32 @@ export default function Header() {
   };
 
   const handleDiagnosticClick = () => {
-    // Use wouter navigation instead of window.location
     window.location.href = '/diagnostic';
   };
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex flex-wrap items-center justify-between gap-y-3 py-3 md:h-20 md:flex-nowrap md:py-0">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 hover-elevate">
             <img 
               src={logoImage} 
               alt="Kemet Services" 
-              className="h-16 w-auto"
+              className="h-12 md:h-16 w-auto"
               data-testid="img-logo"
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          {/* Navigation */}
+          <nav className="flex flex-wrap items-center gap-x-3 gap-y-2 md:flex-nowrap md:space-x-6 lg:space-x-8">
             {navigation.map((item) => (
               <Link 
                 key={item.name} 
                 href={item.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-xs md:text-sm font-medium transition-colors hover:text-primary whitespace-nowrap ${
                   location === item.href 
-                    ? 'text-primary border-b-2 border-primary pb-4' 
+                    ? 'text-primary border-b-2 border-primary pb-1 md:pb-4' 
                     : 'text-muted-foreground'
                 }`}
                 data-testid={`link-nav-${item.name.toLowerCase()}`}
@@ -60,79 +57,33 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Desktop CTAs */}
-          <div className="hidden lg:flex items-center space-x-4">
-            <KemetCatalog.Button />
+          {/* CTAs */}
+          <div className="flex items-center gap-2 md:space-x-4">
+            <div className="hidden md:block">
+              <KemetCatalog.Button />
+            </div>
             <Button 
               variant="outline" 
+              size="sm"
               onClick={handleWhatsAppClick}
               className="text-primary border-primary"
               data-testid="button-whatsapp"
             >
-              <MessageCircle className="w-4 h-4 mr-2" />
-              WhatsApp
+              <MessageCircle className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">WhatsApp</span>
             </Button>
             <Button 
+              size="sm"
               onClick={handleDiagnosticClick}
               data-testid="button-diagnostic"
             >
-              Diagnostic gratuit
+              <span className="hidden md:inline">Diagnostic gratuit</span>
+              <span className="md:hidden">Diagnostic</span>
             </Button>
           </div>
 
-          {/* Mobile menu button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            data-testid="button-mobile-menu"
-          >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-border">
-            <div className="flex flex-col space-y-4">
-              {navigation.map((item) => (
-                <Link 
-                  key={item.name} 
-                  href={item.href}
-                  className={`text-sm font-medium transition-colors ${
-                    location === item.href ? 'text-primary' : 'text-muted-foreground'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  data-testid={`link-mobile-${item.name.toLowerCase()}`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-                <KemetCatalog.Button className="justify-start text-sm" />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleWhatsAppClick}
-                  className="justify-start text-primary border-primary"
-                  data-testid="button-mobile-whatsapp"
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  WhatsApp
-                </Button>
-                <Button 
-                  size="sm"
-                  onClick={handleDiagnosticClick}
-                  className="justify-start"
-                  data-testid="button-mobile-diagnostic"
-                >
-                  Diagnostic gratuit
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </header>
   );

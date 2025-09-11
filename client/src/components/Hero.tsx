@@ -1,8 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MessageCircle } from 'lucide-react';
 import { useLocation } from 'wouter';
-import heroImage from '@assets/_D6A2216_1757585998505.jpg';
-import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 export default function Hero() {
   const [, setLocation] = useLocation();
@@ -30,18 +28,10 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          {/* Logo and Title */}
-          <div className="flex items-center space-x-4 mb-6">
-            <img 
-              src="/images/logo.png" 
-              alt="Kemet Services" 
-              className="h-16 w-auto"
-              data-testid="img-hero-logo"
-            />
-            <h1 className="text-4xl md:text-6xl font-bold font-serif text-foreground leading-tight">
-              La qualité qui fait grandir votre officine
-            </h1>
-          </div>
+          {/* Title */}
+          <h1 className="text-4xl md:text-6xl font-bold font-serif text-foreground leading-tight mb-6">
+            La qualité qui fait grandir votre officine
+          </h1>
 
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
