@@ -55,11 +55,8 @@ export default function InscriptionFormation() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertTrainingRegistration) => {
-      return apiRequest('/api/training-registrations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+      const response = await apiRequest('POST', '/api/training-registrations', data);
+      return response.json();
     },
     onSuccess: () => {
       setSubmitted(true);
@@ -67,7 +64,6 @@ export default function InscriptionFormation() {
         title: "Inscription enregistrée !",
         description: "Nous vous recontacterons sous 24h pour confirmer votre formation.",
       });
-      // Invalidate and refetch any training registrations queries
       queryClient.invalidateQueries({ queryKey: ['/api/training-registrations'] });
     },
     onError: (error: any) => {
