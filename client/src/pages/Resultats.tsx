@@ -2,16 +2,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { 
-  TrendingUp, 
-  TrendingDown, 
-  Clock, 
-  Users,
   Quote,
   MapPin,
   Calendar
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import Header from '@/components/Header';
+import { KemetKpiCards } from '@/components/ui/kpi-card';
 
 // Données pour les graphiques
 const stockData = [
@@ -41,40 +38,12 @@ const margeData = [
   { month: 'Jun', marge: 20.3 }
 ];
 
-// KPI Cards
-const kpiData = [
-  {
-    title: 'Ruptures de stock',
-    value: '-35%',
-    subtitle: 'en 60 jours',
-    icon: TrendingDown,
-    color: 'text-green-600',
-    bgColor: 'bg-green-50'
-  },
-  {
-    title: 'Délai réclamations',
-    value: '<24h',
-    subtitle: 'temps de traitement',
-    icon: Clock,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
-  },
-  {
-    title: 'Marge brute',
-    value: '+1,8 pts',
-    subtitle: 'amélioration',
-    icon: TrendingUp,
-    color: 'text-emerald-600',
-    bgColor: 'bg-emerald-50'
-  },
-  {
-    title: 'Satisfaction équipe',
-    value: '94%',
-    subtitle: 'taux de satisfaction',
-    icon: Users,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
-  }
+// Configuration des KPI Cards avec les presets Kemet
+const kpiComponents = [
+  KemetKpiCards.RupturesReduction,
+  KemetKpiCards.DelaiReclamations, 
+  KemetKpiCards.MargeAmelioration,
+  KemetKpiCards.SatisfactionEquipe
 ];
 
 // Études de cas
@@ -172,23 +141,9 @@ export default function Resultats() {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {kpiData.map((kpi, index) => {
-              const IconComponent = kpi.icon;
-              return (
-                <Card key={index} className="text-center" data-testid={`card-kpi-${index}`}>
-                  <CardHeader className="pb-3">
-                    <div className={`w-12 h-12 rounded-lg ${kpi.bgColor} flex items-center justify-center mx-auto mb-3`}>
-                      <IconComponent className={`w-6 h-6 ${kpi.color}`} />
-                    </div>
-                    <CardTitle className="text-2xl font-bold">{kpi.value}</CardTitle>
-                    <CardDescription>{kpi.subtitle}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">{kpi.title}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {kpiComponents.map((KpiComponent, index) => (
+              <KpiComponent key={index} size="md" />
+            ))}
           </div>
 
           {/* Graphiques */}

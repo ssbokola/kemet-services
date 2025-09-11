@@ -11,10 +11,10 @@ import {
   TrendingUp,
   CheckCircle,
   Lightbulb,
-  Zap,
-  Clock
+  Zap
 } from 'lucide-react';
 import Header from '@/components/Header';
+import { KemetClientTimeline } from '@/components/ui/timeline';
 
 const valeurs = [
   {
@@ -61,36 +61,7 @@ const atouts = [
   }
 ];
 
-const etapesAccompagnement = [
-  {
-    numero: '01',
-    titre: 'Audit Initial',
-    description: 'Diagnostic complet de votre pharmacie avec analyse des processus et identification des axes d\'amélioration.',
-    duree: '1-2 semaines',
-    icon: CheckCircle
-  },
-  {
-    numero: '02',
-    titre: 'Plan 90 jours',
-    description: 'Élaboration d\'un plan d\'action détaillé avec objectifs mesurables et étapes claires.',
-    duree: '1 semaine',
-    icon: Target
-  },
-  {
-    numero: '03',
-    titre: 'Formation',
-    description: 'Formation personnalisée de vos équipes sur les nouveaux processus et outils.',
-    duree: '2-4 semaines',
-    icon: Users
-  },
-  {
-    numero: '04',
-    titre: 'Suivi',
-    description: 'Accompagnement continu avec mesure des résultats et ajustements si nécessaire.',
-    duree: 'En continu',
-    icon: TrendingUp
-  }
-];
+// Le processus d'accompagnement est maintenant géré par le composant KemetClientTimeline
 
 export default function APropos() {
   return (
@@ -256,38 +227,7 @@ export default function APropos() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {etapesAccompagnement.map((etape, index) => {
-              const IconComponent = etape.icon;
-              return (
-                <Card key={index} className="relative overflow-hidden" data-testid={`card-etape-${index}`}>
-                  <CardHeader>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                        {etape.numero}
-                      </div>
-                      <IconComponent className="w-6 h-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg">{etape.titre}</CardTitle>
-                    <Badge variant="outline" className="w-fit">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {etape.duree}
-                    </Badge>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {etape.description}
-                    </p>
-                  </CardContent>
-                  
-                  {/* Ligne de connexion pour desktop */}
-                  {index < etapesAccompagnement.length - 1 && (
-                    <div className="hidden lg:block absolute -right-3 top-1/2 transform -translate-y-1/2 w-6 h-0.5 bg-primary z-10" />
-                  )}
-                </Card>
-              );
-            })}
-          </div>
+          <KemetClientTimeline className="max-w-6xl mx-auto" />
         </div>
       </section>
 
