@@ -18,6 +18,8 @@ const footerLinks = {
   legal: [
     { name: 'Mentions légales', href: '/mentions-legales' },
     { name: 'Politique de confidentialité', href: '/confidentialite' },
+    { name: 'Politique de cookies', href: '/politique-cookies' },
+    { name: 'Gérer les cookies', href: '#', action: 'openCookiePreferences' },
     { name: 'CGV', href: '/cgv' }
   ]
 };
@@ -39,6 +41,12 @@ export default function Footer() {
   const handleLinkedInClick = () => {
     console.log('LinkedIn profile triggered');
     // In a real app, this would open LinkedIn company page
+  };
+
+  const handleCookiePreferencesClick = () => {
+    if ((window as any).openCookiePreferences) {
+      (window as any).openCookiePreferences();
+    }
   };
 
   return (
@@ -145,13 +153,23 @@ export default function Footer() {
               <ul className="space-y-2">
                 {footerLinks.legal.map((link) => (
                   <li key={link.name}>
-                    <a 
-                      href={link.href}
-                      className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-                      data-testid={`link-footer-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      {link.name}
-                    </a>
+                    {link.action === 'openCookiePreferences' ? (
+                      <button
+                        onClick={handleCookiePreferencesClick}
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                        data-testid={`button-footer-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      >
+                        {link.name}
+                      </button>
+                    ) : (
+                      <a 
+                        href={link.href}
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                        data-testid={`link-footer-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
+                      >
+                        {link.name}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
