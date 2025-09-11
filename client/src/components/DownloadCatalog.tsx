@@ -91,7 +91,7 @@ export function DownloadCatalog({
     
     // Header
     doc.setFontSize(18);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('KEMET SERVICES', 20, 25);
     doc.text('CATALOGUE DES FORMATIONS 2024', 20, 35);
     
@@ -103,22 +103,22 @@ export function DownloadCatalog({
     
     // Introduction
     doc.setFontSize(12);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.text('Transformez votre pharmacie en centre d\'excellence avec nos formations', 20, yPos);
     doc.text('spécialisées adaptées aux réalités africaines.', 20, yPos + 7);
     yPos += 25;
     
     // FORMATIONS PHARMACIENS
     doc.setFontSize(14);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('FORMATIONS POUR PHARMACIENS', 20, yPos);
     yPos += 15;
     
     doc.setFontSize(11);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('FORMATIONS QUALITE (4 formations)', 20, yPos);
     yPos += 10;
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     const qualiteFormations = [
       '• Mise en Place d\'un Systeme Qualite en Officine',
       '• Amelioration de la Qualite de Service',
@@ -131,10 +131,10 @@ export function DownloadCatalog({
     });
     yPos += 5;
     
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('FORMATIONS FINANCE (4 formations)', 20, yPos);
     yPos += 10;
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     const financeFormations = [
       '• Gestion de Tresorerie pour Pharmaciens',
       '• Optimisation de la Rentabilite',
@@ -147,10 +147,10 @@ export function DownloadCatalog({
     });
     yPos += 5;
     
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('FORMATIONS STOCK (4 formations)', 20, yPos);
     yPos += 10;
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     const stockFormations = [
       '• Gestion des Ecarts de Stock',
       '• Optimisation des Achats et Approvisionnements',
@@ -163,10 +163,10 @@ export function DownloadCatalog({
     });
     yPos += 5;
     
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('FORMATIONS RH (3 formations)', 20, yPos);
     yPos += 10;
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     const rhFormations = [
       '• Management d\'Équipe en Pharmacie',
       '• Recrutement et Intégration du Personnel',
@@ -187,12 +187,12 @@ export function DownloadCatalog({
     
     // FORMATIONS AUXILIAIRES
     doc.setFontSize(14);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('FORMATIONS POUR AUXILIAIRES (7 formations)', 20, yPos);
     yPos += 15;
     
     doc.setFontSize(11);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     const auxiliairesFormations = [
       '• Accueil et Service Client Excellence',
       '• Gestion de Commande et Facturation',
@@ -210,12 +210,12 @@ export function DownloadCatalog({
     
     // MODALITÉS
     doc.setFontSize(14);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('MODALITÉS', 20, yPos);
     yPos += 12;
     
     doc.setFontSize(11);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     const modalites = [
       '- Lieu: Abidjan, Cote d\'Ivoire (formations sur site disponibles)',
       '- Duree: 1 a 3 jours selon la formation',
@@ -231,21 +231,21 @@ export function DownloadCatalog({
     
     // CONTACT
     doc.setFontSize(14);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('CONTACT & INSCRIPTION', 20, yPos);
     yPos += 12;
     
     doc.setFontSize(11);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.text('Email: infos@kemetservices.com', 25, yPos);
     yPos += 7;
-    doc.text('WhatsApp: +225 07 59 06 87 44', 25, yPos);
+    doc.text('WhatsApp: +225 0759 068 xxx', 25, yPos);
     yPos += 15;
     
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('Dr. Bokola Tinni Sonhon', 25, yPos);
     yPos += 7;
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.text('Pharmacien d\'Officine • Fondateur Kemet Services', 25, yPos);
     yPos += 6;
     doc.text('Doctorat en Pharmacie • MBA • Master Management Qualité', 25, yPos);
@@ -253,13 +253,13 @@ export function DownloadCatalog({
     
     // Quote
     doc.setFontSize(10);
-    doc.setFont(undefined, 'italic');
+    doc.setFont('helvetica', 'italic');
     doc.text('"Transformons ensemble les pharmacies africaines en centres d\'excellence"', 25, yPos);
     yPos += 15;
     
     // Footer
     doc.setFontSize(9);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.text('© 2024 Kemet Services - Tous droits réservés', 25, yPos);
     
     // Download the PDF

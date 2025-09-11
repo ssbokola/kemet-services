@@ -332,7 +332,7 @@ export default function Contact() {
                   data-testid="button-whatsapp-contact"
                 >
                   <MessageCircle className="w-4 h-4 mr-3" />
-                  WhatsApp : +225 75 90 68 xxx
+                  WhatsApp : +225 0759 068 xxx
                 </Button>
                 
                 <Button 

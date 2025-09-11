@@ -35,7 +35,7 @@ export default function MentionsLegales() {
                     <p><strong>Forme juridique :</strong> Entreprise individuelle / Cabinet de formation et consultance</p>
                     <p><strong>Siège social :</strong> Abidjan, Côte d'Ivoire</p>
                     <p><strong>Email :</strong> infos@kemetservices.com</p>
-                    <p><strong>Téléphone :</strong> +225 75 90 68 xxx</p>
+                    <p><strong>Téléphone :</strong> +225 0759 068 xxx</p>
                   </div>
                   
                   <div>
@@ -180,8 +180,8 @@ export default function MentionsLegales() {
                   
                   <div className="bg-muted/50 p-4 rounded-lg">
                     <p><strong>Email :</strong> infos@kemetservices.com</p>
-                    <p><strong>Téléphone :</strong> +225 75 90 68 xxx</p>
-                    <p><strong>WhatsApp :</strong> +225 75 90 68 xxx</p>
+                    <p><strong>Téléphone :</strong> +225 0759 068 xxx</p>
+                    <p><strong>WhatsApp :</strong> +225 0759 068 xxx</p>
                     <p><strong>Horaires :</strong> Lundi à Vendredi, 8h00 - 17h00 (GMT)</p>
                   </div>
                 </CardContent>

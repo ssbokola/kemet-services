@@ -34,7 +34,7 @@ export default function Confidentialite() {
                   <p>Cabinet de formation et consultance pharmaceutique</p>
                   <p>Abidjan, Côte d'Ivoire</p>
                   <p>Email : infos@kemetservices.com</p>
-                  <p>Téléphone : +225 75 90 68 xxx</p>
+                  <p>Téléphone : +225 0759 068 xxx</p>
                 </CardContent>
               </Card>
 
