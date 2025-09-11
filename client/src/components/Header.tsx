@@ -31,13 +31,13 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 hover-elevate">
             <img 
-              src="/images/logo.png" 
+              src={logoImage} 
               alt="Kemet Services" 
-              className="h-10 w-auto"
+              className="h-16 w-auto"
               data-testid="img-logo"
             />
           </Link>
@@ -61,11 +61,10 @@ export default function Header() {
           </nav>
 
           {/* Desktop CTAs */}
-          <div className="hidden lg:flex items-center space-x-3">
-            <KemetCatalog.Button className="text-sm" />
+          <div className="hidden lg:flex items-center space-x-4">
+            <KemetCatalog.Button />
             <Button 
               variant="outline" 
-              size="sm"
               onClick={handleWhatsAppClick}
               className="text-primary border-primary"
               data-testid="button-whatsapp"
@@ -74,7 +73,6 @@ export default function Header() {
               WhatsApp
             </Button>
             <Button 
-              size="sm"
               onClick={handleDiagnosticClick}
               data-testid="button-diagnostic"
             >
