@@ -16,109 +16,74 @@ const categories = [
 ];
 
 const formations = [
-  // Qualité
+  // Stock - Formations phares basées sur les fiches commerciales
   {
     id: 1,
-    category: 'qualite',
-    title: 'Initiation à la qualité (ISO 9001:2015)',
-    description: 'Comprendre et mettre en œuvre les principes de la qualité selon la norme ISO 9001:2015',
-    duration: '2 jours',
-    price: '150 000 F',
+    category: 'stock',
+    title: 'Réduire les Écarts de Stock',
+    description: 'Comprendre les enjeux d\'un stock conforme et maîtriser les bonnes pratiques pour réduire les écarts',
+    duration: '4h',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BookOpen,
-    objectives: ['Maîtriser les exigences ISO 9001:2015', 'Développer un système qualité', 'Préparer la certification']
+    objectives: ['Comprendre les enjeux d\'un stock conforme', 'Identifier causes et conséquences des écarts', 'Maîtriser les bonnes pratiques de réduction']
   },
   {
     id: 2,
-    category: 'qualite',
-    title: 'L\'écoute client en officine',
-    description: 'Techniques d\'écoute active et de gestion de la relation client en pharmacie',
-    duration: '1 jour',
-    price: '75 000 F',
-    format: 'Présentiel/Distanciel',
-    icon: Heart,
-    objectives: ['Améliorer l\'accueil client', 'Gérer les situations difficiles', 'Fidéliser la clientèle']
-  },
-  {
-    id: 3,
-    category: 'qualite',
-    title: 'Gestion des risques (ISO 31000:2018)',
-    description: 'Identifier, évaluer et maîtriser les risques dans l\'environnement officinal',
-    duration: '2 jours',
-    price: '140 000 F',
-    format: 'Présentiel',
-    icon: BookOpen,
-    objectives: ['Cartographier les risques', 'Mettre en place des mesures préventives', 'Suivre l\'efficacité']
-  },
-  // Finances
-  {
-    id: 4,
-    category: 'finances',
-    title: 'Optimisation fiscale en pharmacie',
-    description: 'Stratégies légales d\'optimisation fiscale pour pharmacies d\'officine',
-    duration: '1 jour',
-    price: '90 000 F',
-    format: 'Présentiel',
-    icon: DollarSign,
-    objectives: ['Comprendre la fiscalité', 'Optimiser les charges', 'Planifier les investissements']
-  },
-  {
-    id: 5,
-    category: 'finances',
-    title: 'Finance pour le pharmacien',
-    description: 'Gestion financière et cost killing pour améliorer la rentabilité',
-    duration: '2 jours',
-    price: '160 000 F',
-    format: 'Présentiel',
-    icon: TrendingUp,
-    objectives: ['Analyser la performance financière', 'Réduire les coûts', 'Améliorer la marge']
-  },
-  // Stock
-  {
-    id: 6,
     category: 'stock',
-    title: 'Gestion des écarts de stock',
-    description: 'Réduire les écarts à moins de 2 par mois grâce à des méthodes éprouvées',
-    duration: '2h',
-    price: '50 000 F',
-    format: 'Présentiel',
-    icon: BookOpen,
-    objectives: ['Méthodes FIFO/FEFO', 'Outils de suivi', 'Réduction des pertes']
-  },
-  {
-    id: 7,
-    category: 'stock',
-    title: 'Gestion des périmés en officine',
-    description: 'FEFO optimisé et système d\'alertes pour minimiser les pertes',
-    duration: '2h',
+    title: 'Réduire les Périmés en Pharmacie',
+    description: 'Comprendre les causes des péremptions et apprendre les bonnes pratiques de stockage',
+    duration: '4h',
     price: '50 000 F',
     format: 'Présentiel',
     icon: Clock,
-    objectives: ['Alertes automatiques', 'Rotation optimale', 'Réduction déchets']
+    objectives: ['Causes et conséquences des périmés', 'Bonnes pratiques de prévention', 'Procédures de stockage optimales']
   },
-  // RH
   {
-    id: 8,
-    category: 'rh',
-    title: 'Identité managériale & leadership',
-    description: 'Développer son style de management et ses compétences de leader',
-    duration: '2 jours',
-    price: '140 000 F',
+    id: 3,
+    category: 'stock',
+    title: 'Gérer Efficacement la Commande',
+    description: 'Maîtriser les techniques de gestion des stocks et optimiser le processus de commande',
+    duration: '4h',
+    price: '50 000 F',
     format: 'Présentiel',
-    icon: Users,
-    objectives: ['Définir son style managérial', 'Motiver son équipe', 'Gérer les conflits']
+    icon: TrendingUp,
+    objectives: ['Comprendre les enjeux de gestion des commandes', 'Maîtriser les techniques de gestion', 'Optimiser pour réduire coûts et améliorer satisfaction']
   },
   // Auxiliaires
   {
-    id: 9,
+    id: 4,
     category: 'auxiliaires',
-    title: 'Réception & mise à disposition des médicaments',
-    description: 'Processus standardisé pour la réception et le stockage des médicaments',
-    duration: '1 jour',
-    price: '65 000 F',
+    title: 'Réceptionner Efficacement les Médicaments',
+    description: 'Comprendre les principes de réception et maîtriser les procédures de stockage',
+    duration: '4h',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BookOpen,
-    objectives: ['Contrôle qualité réception', 'Stockage optimal', 'Traçabilité']
+    objectives: ['Principes de réception des médicaments', 'Vérification des commandes', 'Gestion des retours et situations exceptionnelles']
+  },
+  {
+    id: 5,
+    category: 'auxiliaires',
+    title: 'Conseiller le Matériel Orthopédique',
+    description: 'Identifier les différents types de matériel et conseiller les patients selon leur pathologie',
+    duration: '6h',
+    price: '50 000 F',
+    format: 'Présentiel',
+    icon: Heart,
+    objectives: ['Identifier les types de matériel orthopédique', 'Conseiller selon la pathologie', 'Assurer un suivi de qualité']
+  },
+  // Qualité
+  {
+    id: 6,
+    category: 'qualite',
+    title: 'Gérer les Risques Opérationnels',
+    description: 'Comprendre, identifier et maîtriser les risques opérationnels en pharmacie',
+    duration: '4h',
+    price: '75 000 F',
+    format: 'Présentiel',
+    icon: Users,
+    objectives: ['Comprendre les types de risques opérationnels', 'Identifier et évaluer les risques', 'Mettre en place un plan d\'action de gestion']
   }
 ];
 

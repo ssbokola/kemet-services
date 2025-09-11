@@ -5,31 +5,31 @@ import { Clock, Users, BookOpen } from 'lucide-react';
 
 const formations = [
   {
-    title: 'Gestion des écarts de stock',
-    description: 'Réduire les écarts à moins de 2 par mois grâce à des méthodes éprouvées',
-    duration: '2h',
+    title: 'Gérer Efficacement la Commande',
+    description: 'Maîtriser les techniques de gestion des stocks et optimiser le processus de commande',
+    duration: '4h',
     price: '50 000 F',
-    target: 'Pharmaciens & Assistants',
+    target: 'Auxiliaires en pharmacie',
     icon: BookOpen,
-    benefits: ['Méthodes FIFO/FEFO', 'Outils de suivi', 'Réduction des pertes']
+    benefits: ['Techniques de gestion des stocks', 'Optimisation des coûts', 'Amélioration satisfaction client']
   },
   {
-    title: 'Gestion des péremptions',
-    description: 'FEFO optimisé et système d\'alertes pour minimiser les pertes',
-    duration: '2h',
+    title: 'Réduire les Écarts de Stock',
+    description: 'Comprendre les enjeux et maîtriser les bonnes pratiques pour réduire les écarts',
+    duration: '4h',
     price: '50 000 F',
-    target: 'Équipe officine',
+    target: 'Auxiliaires en pharmacie',
     icon: Clock,
-    benefits: ['Alertes automatiques', 'Rotation optimale', 'Réduction déchets']
+    benefits: ['Identification des causes', 'Mise en place de procédures', 'Contrôle régulier des stocks']
   },
   {
-    title: 'Commande & réception',
-    description: 'Processus zéro erreur pour la gestion des approvisionnements',
-    duration: '2h',
-    price: '50 000 F',
-    target: 'Personnel réception',
+    title: 'Gestion des Risques Opérationnels',
+    description: 'Identifier, évaluer et maîtriser les risques dans l\'environnement officinal',
+    duration: '4h',
+    price: '75 000 F',
+    target: 'Pharmaciens & Cadres',
     icon: Users,
-    benefits: ['Processus standardisé', 'Contrôle qualité', 'Zéro erreur']
+    benefits: ['Identification des risques', 'Techniques de gestion', 'Plan d\'action proactif']
   }
 ];
 
