@@ -150,7 +150,7 @@ export function KemetClientTimeline({ className }: { className?: string }) {
       description: 'Diagnostic complet de votre pharmacie avec analyse des processus et identification des axes d\'amélioration.',
       duree: '1-2 semaines',
       icon: Search,
-      status: 'completed'
+      status: 'current'
     },
     {
       id: 'plan',
@@ -159,7 +159,7 @@ export function KemetClientTimeline({ className }: { className?: string }) {
       description: 'Élaboration d\'un plan d\'action détaillé avec objectifs mesurables et étapes claires.',
       duree: '1 semaine',
       icon: Target,
-      status: 'current'
+      status: 'upcoming'
     },
     {
       id: 'formation',
