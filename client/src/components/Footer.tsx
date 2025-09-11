@@ -39,8 +39,7 @@ export default function Footer() {
   };
 
   const handleLinkedInClick = () => {
-    console.log('LinkedIn profile triggered');
-    // In a real app, this would open LinkedIn company page
+    window.open('https://linkedin.com/company/kemet-services', '_blank', 'noopener,noreferrer');
   };
 
   const handleCookiePreferencesClick = () => {
