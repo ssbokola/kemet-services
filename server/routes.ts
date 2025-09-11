@@ -48,6 +48,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/training-registrations', async (req, res) => {
     try {
       const registrations = await storage.getTrainingRegistrations();
+      console.log(`DEBUG: Found ${registrations.length} registrations in storage`);
       
       // Return non-PII summary data only
       const summary = registrations.map(reg => ({

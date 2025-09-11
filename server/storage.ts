@@ -67,4 +67,7 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Ensure storage persists across hot-reloads in development
+const globalForStorage = globalThis as any;
+globalForStorage.__memStorage ||= new MemStorage();
+export const storage = globalForStorage.__memStorage;
