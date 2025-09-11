@@ -13,6 +13,9 @@ import APropos from "@/pages/APropos";
 import Ressources from "@/pages/Ressources";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
+import MentionsLegales from "@/pages/MentionsLegales";
+import Confidentialite from "@/pages/Confidentialite";
+import PolitiqueCookies from "@/pages/PolitiqueCookies";
 
 function Router() {
   return (
@@ -24,6 +27,9 @@ function Router() {
       <Route path="/a-propos" component={APropos} />
       <Route path="/ressources" component={Ressources} />
       <Route path="/contact" component={Contact} />
+      <Route path="/mentions-legales" component={MentionsLegales} />
+      <Route path="/confidentialite" component={Confidentialite} />
+      <Route path="/politique-cookies" component={PolitiqueCookies} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
