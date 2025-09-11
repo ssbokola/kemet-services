@@ -1,0 +1,126 @@
+Rôle & stack
+Crée un site Next.js 14 (App Router) + TypeScript + Tailwind CSS + shadcn/ui + Framer Motion + Lucide.
+Cibles : performance et accessibilité Lighthouse ≥ 90 (Perf/SEO/A11y/Best Practices).
+Langue par défaut fr-FR. Déploiement Replit. Inclure un README d’édition de contenu.
+
+Branding & assets
+
+Nom : Kemet Services (cabinet de formation & consultance – pharmacies d’officine en Côte d’Ivoire).
+
+Logo : crée /public/logo-kemet.png et /public/favicon.ico. (Placeholders à remplacer ensuite par mon fichier réel.)
+
+Palette sobre : fond blanc, texte #0F172A, secondaires gris (#111827, #6B7280), CTA teal #0EA5A3.
+
+Typo : Inter (UI), Source Serif 4 (accroches).
+
+Style : beaucoup d’espace blanc, cartes rounded-2xl, ombres légères, micro-animations au survol.
+
+Coordonnées (header + footer + /contact)
+
+E-mail : kmtcabj@gmail.com (mailto)
+
+WhatsApp : https://wa.me/225759068744 (bouton visible “Écrire sur WhatsApp”)
+
+Localisation : Abidjan (texte simple + lien Google Maps placeholder).
+
+Réseaux : LinkedIn (placeholder).
+
+Navigation (Header collant)
+Accueil | Formations | Consulting | Résultats | À propos | Ressources | Contact
+CTA global (header + sections) : “Demander un diagnostic gratuit”.
+
+Pages & sections
+
+/ Accueil
+
+Hero :
+
+Titre : “La qualité qui fait grandir votre officine”
+
+Sous-texte : “Formations ciblées et consultance opérationnelle pour pharmacies d’officine en Côte d’Ivoire.”
+
+CTA : “Diagnostic gratuit” (+ secondaire “Découvrir nos formations”)
+
+Affiche le logo à gauche du titre.
+
+Pourquoi Kemet (4 piliers) : Expertise | Proximité | Impact | Durabilité.
+
+Focus Formations (3 cartes) :
+
+“Écarts de stock – réduire <2/mois (2h, 50 000 F)”
+
+“Gestion des péremptions – FEFO & alertes (2h, 50 000 F)”
+
+“Commande & réception – zéro erreurs (2h, 50 000 F)”
+
+Consulting (bloc résumé) : Audit 360°, plan d’action 90 jours, mise en place, suivi.
+
+Résultats (KPI & mini-cas) : “-35 % ruptures en 60 j”, “+1,8 pts marge”, “Délai réclamations <24 h”.
+
+Témoignages (carousel) : 3 items placeholder.
+
+Bandeau confiance : “ISO / BPF – ancrage terrain en Côte d’Ivoire”.
+
+CTA final : WhatsApp + Formulaire.
+
+/formations
+
+Grille filtrable (stock, qualité, trésorerie, service client, RH).
+
+Fiches formation (MD/MDX + Zod schema) : objectifs, publics, prérequis, programme détaillé, livrables, format (présentiel/distanciel), durée, tarif indicatif (50 000 F / 2 h), modalités d’inscription (formulaire + WhatsApp).
+
+Catalogue initial pré-rempli (extraits issus de ta présentation) :
+Axe Pharmaciens – Qualité :
+
+Initiation à la qualité (ISO 9001:2015)
+
+L’écoute client en officine
+
+Gestion des risques (ISO 31000:2018)
+
+Bonnes pratiques officinales
+
+Management par objectifs
+
+Mesurer la performance (FD X 50-171)
+
+Pourquoi se faire certifier ?
+Axe Pharmaciens – Finances :
+
+Optimisation fiscale en pharmacie
+
+Finance pour le pharmacien (cost killing)
+
+Management stratégique en officine
+Axe Pharmaciens – Stock :
+
+Gestion des écarts de stock
+
+Gestion des périmés en officine
+
+Gestion des ruptures en officine
+Axe Pharmaciens – Potentiel humain :
+
+Identité managériale & leadership
+
+Gestion des compétences
+
+Réussir son recrutement
+
+Gestion du changement & stress
+Axe Auxiliaires :
+
+Recouvrer efficacement les créances
+
+Réception & mise à disposition des médicaments
+
+Initiation aux bonnes pratiques officinales
+
+Self leadership
+
+Gérer efficacement la commande
+
+Optimiser la relation client
+
+Conseiller l’orthopédie en officine
+(Texte source intégré & reformulé pour le web. )
