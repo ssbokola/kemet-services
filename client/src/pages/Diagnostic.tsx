@@ -21,7 +21,6 @@ const diagnosticSchema = z.object({
   email: z.string().email('Email invalide'),
   phone: z.string().min(10, 'Numéro de téléphone invalide'),
   location: z.string().min(2, 'La localisation est requise'),
-  pharmacyType: z.string().min(1, 'Veuillez sélectionner le type de pharmacie'),
   yearsOperation: z.string().min(1, 'Veuillez indiquer les années d\'activité'),
   teamSize: z.string().min(1, 'Veuillez indiquer la taille de votre équipe'),
   challenges: z.array(z.string()).min(1, 'Veuillez sélectionner au moins un défi'),
@@ -54,7 +53,6 @@ export default function Diagnostic() {
       email: '',
       phone: '',
       location: '',
-      pharmacyType: '',
       yearsOperation: '',
       teamSize: '',
       challenges: [],
@@ -248,26 +246,6 @@ export default function Diagnostic() {
                       {form.formState.errors.location && (
                         <p className="text-sm text-destructive">
                           {form.formState.errors.location.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="pharmacyType">Type de pharmacie *</Label>
-                      <Select onValueChange={(value) => form.setValue('pharmacyType', value)}>
-                        <SelectTrigger data-testid="select-pharmacy-type">
-                          <SelectValue placeholder="Sélectionner le type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="independante">Indépendante</SelectItem>
-                          <SelectItem value="franchise">Franchise</SelectItem>
-                          <SelectItem value="hospitaliere">Hospitalière</SelectItem>
-                          <SelectItem value="clinique">Clinique privée</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      {form.formState.errors.pharmacyType && (
-                        <p className="text-sm text-destructive">
-                          {form.formState.errors.pharmacyType.message}
                         </p>
                       )}
                     </div>
