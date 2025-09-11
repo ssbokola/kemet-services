@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { KemetWhatsAppCallout } from "@/components/ui/whatsapp-callout";
 import Home from "@/pages/Home";
 import Formations from "@/pages/Formations";
 import Diagnostic from "@/pages/Diagnostic";
@@ -38,6 +39,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <KemetWhatsAppCallout.Default autoShow={true} showDelay={5000} />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
