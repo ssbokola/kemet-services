@@ -78,7 +78,7 @@ export default function Hero() {
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-primary rounded-full"></div>
-              <span>Bonnes Pratiques de Fabrication</span>
+              <span>Bonnes Pratiques de FABRICATION</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-primary rounded-full"></div>
