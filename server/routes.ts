@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTrainingRegistrationSchema } from "@shared/schema";
 import { z } from "zod";
-import { sendRegistrationNotification } from "./email";
+// import { sendRegistrationNotification } from "./email"; // Unused - file logging active
 import { logRegistrationNotification } from "./notifications";
 
 export async function registerRoutes(app: Express): Promise<Server> {
