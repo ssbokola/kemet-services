@@ -37,7 +37,7 @@ const valeurs = [
   },
   {
     name: 'Proximité',
-    description: 'Un accompagnement de terrain, au plus près de vos réalités quotidiennes en Côte d\'Ivoire.',
+    description: 'Un accompagnement de terrain, au plus près de vos réalités quotidiennes en Afrique.',
     icon: MapPin,
     color: 'bg-orange-500'
   }
@@ -46,7 +46,7 @@ const valeurs = [
 const atouts = [
   {
     name: 'Spécificité',
-    description: 'Expertise 100% dédiée au secteur pharmaceutique ivoirien',
+    description: 'Expertise 100% dédiée au secteur pharmaceutique africain',
     icon: Award
   },
   {
@@ -79,8 +79,8 @@ export default function APropos() {
               <strong className="text-primary">"Le cabinet d'un pharmacien, pour les pharmaciens(ennes)"</strong>
             </p>
             <p className="text-lg text-muted-foreground">
-              Kemet Services est le premier cabinet de conseil spécialisé dans l'accompagnement 
-              des pharmacies en Côte d'Ivoire, créé par des professionnels du secteur pour des professionnels.
+              Kemet Services est un cabinet de conseil spécialisé dans l'accompagnement 
+              des pharmacies en Afrique, créé par des professionnels du secteur pour des professionnels.
             </p>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function APropos() {
             <div>
               <h2 className="text-3xl font-bold text-foreground mb-6">Notre Mission</h2>
               <p className="text-lg text-muted-foreground mb-6">
-                Transformer les pharmacies ivoiriennes en centres d'excellence, alliant performance économique, 
+                Transformer les pharmacies africaines en centres d'excellence, alliant performance économique, 
                 qualité de service et satisfaction des équipes. Nous accompagnons chaque pharmacien dans 
                 l'optimisation de son officine avec des solutions concrètes et mesurables.
               </p>
@@ -123,14 +123,14 @@ export default function APropos() {
               <Card className="text-center">
                 <CardContent className="pt-6">
                   <Users className="w-12 h-12 text-primary mx-auto mb-3" />
-                  <h4 className="font-semibold text-foreground mb-2">50+</h4>
-                  <p className="text-sm text-muted-foreground">Pharmacies accompagnées</p>
+                  <h4 className="font-semibold text-foreground mb-2">Premium</h4>
+                  <p className="text-sm text-muted-foreground">Accompagnements personnalisés</p>
                 </CardContent>
               </Card>
               <Card className="text-center">
                 <CardContent className="pt-6">
                   <Award className="w-12 h-12 text-primary mx-auto mb-3" />
-                  <h4 className="font-semibold text-foreground mb-2">15+</h4>
+                  <h4 className="font-semibold text-foreground mb-2">10+</h4>
                   <p className="text-sm text-muted-foreground">Années d'expérience</p>
                 </CardContent>
               </Card>
@@ -145,7 +145,7 @@ export default function APropos() {
                 <CardContent className="pt-6">
                   <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
                   <h4 className="font-semibold text-foreground mb-2">100%</h4>
-                  <p className="text-sm text-muted-foreground">Côte d'Ivoire</p>
+                  <p className="text-sm text-muted-foreground">Afrique</p>
                 </CardContent>
               </Card>
             </div>
