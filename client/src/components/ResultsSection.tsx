@@ -34,21 +34,21 @@ const testimonials = [
     role: 'Auxiliaires en pharmacie',
     location: 'Abidjan, 16 mars 2024',
     content: 'Formation interactive et pratique avec des cas concrets. Les participants ont apprécié l\'approche participative et les mises en situation réelles.',
-    image: '@assets/_D6A2267_1757585998508.jpg'
+    image: '/images/testimonial-1.jpg'
   },
   {
     name: 'Session de Travail de Groupe',
     role: 'Méthodes collaboratives',
     location: 'Formation Kemet Services',
     content: 'Approche pédagogique innovante avec des exercices pratiques permettant aux participants de s\'approprier les concepts enseignés.',
-    image: '@assets/_D6A2249_1757585998507.jpg'
+    image: '/images/testimonial-2.jpg'
   },
   {
     name: 'Participants Satisfaits',
     role: 'Groupe de formation',
     location: 'Photo de fin de session',
     content: 'Une formation enrichissante qui a permis à tous les participants d\'acquérir de nouvelles compétences pratiques pour leur travail quotidien.',
-    image: '@assets/_D6A2300_1757585998510.jpg'
+    image: '/images/testimonial-3.jpg'
   }
 ];
 
@@ -115,7 +115,7 @@ export default function ResultsSection() {
               >
                 <div className="h-48 overflow-hidden">
                   <img 
-                    src={testimonial.image.replace('@assets/', '../attached_assets/')}
+                    src={testimonial.image}
                     alt={testimonial.name}
                     className="w-full h-full object-cover"
                   />

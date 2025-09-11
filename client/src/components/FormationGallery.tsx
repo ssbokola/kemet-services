@@ -2,32 +2,32 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const galleryImages = [
   {
-    src: '@assets/_D6A2149_1757585998503.jpg',
+    src: '/images/gallery-1.jpg',
     alt: 'Équipement de formation - Projecteur et ordinateur',
     caption: 'Équipement professionnel pour des formations de qualité'
   },
   {
-    src: '@assets/_D6A2216_1757585998505.jpg',
+    src: '/images/hero-formation.jpg',
     alt: 'Salle de formation avec participants',
     caption: 'Formation "Gérer Efficacement la Commande" - 16 mars 2024'
   },
   {
-    src: '@assets/_D6A2227_1757585998506.jpg',
+    src: '/images/consulting.jpg',
     alt: 'Formateur présentant aux participants',
     caption: 'Approche pédagogique interactive et participative'
   },
   {
-    src: '@assets/_D6A2267_1757585998508.jpg',
+    src: '/images/testimonial-1.jpg',
     alt: 'Travail de groupe entre participants',
     caption: 'Exercices pratiques et mises en situation'
   },
   {
-    src: '@assets/_D6A2289_1757585998509.jpg',
+    src: '/images/gallery-5.jpg',
     alt: 'Formateur expert en action',
     caption: 'Expertise de terrain et accompagnement personnalisé'
   },
   {
-    src: '@assets/_D6A2300_1757585998510.jpg',
+    src: '/images/testimonial-3.jpg',
     alt: 'Photo de groupe des participants',
     caption: 'Participants satisfaits de la formation'
   }
@@ -55,7 +55,7 @@ export default function FormationGallery() {
             >
               <div className="aspect-[4/3] overflow-hidden">
                 <img 
-                  src={image.src.replace('@assets/', '../attached_assets/')}
+                  src={image.src}
                   alt={image.alt}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />

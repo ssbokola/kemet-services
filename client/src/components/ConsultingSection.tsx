@@ -96,7 +96,7 @@ export default function ConsultingSection() {
           <div className="relative">
             <Card className="overflow-hidden border-0 shadow-xl">
               <img 
-                src="../attached_assets/_D6A2227_1757585998506.jpg" 
+                src="/images/consulting.jpg" 
                 alt="Formation Kemet Services en action" 
                 className="w-full h-96 object-cover"
                 data-testid="img-consulting"
