@@ -63,8 +63,8 @@ export default function Diagnostic() {
 
   const onSubmit = async (data: DiagnosticForm) => {
     try {
-      // Ici vous pourrez envoyer les données vers votre backend
-      console.log('Diagnostic data:', data);
+      // TODO: Envoyer les données vers le backend sécurisé
+      // Removal of PII logging for privacy compliance
       
       // Simuler l'envoi
       await new Promise(resolve => setTimeout(resolve, 1000));
