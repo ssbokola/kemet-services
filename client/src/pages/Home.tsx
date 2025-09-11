@@ -1,7 +1,6 @@
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import WhyKemet from '@/components/WhyKemet';
-import StatsSection from '@/components/StatsSection';
 import ServiceCards from '@/components/ServiceCards';
 import FocusFormations from '@/components/FocusFormations';
 import ConsultingSection from '@/components/ConsultingSection';
@@ -17,7 +16,6 @@ export default function Home() {
       <main>
         <Hero />
         <WhyKemet />
-        <StatsSection />
         <ServiceCards />
         <FocusFormations />
         <ConsultingSection />
