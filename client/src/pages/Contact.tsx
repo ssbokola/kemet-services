@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -16,6 +17,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import Header from '@/components/Header';
+import { Link } from 'wouter';
 
 const roleOptions = [
   { value: 'pharmacien-titulaire', label: 'Pharmacien(ne) Titulaire' },
@@ -43,7 +45,9 @@ export default function Contact() {
     telephone: '',
     email: '',
     objet: '',
-    message: ''
+    message: '',
+    dataConsent: false,
+    marketingConsent: false
   });
   
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -51,6 +55,13 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation du consentement obligatoire
+    if (!formData.dataConsent) {
+      alert('Vous devez accepter le traitement de vos données personnelles pour envoyer ce message.');
+      return;
+    }
+    
     setIsLoading(true);
     
     // Simulation d'envoi
@@ -69,7 +80,9 @@ export default function Contact() {
         telephone: '',
         email: '',
         objet: '',
-        message: ''
+        message: '',
+        dataConsent: false,
+        marketingConsent: false
       });
     }, 3000);
   };
@@ -239,6 +252,47 @@ export default function Contact() {
                       rows={5}
                       data-testid="textarea-message"
                     />
+                  </div>
+                  
+                  {/* Cases de consentement RGPD */}
+                  <div className="space-y-4 p-4 bg-muted/30 rounded-lg border">
+                    <h4 className="font-semibold text-foreground">Protection de vos données personnelles</h4>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="dataConsent"
+                          checked={formData.dataConsent}
+                          onCheckedChange={(checked) => setFormData({...formData, dataConsent: !!checked})}
+                          data-testid="checkbox-data-consent"
+                        />
+                        <div className="flex-1">
+                          <Label htmlFor="dataConsent" className="text-sm leading-relaxed cursor-pointer">
+                            J'accepte que mes données personnelles soient traitées par Kemet Services pour traiter ma demande et me recontacter. <span className="text-destructive">*</span>
+                          </Label>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Consultez notre <Link href="/confidentialite" className="text-primary hover:underline">Politique de Confidentialité</Link> pour plus de détails.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="marketingConsent"
+                          checked={formData.marketingConsent}
+                          onCheckedChange={(checked) => setFormData({...formData, marketingConsent: !!checked})}
+                          data-testid="checkbox-marketing-consent"
+                        />
+                        <div className="flex-1">
+                          <Label htmlFor="marketingConsent" className="text-sm leading-relaxed cursor-pointer">
+                            J'accepte de recevoir des communications marketing de Kemet Services (formations, conseils, offres spéciales). Je peux me désinscrire à tout moment.
+                          </Label>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Optionnel - Vous pouvez vous désinscrire en nous contactant à kmtcabj@gmail.com
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   
                   <Button 

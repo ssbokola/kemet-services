@@ -25,7 +25,11 @@ const diagnosticSchema = z.object({
   teamSize: z.string().min(1, 'Veuillez indiquer la taille de votre équipe'),
   challenges: z.array(z.string()).min(1, 'Veuillez sélectionner au moins un défi'),
   description: z.string().min(10, 'Veuillez décrire vos besoins en détail'),
-  contactPreference: z.string().min(1, 'Veuillez choisir votre préférence de contact')
+  contactPreference: z.string().min(1, 'Veuillez choisir votre préférence de contact'),
+  dataConsent: z.boolean().refine(val => val === true, {
+    message: 'Vous devez accepter le traitement de vos données personnelles'
+  }),
+  marketingConsent: z.boolean().optional()
 });
 
 type DiagnosticForm = z.infer<typeof diagnosticSchema>;
@@ -57,7 +61,9 @@ export default function Diagnostic() {
       teamSize: '',
       challenges: [],
       description: '',
-      contactPreference: ''
+      contactPreference: '',
+      dataConsent: false,
+      marketingConsent: false
     }
   });
 
@@ -356,6 +362,52 @@ export default function Diagnostic() {
                         {form.formState.errors.contactPreference.message}
                       </p>
                     )}
+                  </div>
+
+                  {/* Cases de consentement RGPD */}
+                  <div className="space-y-4 p-4 bg-muted/30 rounded-lg border">
+                    <h4 className="font-semibold text-foreground">Protection de vos données personnelles</h4>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="dataConsent"
+                          checked={form.watch('dataConsent')}
+                          onCheckedChange={(checked) => form.setValue('dataConsent', !!checked)}
+                          data-testid="checkbox-data-consent"
+                        />
+                        <div className="flex-1">
+                          <Label htmlFor="dataConsent" className="text-sm leading-relaxed cursor-pointer">
+                            J'accepte que mes données personnelles soient traitées par Kemet Services pour réaliser le diagnostic gratuit et me recontacter. <span className="text-destructive">*</span>
+                          </Label>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Consultez notre <Link href="/confidentialite" className="text-primary hover:underline">Politique de Confidentialité</Link> pour plus de détails.
+                          </p>
+                        </div>
+                      </div>
+                      {form.formState.errors.dataConsent && (
+                        <p className="text-sm text-destructive ml-6">
+                          {form.formState.errors.dataConsent.message}
+                        </p>
+                      )}
+                      
+                      <div className="flex items-start space-x-3">
+                        <Checkbox
+                          id="marketingConsent"
+                          checked={form.watch('marketingConsent')}
+                          onCheckedChange={(checked) => form.setValue('marketingConsent', !!checked)}
+                          data-testid="checkbox-marketing-consent"
+                        />
+                        <div className="flex-1">
+                          <Label htmlFor="marketingConsent" className="text-sm leading-relaxed cursor-pointer">
+                            J'accepte de recevoir des communications marketing de Kemet Services (formations, conseils, offres spéciales). Je peux me désinscrire à tout moment.
+                          </Label>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Optionnel - Vous pouvez vous désinscrire en nous contactant à kmtcabj@gmail.com
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Submit Button */}
