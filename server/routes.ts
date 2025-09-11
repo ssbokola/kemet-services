@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertTrainingRegistrationSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendRegistrationNotification } from "./email";
+import { logRegistrationNotification } from "./notifications";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Training registration endpoint
@@ -15,18 +16,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create training registration in storage
       const registration = await storage.createTrainingRegistration(validatedData);
       
-      // Send email notification to admin (asynchronously, don't block response)
-      sendRegistrationNotification(registration)
-        .then(success => {
-          if (success) {
-            console.log('Admin notification email sent successfully');
-          } else {
-            console.log('Failed to send admin notification email');
-          }
-        })
-        .catch(error => {
-          console.error('Email notification error:', error);
-        });
+      // Send notification (asynchronously, don't block response)
+      // Use file logging since no email service is configured
+      console.log('Attempting to log registration notification...');
+      try {
+        const notificationSuccess = logRegistrationNotification(registration);
+        if (notificationSuccess) {
+          console.log('✅ Notification enregistrée dans les fichiers de log');
+        } else {
+          console.log('❌ Échec de l\'enregistrement de la notification');
+        }
+      } catch (error) {
+        console.error('❌ Erreur lors de l\'enregistrement de la notification:', error);
+      }
       
       // Return success response (no PII logging for privacy)
       console.log('Training registration created successfully');
