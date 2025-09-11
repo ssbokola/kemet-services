@@ -84,6 +84,18 @@ const formations = [
     format: 'Présentiel',
     icon: Users,
     objectives: ['Comprendre les types de risques opérationnels', 'Identifier et évaluer les risques', 'Mettre en place un plan d\'action de gestion']
+  },
+  // Finances
+  {
+    id: 7,
+    category: 'finances',
+    title: 'Gestion Efficace de la Trésorerie',
+    description: 'Optimiser la gestion de trésorerie et améliorer la performance financière de l\'officine',
+    duration: '6h',
+    price: '90 000 F',
+    format: 'Présentiel',
+    icon: DollarSign,
+    objectives: ['Maîtriser les flux de trésorerie', 'Optimiser les encaissements', 'Gérer les investissements et financements']
   }
 ];
 

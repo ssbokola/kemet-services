@@ -37,11 +37,11 @@ const testimonials = [
     image: '/images/testimonial-1.jpg'
   },
   {
-    name: 'Session de Travail de Groupe',
-    role: 'Méthodes collaboratives',
-    location: 'Formation Kemet Services',
-    content: 'Approche pédagogique innovante avec des exercices pratiques permettant aux participants de s\'approprier les concepts enseignés.',
-    image: '/images/testimonial-2.jpg'
+    name: 'Formation "Gestion de Trésorerie"',
+    role: 'Pharmaciens',
+    location: 'Abidjan, 28 mai 2024',
+    content: 'Cadre moderne et décontracté pour une formation de haut niveau. Les pharmaciens ont apprécié l\'approche pratique et les outils concrets pour optimiser leur trésorerie.',
+    image: '/images/tresorerie-participants.jpg'
   },
   {
     name: 'Participants Satisfaits',

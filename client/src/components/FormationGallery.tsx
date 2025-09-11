@@ -2,9 +2,9 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const galleryImages = [
   {
-    src: '/images/gallery-1.jpg',
-    alt: 'Équipement de formation - Projecteur et ordinateur',
-    caption: 'Équipement professionnel pour des formations de qualité'
+    src: '/images/tresorerie-salle.jpg',
+    alt: 'Formation Gestion de Trésorerie - Cadre moderne',
+    caption: 'Formation "Gestion de Trésorerie" dans un cadre moderne - 28 mai 2024'
   },
   {
     src: '/images/hero-formation.jpg',
@@ -12,14 +12,14 @@ const galleryImages = [
     caption: 'Formation "Gérer Efficacement la Commande" - 16 mars 2024'
   },
   {
-    src: '/images/consulting.jpg',
-    alt: 'Formateur présentant aux participants',
-    caption: 'Approche pédagogique interactive et participative'
+    src: '/images/tresorerie-formateur.jpg',
+    alt: 'Formateur expliquant la gestion de trésorerie',
+    caption: 'Formation ciblée pharmaciens - Approche pédagogique adaptée'
   },
   {
-    src: '/images/testimonial-1.jpg',
-    alt: 'Travail de groupe entre participants',
-    caption: 'Exercices pratiques et mises en situation'
+    src: '/images/tresorerie-groupe2.jpg',
+    alt: 'Travail de groupe entre pharmaciens',
+    caption: 'Exercices pratiques de gestion financière en petits groupes'
   },
   {
     src: '/images/gallery-5.jpg',
@@ -27,9 +27,9 @@ const galleryImages = [
     caption: 'Expertise de terrain et accompagnement personnalisé'
   },
   {
-    src: '/images/testimonial-3.jpg',
-    alt: 'Photo de groupe des participants',
-    caption: 'Participants satisfaits de la formation'
+    src: '/images/tresorerie-groupe-final.jpg',
+    alt: 'Photo de groupe formation trésorerie',
+    caption: 'Pharmaciens satisfaits - Formation Gestion de Trésorerie'
   }
 ];
 
@@ -70,13 +70,22 @@ export default function FormationGallery() {
         </div>
 
         <div className="text-center mt-12">
-          <div className="inline-flex items-center space-x-4 bg-card p-6 rounded-lg shadow-sm">
-            <div className="text-lg font-semibold text-foreground">
-              Formation du 16 mars 2024
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            <div className="bg-card p-6 rounded-lg shadow-sm">
+              <div className="text-lg font-semibold text-foreground mb-2">
+                Formation du 16 mars 2024
+              </div>
+              <div className="text-muted-foreground">
+                Auxiliaires en pharmacie - Gestion de commande
+              </div>
             </div>
-            <div className="w-px h-6 bg-border"></div>
-            <div className="text-muted-foreground">
-              Auxiliaires en pharmacie - Gestion de commande
+            <div className="bg-card p-6 rounded-lg shadow-sm">
+              <div className="text-lg font-semibold text-foreground mb-2">
+                Formation du 28 mai 2024
+              </div>
+              <div className="text-muted-foreground">
+                Pharmaciens - Gestion de trésorerie
+              </div>
             </div>
           </div>
         </div>
