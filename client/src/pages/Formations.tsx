@@ -88,10 +88,22 @@ const formations = [
   
   // FORMATIONS POUR AUXILIAIRES
   {
+    id: 8,
+    targetAudience: 'auxiliaires',
+    category: 'auxiliaires',
+    title: 'Recouvrer Efficacement les Créances',
+    description: 'Maîtriser les techniques de recouvrement et améliorer la gestion des impayés',
+    duration: '4h',
+    price: '50 000 F',
+    format: 'Présentiel',
+    icon: DollarSign,
+    objectives: ['Comprendre les enjeux du recouvrement', 'Maîtriser les techniques de négociation', 'Gérer les situations difficiles']
+  },
+  {
     id: 4,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
-    title: 'Réceptionner Efficacement les Médicaments',
+    title: 'Maîtriser le Processus Réception et Mise à Disposition des Médicaments',
     description: 'Comprendre les principes de réception et maîtriser les procédures de stockage',
     duration: '4h',
     price: '50 000 F',
@@ -100,10 +112,58 @@ const formations = [
     objectives: ['Principes de réception des médicaments', 'Vérification des commandes', 'Gestion des retours et situations exceptionnelles']
   },
   {
+    id: 9,
+    targetAudience: 'auxiliaires',
+    category: 'auxiliaires',
+    title: 'Initiation aux Bonnes Pratiques Officinales',
+    description: 'Découvrir les fondamentaux des bonnes pratiques en pharmacie d\'officine',
+    duration: '6h',
+    price: '60 000 F',
+    format: 'Présentiel',
+    icon: Users,
+    objectives: ['Comprendre les bonnes pratiques officinales', 'Appliquer les procédures qualité', 'Assurer la conformité réglementaire']
+  },
+  {
+    id: 10,
+    targetAudience: 'auxiliaires',
+    category: 'auxiliaires',
+    title: 'Self Leadership',
+    description: 'Développer son leadership personnel et améliorer sa performance individuelle',
+    duration: '4h',
+    price: '55 000 F',
+    format: 'Présentiel',
+    icon: Users,
+    objectives: ['Développer la confiance en soi', 'Améliorer la communication', 'Gérer son temps et ses priorités']
+  },
+  {
+    id: 11,
+    targetAudience: 'auxiliaires',
+    category: 'auxiliaires',
+    title: 'Gérer Efficacement la Commande en Officine',
+    description: 'Maîtriser les techniques de gestion des commandes adaptées aux auxiliaires',
+    duration: '4h',
+    price: '50 000 F',
+    format: 'Présentiel',
+    icon: TrendingUp,
+    objectives: ['Comprendre le processus de commande', 'Utiliser les outils de gestion', 'Optimiser les approvisionnements']
+  },
+  {
+    id: 12,
+    targetAudience: 'auxiliaires',
+    category: 'auxiliaires',
+    title: 'Optimiser la Relation Client en Officine',
+    description: 'Améliorer l\'accueil et le service client pour fidéliser la clientèle',
+    duration: '4h',
+    price: '50 000 F',
+    format: 'Présentiel',
+    icon: Heart,
+    objectives: ['Maîtriser les techniques d\'accueil', 'Gérer les réclamations', 'Fidéliser la clientèle']
+  },
+  {
     id: 5,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
-    title: 'Conseiller le Matériel Orthopédique',
+    title: 'Conseiller l\'Orthopédie en Officine',
     description: 'Identifier les différents types de matériel et conseiller les patients selon leur pathologie',
     duration: '6h',
     price: '50 000 F',
