@@ -87,10 +87,20 @@ export function WhatsAppCallout({
               </Button>
             </div>
             
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-muted-foreground mb-3">
               Bonjour ! Besoin d'aide avec votre pharmacie ? 
-              Nos experts sont disponibles sur WhatsApp.
+              Dr. Bokola et son équipe sont disponibles sur WhatsApp.
             </p>
+            
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 mb-4">
+              <div className="flex items-center gap-2 text-xs text-green-700 dark:text-green-300 mb-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
+                <span className="font-medium">Disponible maintenant</span>
+              </div>
+              <p className="text-xs text-green-600 dark:text-green-400">
+                Lun-Ven: 8h-18h • Sam: 8h-13h • Dimanche: Fermé
+              </p>
+            </div>
             
             <div className="space-y-2">
               <Button 
@@ -102,8 +112,12 @@ export function WhatsAppCallout({
                 Démarrer une conversation
               </Button>
               
-              <div className="text-xs text-muted-foreground text-center">
-                Réponse rapide • Conseil gratuit
+              <div className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
+                <span>✓ Réponse rapide</span>
+                <span>•</span>
+                <span>✓ Conseil gratuit</span>
+                <span>•</span>
+                <span>✓ Expert pharmacien</span>
               </div>
             </div>
           </CardContent>

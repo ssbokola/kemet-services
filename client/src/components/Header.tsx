@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Menu, X, MessageCircle } from 'lucide-react';
+import { KemetCatalog } from '@/components/DownloadCatalog';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 const navigation = [
@@ -60,7 +61,8 @@ export default function Header() {
           </nav>
 
           {/* Desktop CTAs */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-3">
+            <KemetCatalog.Button className="text-sm" />
             <Button 
               variant="outline" 
               size="sm"
@@ -110,6 +112,7 @@ export default function Header() {
                 </Link>
               ))}
               <div className="flex flex-col space-y-2 pt-4 border-t border-border">
+                <KemetCatalog.Button className="justify-start text-sm" />
                 <Button 
                   variant="outline" 
                   size="sm"
