@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SearchCheck, Target, Settings, BarChart3 } from 'lucide-react';
-import consultingImage from '@assets/generated_images/Professional_pharmacist_working_83678ee2.png';
+import consultingImage from '@assets/_D6A2227_1757585998506.jpg';
 
 const steps = [
   {
@@ -96,8 +96,8 @@ export default function ConsultingSection() {
           <div className="relative">
             <Card className="overflow-hidden border-0 shadow-xl">
               <img 
-                src={consultingImage} 
-                alt="Pharmacien professionnel Abidjan" 
+                src="../attached_assets/_D6A2227_1757585998506.jpg" 
+                alt="Formation Kemet Services en action" 
                 className="w-full h-96 object-cover"
                 data-testid="img-consulting"
               />

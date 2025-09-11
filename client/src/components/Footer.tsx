@@ -49,7 +49,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <img 
-              src={logoImage} 
+              src="../attached_assets/LOGO KEMET CANVAS_1757585789355.png" 
               alt="Kemet Services" 
               className="h-12 w-auto mb-6"
               data-testid="img-footer-logo"

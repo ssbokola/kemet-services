@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MessageCircle } from 'lucide-react';
-import heroImage from '@assets/generated_images/Pharmacy_training_classroom_scene_13267b56.png';
+import heroImage from '@assets/_D6A2216_1757585998505.jpg';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 export default function Hero() {
@@ -19,7 +19,7 @@ export default function Hero() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={heroImage} 
+          src="../attached_assets/_D6A2216_1757585998505.jpg" 
           alt="Formation pharmacie en Côte d'Ivoire" 
           className="w-full h-full object-cover"
         />
@@ -32,7 +32,7 @@ export default function Hero() {
           {/* Logo and Title */}
           <div className="flex items-center space-x-4 mb-6">
             <img 
-              src={logoImage} 
+              src="../attached_assets/LOGO KEMET CANVAS_1757585789355.png" 
               alt="Kemet Services" 
               className="h-16 w-auto"
               data-testid="img-hero-logo"

@@ -30,25 +30,25 @@ const kpis = [
 
 const testimonials = [
   {
-    name: 'Dr. Kouassi Marie',
-    role: 'Pharmacienne titulaire',
-    location: 'Abidjan, Cocody',
-    content: 'Grâce à Kemet Services, nous avons réduit nos écarts de stock de 40% en 3 mois. L\'équipe est très professionnelle et les formations sont adaptées à nos besoins.',
-    avatar: '👩🏿‍⚕️'
+    name: 'Formation "Gestion de Commande"',
+    role: 'Auxiliaires en pharmacie',
+    location: 'Abidjan, 16 mars 2024',
+    content: 'Formation interactive et pratique avec des cas concrets. Les participants ont apprécié l\'approche participative et les mises en situation réelles.',
+    image: '@assets/_D6A2267_1757585998508.jpg'
   },
   {
-    name: 'Pharmacie Santé Plus',
-    role: 'Équipe officine',
-    location: 'Abidjan, Yopougon',
-    content: 'L\'accompagnement de Kemet a transformé notre façon de travailler. Les processus sont maintenant standardisés et nos collaborateurs sont plus efficaces.',
-    avatar: '🏥'
+    name: 'Session de Travail de Groupe',
+    role: 'Méthodes collaboratives',
+    location: 'Formation Kemet Services',
+    content: 'Approche pédagogique innovante avec des exercices pratiques permettant aux participants de s\'approprier les concepts enseignés.',
+    image: '@assets/_D6A2249_1757585998507.jpg'
   },
   {
-    name: 'Dr. Diabaté Paul',
-    role: 'Pharmacien assistant',
-    location: 'Bouaké',
-    content: 'Les formations sont très pratiques et directement applicables. J\'ai particulièrement apprécié le module sur la gestion des péremptions.',
-    avatar: '👨🏿‍⚕️'
+    name: 'Participants Satisfaits',
+    role: 'Groupe de formation',
+    location: 'Photo de fin de session',
+    content: 'Une formation enrichissante qui a permis à tous les participants d\'acquérir de nouvelles compétences pratiques pour leur travail quotidien.',
+    image: '@assets/_D6A2300_1757585998510.jpg'
   }
 ];
 
@@ -110,11 +110,17 @@ export default function ResultsSection() {
             {testimonials.map((testimonial, index) => (
               <Card 
                 key={index} 
-                className="border-0 shadow-lg hover-elevate transition-all duration-300"
+                className="border-0 shadow-lg hover-elevate transition-all duration-300 overflow-hidden"
                 data-testid={`card-testimonial-${index}`}
               >
+                <div className="h-48 overflow-hidden">
+                  <img 
+                    src={testimonial.image.replace('@assets/', '../attached_assets/')}
+                    alt={testimonial.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <CardContent className="p-6">
-                  <div className="mb-4 text-4xl">{testimonial.avatar}</div>
                   <blockquote className="text-muted-foreground leading-relaxed mb-4 italic">
                     "{testimonial.content}"
                   </blockquote>

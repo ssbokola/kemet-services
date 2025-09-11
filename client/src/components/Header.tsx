@@ -35,7 +35,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 hover-elevate">
             <img 
-              src={logoImage} 
+              src="../attached_assets/LOGO KEMET CANVAS_1757585789355.png" 
               alt="Kemet Services" 
               className="h-10 w-auto"
               data-testid="img-logo"
