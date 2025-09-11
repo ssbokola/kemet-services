@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Clock, Users, BookOpen, TrendingUp, Heart, DollarSign } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 // Catégories principales par public cible
 const mainCategories = [
@@ -302,6 +303,7 @@ const formations = [
 export default function Formations() {
   const [selectedMainCategory, setSelectedMainCategory] = useState('all');
   const [selectedSubCategory, setSelectedSubCategory] = useState('all');
+  const [, setLocation] = useLocation();
 
   // Filtrage par catégorie principale
   const getFilteredFormations = () => {
@@ -331,8 +333,8 @@ export default function Formations() {
   };
 
   const handleInscription = (formationTitle: string) => {
-    console.log(`Inscription formation: ${formationTitle}`);
-    // In a real app, this would open enrollment form
+    // Navigate to diagnostic page for personalized recommendation
+    setLocation('/diagnostic');
   };
 
   return (

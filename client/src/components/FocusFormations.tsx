@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Users, BookOpen } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 const formations = [
   {
@@ -34,9 +35,15 @@ const formations = [
 ];
 
 export default function FocusFormations() {
+  const [, setLocation] = useLocation();
+
   const handleInscription = (formationTitle: string) => {
-    console.log(`Inscription formation: ${formationTitle}`);
-    // In a real app, this would open enrollment form
+    // Navigate to diagnostic page for personalized recommendation
+    setLocation('/diagnostic');
+  };
+
+  const handleVoirFormations = () => {
+    setLocation('/formations');
   };
 
   return (
@@ -120,7 +127,7 @@ export default function FocusFormations() {
           <Button 
             variant="outline" 
             size="lg"
-            onClick={() => console.log('Voir toutes formations triggered')}
+            onClick={handleVoirFormations}
             className="text-primary border-primary"
             data-testid="button-voir-formations"
           >
