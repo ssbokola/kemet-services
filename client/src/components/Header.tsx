@@ -24,8 +24,7 @@ export default function Header() {
   };
 
   const handleDiagnosticClick = () => {
-    console.log('Diagnostic gratuit triggered');
-    // In a real app, this would navigate to a form or modal
+    window.location.href = '/diagnostic';
   };
 
   return (

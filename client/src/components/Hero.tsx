@@ -1,17 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MessageCircle } from 'lucide-react';
+import { useLocation } from 'wouter';
 import heroImage from '@assets/_D6A2216_1757585998505.jpg';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 export default function Hero() {
+  const [, setLocation] = useLocation();
+
   const handleDiagnosticClick = () => {
-    console.log('Diagnostic gratuit triggered');
-    // In a real app, this would open a modal or navigate to form
+    setLocation('/diagnostic');
   };
 
   const handleFormationsClick = () => {
-    console.log('Découvrir formations triggered');
-    // In a real app, this would navigate to /formations
+    setLocation('/formations');
   };
 
   return (

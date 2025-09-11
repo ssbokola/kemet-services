@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Home from "@/pages/Home";
 import Formations from "@/pages/Formations";
+import Diagnostic from "@/pages/Diagnostic";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -13,6 +14,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/formations" component={Formations} />
+      <Route path="/diagnostic" component={Diagnostic} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
