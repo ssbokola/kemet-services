@@ -15,6 +15,7 @@ import {
   FileText
 } from 'lucide-react';
 import Header from '@/components/Header';
+import { KemetNewsletter } from '@/components/ui/newsletter';
 
 const categories = [
   { id: 'tous', name: 'Tous les articles', count: 3 },
@@ -249,25 +250,12 @@ export default function Ressources() {
             </Card>
 
             {/* Newsletter */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="text-lg">Newsletter</CardTitle>
-                <CardDescription>
-                  Recevez nos derniers articles et conseils
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <Input placeholder="votre@email.ci" data-testid="input-newsletter" />
-                  <Button className="w-full" data-testid="button-newsletter">
-                    S'abonner
-                  </Button>
-                  <p className="text-xs text-muted-foreground">
-                    1 email par mois maximum. Pas de spam.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="mt-6">
+              <KemetNewsletter.Compact 
+                title="Newsletter Kemet"
+                placeholder="votre@email.ci"
+              />
+            </div>
           </div>
           
           {/* Articles */}
