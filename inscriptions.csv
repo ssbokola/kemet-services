@@ -1,3 +1,6 @@
 Date,Heure,Formation,Participant,Role,Officine,Email,Telephone,Nb_Participants,Type_Session
 "11/09/2025","19:23:30","Test Debug Notification","Test User","pharmacien-titulaire","Test Pharmacy","test@example.com","+225123456789",1,"inter-entreprise"
 "11/09/2025","19:27:45","Test Gmail Notification","Dr. Test Gmail","pharmacien-titulaire","Pharmacie Test Gmail","testgmail@example.com","+225123456789",1,"inter-entreprise"
+"11/09/2025","19:35:38","Test Gmail Complet","Dr. Test Gmail Final","pharmacien-titulaire","Pharmacie Test Gmail","test.gmail.final@example.com","+225123456789",2,"inter-entreprise"
+"11/09/2025","19:35:52","Test Gmail Final Fix","Dr. Gmail Success","pharmacien-titulaire","Pharmacie Gmail OK","gmail.success@example.com","+225987654321",1,"intra-entreprise"
+"11/09/2025","19:37:15","Test Gmail Après Redémarrage","Dr. Test Final","pharmacien-titulaire","Pharmacie Test Final","test.final@example.com","+225123456789",1,"inter-entreprise"

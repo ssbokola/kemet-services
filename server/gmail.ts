@@ -1,5 +1,6 @@
 // Service d'envoi d'email via Gmail SMTP
 import nodemailer from 'nodemailer';
+import type { Transporter } from 'nodemailer';
 
 // Configuration Gmail SMTP
 const gmailConfig = {
@@ -13,7 +14,7 @@ const gmailConfig = {
 };
 
 // Créer le transporteur Gmail
-let gmailTransporter: nodemailer.Transporter | null = null;
+let gmailTransporter: Transporter | null = null;
 
 function createGmailTransporter() {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
@@ -22,7 +23,7 @@ function createGmailTransporter() {
   }
 
   try {
-    gmailTransporter = nodemailer.createTransporter(gmailConfig);
+    gmailTransporter = nodemailer.createTransport(gmailConfig);
     console.log('✅ Transporteur Gmail configuré');
     return gmailTransporter;
   } catch (error) {
@@ -181,14 +182,14 @@ Consultez votre tableau de bord: https://kemetservices.com/inscriptions
     subject: subject,
     text: textContent,
     html: htmlContent,
-    priority: 'high',
+    priority: 'high' as 'high',
     replyTo: registration.email // Permet de répondre directement au participant
   };
 
   try {
     const result = await gmailTransporter.sendMail(mailOptions);
     console.log(`✅ Email Gmail envoyé avec succès à ${adminEmail}`);
-    console.log(`📧 Message ID: ${result.messageId}`);
+    console.log(`📧 Message envoyé avec succès`);
     return true;
   } catch (error) {
     console.error('❌ Erreur lors de l\'envoi Gmail:', error);
