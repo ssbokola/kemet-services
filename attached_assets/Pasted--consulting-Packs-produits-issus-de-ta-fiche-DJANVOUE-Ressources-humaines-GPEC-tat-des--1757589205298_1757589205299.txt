@@ -1,0 +1,76 @@
+/consulting
+
+Packs produits (issus de ta fiche) :
+
+DJANVOUE (Ressources humaines – GPEC) : état des lieux, objectifs SMART, évaluation compétences/motivation. Livrables : manuel de procédures, tableau de bord RH, fiches d’évaluation trimestrielle, contrats d’objectifs.
+
+CLIENTÈLE (acquisition & fidélisation) : stratégie commerciale, base clients, enquête de satisfaction trimestrielle, recommandations & suivi. Livrables : rapport trimestriel + recommandations + rapport d’évaluation.
+
+WAYO (Stock – écarts & périmés) : état des lieux, indicateurs, tableaux de bord, rapports trimestriels (périmés/écarts), recommandations & suivi.
+
+TRÉSORERIE (optimisation) : budget, suivi, analyse des charges & coûts de non-qualité, recommandations & suivi.
+
+SERENITE (Risk management) : identification/évaluation/traitement des risques, matrice tenue à jour, recommandations & suivi.
+
+Système de management de la qualité – ISO 9001:2015 : SWOT, diagnostic qualité, plan d’action, accompagnement à la certification. Livrables : politique qualité, organigramme, cartographie & fiches processus, documentation, indicateurs, rapports périodiques.
+(Contenu sourcé de ta présentation, adapté en offres web. )
+
+/resultats
+
+Modèle étude de cas : Contexte → Problème → Actions → KPI avant/après → Témoignage → Leçons.
+
+Graphiques simples (Recharts) : rotation stock, ruptures, délai réclamations, marge.
+
+/a-propos
+
+“Qui sommes-nous ?” + mission & objectifs + valeurs (Long terme, Focus client, Discrétion, Proximité) + atouts (Spécificité, Adaptabilité, Dynamisme).
+
+Accroche : “Le cabinet d’un pharmacien, pour les pharmaciens(ennes)”. (Source doc. )
+
+/ressources
+
+Blog minimal (MD/MDX). Chaque article : chapeau, H2/H3, encadré “À retenir”, CTA vers formation liée.
+
+SEO : meta, OG, sitemap, robots, balisage JSON-LD.
+
+/contact
+
+Formulaire : Nom, Rôle, Officine, Téléphone, E-mail, Objet, Message.
+
+Bouton WhatsApp (deep-link) + mailto.
+
+Message de succès et envoi mail (placeholder).
+
+Composants globaux
+
+KPI Cards (ex : “Ruptures -35 % en 60 j”, “Réclamations <24 h”, “Marge +1,8 pts”).
+
+Timeline parcours client (Audit → Plan 90 j → Formation → Suivi).
+
+Callout WhatsApp (fixe en bas à droite).
+
+Newsletter (placeholder).
+
+Fonctionnel / technique
+
+Contenus Markdown/MDX (formations, cas, articles), typés Zod.
+
+next-seo, sitemap, robots, favicons.
+
+ARIA/focus/contrastes ≥ AA.
+
+Plausible (placeholder).
+
+API routes pour formulaires + reCAPTCHA (placeholder).
+
+Tests Playwright (home render, nav).
+
+Seed de contenus
+
+Générer 6 fiches formation (voir listes ci-dessus) avec textes brefs (300–500 mots) + 2 études de cas fictives (officines d’Abidjan/Cocody) + 3 articles courts (écarts de stock, FEFO, tableau de bord) + 3 témoignages placeholders.
+
+Tous les textes doivent rester concis, orientés résultats et terrain (pharmacies ivoiriennes).
+
+Livrables
+
+Code complet + /content (MD/MDX) + /public (logo placeholder) + configuration Tailwind/shadcn + scripts de seed + README “comment modifier/ajouter une formation et publier”.

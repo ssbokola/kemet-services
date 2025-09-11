@@ -1,0 +1,316 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { 
+  Target, 
+  Heart, 
+  Shield, 
+  MapPin,
+  Award,
+  Users,
+  TrendingUp,
+  CheckCircle,
+  Lightbulb,
+  Zap,
+  Clock
+} from 'lucide-react';
+import Header from '@/components/Header';
+
+const valeurs = [
+  {
+    name: 'Long terme',
+    description: 'Nous construisons des partenariats durables basés sur la confiance mutuelle et la croissance continue.',
+    icon: Target,
+    color: 'bg-blue-500'
+  },
+  {
+    name: 'Focus client',
+    description: 'Votre succès est notre priorité. Chaque solution est pensée pour maximiser votre performance.',
+    icon: Heart,
+    color: 'bg-green-500'
+  },
+  {
+    name: 'Discrétion',
+    description: 'Confidentialité absolue de vos données et respect total de votre environnement professionnel.',
+    icon: Shield,
+    color: 'bg-purple-500'
+  },
+  {
+    name: 'Proximité',
+    description: 'Un accompagnement de terrain, au plus près de vos réalités quotidiennes en Côte d\'Ivoire.',
+    icon: MapPin,
+    color: 'bg-orange-500'
+  }
+];
+
+const atouts = [
+  {
+    name: 'Spécificité',
+    description: 'Expertise 100% dédiée au secteur pharmaceutique ivoirien',
+    icon: Award
+  },
+  {
+    name: 'Adaptabilité',
+    description: 'Solutions personnalisées selon la taille et les besoins de votre officine',
+    icon: Lightbulb
+  },
+  {
+    name: 'Dynamisme',
+    description: 'Équipe réactive avec des méthodes modernes et efficaces',
+    icon: Zap
+  }
+];
+
+const etapesAccompagnement = [
+  {
+    numero: '01',
+    titre: 'Audit Initial',
+    description: 'Diagnostic complet de votre pharmacie avec analyse des processus et identification des axes d\'amélioration.',
+    duree: '1-2 semaines',
+    icon: CheckCircle
+  },
+  {
+    numero: '02',
+    titre: 'Plan 90 jours',
+    description: 'Élaboration d\'un plan d\'action détaillé avec objectifs mesurables et étapes claires.',
+    duree: '1 semaine',
+    icon: Target
+  },
+  {
+    numero: '03',
+    titre: 'Formation',
+    description: 'Formation personnalisée de vos équipes sur les nouveaux processus et outils.',
+    duree: '2-4 semaines',
+    icon: Users
+  },
+  {
+    numero: '04',
+    titre: 'Suivi',
+    description: 'Accompagnement continu avec mesure des résultats et ajustements si nécessaire.',
+    duree: 'En continu',
+    icon: TrendingUp
+  }
+];
+
+export default function APropos() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+              Qui sommes-nous ?
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8">
+              <strong className="text-primary">"Le cabinet d'un pharmacien, pour les pharmaciens(ennes)"</strong>
+            </p>
+            <p className="text-lg text-muted-foreground">
+              Kemet Services est le premier cabinet de conseil spécialisé dans l'accompagnement 
+              des pharmacies en Côte d'Ivoire, créé par des professionnels du secteur pour des professionnels.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Objectifs */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold text-foreground mb-6">Notre Mission</h2>
+              <p className="text-lg text-muted-foreground mb-6">
+                Transformer les pharmacies ivoiriennes en centres d'excellence, alliant performance économique, 
+                qualité de service et satisfaction des équipes. Nous accompagnons chaque pharmacien dans 
+                l'optimisation de son officine avec des solutions concrètes et mesurables.
+              </p>
+              
+              <h3 className="text-xl font-semibold text-foreground mb-4">Nos Objectifs</h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-muted-foreground">Améliorer la rentabilité de votre pharmacie</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-muted-foreground">Optimiser vos processus opérationnels</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-muted-foreground">Renforcer la satisfaction de vos patients</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-muted-foreground">Développer les compétences de vos équipes</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="text-center">
+                <CardContent className="pt-6">
+                  <Users className="w-12 h-12 text-primary mx-auto mb-3" />
+                  <h4 className="font-semibold text-foreground mb-2">50+</h4>
+                  <p className="text-sm text-muted-foreground">Pharmacies accompagnées</p>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="pt-6">
+                  <Award className="w-12 h-12 text-primary mx-auto mb-3" />
+                  <h4 className="font-semibold text-foreground mb-2">15+</h4>
+                  <p className="text-sm text-muted-foreground">Années d'expérience</p>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="pt-6">
+                  <TrendingUp className="w-12 h-12 text-primary mx-auto mb-3" />
+                  <h4 className="font-semibold text-foreground mb-2">95%</h4>
+                  <p className="text-sm text-muted-foreground">Taux de satisfaction</p>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="pt-6">
+                  <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
+                  <h4 className="font-semibold text-foreground mb-2">100%</h4>
+                  <p className="text-sm text-muted-foreground">Côte d'Ivoire</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Valeurs */}
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Nos Valeurs</h2>
+            <p className="text-lg text-muted-foreground">
+              Les principes qui guident notre action au quotidien
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {valeurs.map((valeur, index) => {
+              const IconComponent = valeur.icon;
+              return (
+                <Card key={index} className="text-center hover-elevate" data-testid={`card-valeur-${index}`}>
+                  <CardHeader>
+                    <div className={`w-12 h-12 rounded-lg ${valeur.color} text-white flex items-center justify-center mx-auto mb-3`}>
+                      <IconComponent className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-lg">{valeur.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {valeur.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Atouts */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Nos Atouts</h2>
+            <p className="text-lg text-muted-foreground">
+              Ce qui fait la différence Kemet Services
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {atouts.map((atout, index) => {
+              const IconComponent = atout.icon;
+              return (
+                <Card key={index} className="text-center" data-testid={`card-atout-${index}`}>
+                  <CardHeader>
+                    <IconComponent className="w-12 h-12 text-primary mx-auto mb-3" />
+                    <CardTitle className="text-xl">{atout.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      {atout.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Processus d'accompagnement */}
+      <section className="py-16 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Notre Processus d'Accompagnement</h2>
+            <p className="text-lg text-muted-foreground">
+              Une méthodologie éprouvée en 4 étapes pour des résultats garantis
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {etapesAccompagnement.map((etape, index) => {
+              const IconComponent = etape.icon;
+              return (
+                <Card key={index} className="relative overflow-hidden" data-testid={`card-etape-${index}`}>
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+                        {etape.numero}
+                      </div>
+                      <IconComponent className="w-6 h-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-lg">{etape.titre}</CardTitle>
+                    <Badge variant="outline" className="w-fit">
+                      <Clock className="w-3 h-3 mr-1" />
+                      {etape.duree}
+                    </Badge>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {etape.description}
+                    </p>
+                  </CardContent>
+                  
+                  {/* Ligne de connexion pour desktop */}
+                  {index < etapesAccompagnement.length - 1 && (
+                    <div className="hidden lg:block absolute -right-3 top-1/2 transform -translate-y-1/2 w-6 h-0.5 bg-primary z-10" />
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
+            Prêt à transformer votre pharmacie ?
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Rejoignez les pharmaciens qui nous font confiance pour optimiser leur officine. 
+            Commencez par un diagnostic gratuit de votre situation.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" data-testid="button-cta-diagnostic">
+              Diagnostic gratuit
+            </Button>
+            <Button variant="outline" size="lg" data-testid="button-cta-contact">
+              Nous contacter
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

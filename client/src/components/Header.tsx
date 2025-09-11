@@ -9,7 +9,7 @@ const navigation = [
   { name: 'Formations', href: '/formations' },
   { name: 'Consulting', href: '/consulting' },
   { name: 'Résultats', href: '/resultats' },
-  { name: 'À propos', href: '/apropos' },
+  { name: 'À propos', href: '/a-propos' },
   { name: 'Ressources', href: '/ressources' },
   { name: 'Contact', href: '/contact' },
 ];
@@ -24,6 +24,7 @@ export default function Header() {
   };
 
   const handleDiagnosticClick = () => {
+    // Use wouter navigation instead of window.location
     window.location.href = '/diagnostic';
   };
 
