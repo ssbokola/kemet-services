@@ -23,13 +23,16 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
   }
 
   try {
-    await mailService.send({
+    const mailData: any = {
       to: params.to,
       from: params.from,
       subject: params.subject,
-      text: params.text,
-      html: params.html,
-    });
+    };
+    
+    if (params.text) mailData.text = params.text;
+    if (params.html) mailData.html = params.html;
+    
+    await mailService.send(mailData);
     console.log(`Email sent successfully to ${params.to}`);
     return true;
   } catch (error) {
@@ -53,7 +56,7 @@ interface TrainingRegistration {
 
 export async function sendRegistrationNotification(
   registration: TrainingRegistration,
-  adminEmail: string = 'admin@kemetservices.com'
+  adminEmail = 'ssbokola@gmail.com'
 ): Promise<boolean> {
   const subject = `🎓 Nouvelle inscription - ${registration.trainingTitle}`;
   

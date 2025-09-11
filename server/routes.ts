@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTrainingRegistrationSchema } from "@shared/schema";
 import { z } from "zod";
+import { sendRegistrationNotification } from "./email";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Training registration endpoint
@@ -13,6 +14,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Create training registration in storage
       const registration = await storage.createTrainingRegistration(validatedData);
+      
+      // Send email notification to admin (asynchronously, don't block response)
+      sendRegistrationNotification(registration)
+        .then(success => {
+          if (success) {
+            console.log('Admin notification email sent successfully');
+          } else {
+            console.log('Failed to send admin notification email');
+          }
+        })
+        .catch(error => {
+          console.error('Email notification error:', error);
+        });
       
       // Return success response (no PII logging for privacy)
       console.log('Training registration created successfully');
@@ -51,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`DEBUG: Found ${registrations.length} registrations in storage`);
       
       // Return non-PII summary data only
-      const summary = registrations.map(reg => ({
+      const summary = registrations.map((reg: any) => ({
         id: reg.id,
         trainingTitle: reg.trainingTitle,
         participantsCount: reg.participantsCount,
