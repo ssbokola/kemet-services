@@ -197,6 +197,195 @@ Consultez votre tableau de bord: https://kemetservices.com/inscriptions
   }
 }
 
+// Fonction pour envoyer un email de confirmation au participant
+export async function sendParticipantConfirmation(
+  registration: TrainingRegistration
+): Promise<boolean> {
+  
+  // Créer le transporteur si pas encore fait
+  if (!gmailTransporter) {
+    gmailTransporter = createGmailTransporter();
+  }
+
+  if (!gmailTransporter) {
+    console.log('📧 Gmail non configuré - confirmation participant non envoyée');
+    return false;
+  }
+
+  try {
+    console.log(`▶️ Construction de l'email de confirmation pour ${registration.email}`);
+    
+    const subject = `✅ Confirmation d'inscription - ${registration.trainingTitle}`;
+    
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #0f766e, #14b8a6); color: white; padding: 25px; border-radius: 8px 8px 0 0; text-align: center; }
+        .content { background: #f8fafc; padding: 25px; border-radius: 0 0 8px 8px; }
+        .info-box { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #14b8a6; }
+        .info-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .info-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        .info-table td:first-child { font-weight: bold; color: #475569; width: 40%; }
+        .badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+        .badge.success { background: #dcfce7; color: #166534; }
+        .cta-button { background: #0f766e; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; display: inline-block; margin: 15px 0; font-weight: bold; }
+        .footer { margin-top: 25px; padding: 20px; background: #f1f5f9; border-radius: 6px; text-align: center; }
+        .contact-info { background: #e0f2fe; padding: 15px; border-radius: 6px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0; font-size: 28px;">✅ Inscription confirmée !</h1>
+            <p style="margin: 10px 0 0 0; opacity: 0.9; font-size: 16px;">Merci de votre confiance</p>
+        </div>
+        
+        <div class="content">
+            <p style="font-size: 18px; color: #0f766e; margin-top: 0;">
+                Bonjour <strong>${registration.participantName}</strong>,
+            </p>
+            
+            <p style="font-size: 16px; margin-bottom: 20px;">
+                Nous avons bien reçu votre inscription à la formation <strong>"${registration.trainingTitle}"</strong>. 
+                Votre demande est actuellement en cours de traitement.
+            </p>
+
+            <div class="info-box">
+                <h3 style="color: #0f766e; margin-top: 0;">📋 Récapitulatif de votre inscription</h3>
+                
+                <table class="info-table">
+                    <tr>
+                        <td>🎓 Formation</td>
+                        <td><strong>${registration.trainingTitle}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>👤 Participant</td>
+                        <td>${registration.participantName}</td>
+                    </tr>
+                    <tr>
+                        <td>🏥 Rôle</td>
+                        <td>${registration.role.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
+                    </tr>
+                    <tr>
+                        <td>🏢 Officine</td>
+                        <td>${registration.officine}</td>
+                    </tr>
+                    <tr>
+                        <td>👥 Nombre de participants</td>
+                        <td><strong>${registration.participantsCount}</strong> personne(s)</td>
+                    </tr>
+                    <tr>
+                        <td>📊 Type de session</td>
+                        <td>
+                            <span class="badge success">
+                                ${registration.sessionType === 'inter-entreprise' ? 'Inter-entreprise' : 'Intra-entreprise'}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>📅 Date d'inscription</td>
+                        <td>${registration.createdAt.toLocaleDateString('fr-FR', { 
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric'
+                        })}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="contact-info">
+                <h3 style="color: #0f766e; margin-top: 0;">📞 Prochaines étapes</h3>
+                <p style="margin-bottom: 15px;">
+                    <strong>Notre équipe va vous contacter sous 24h</strong> pour :
+                </p>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>Confirmer les détails de la formation</li>
+                    <li>Planifier les dates de session</li>
+                    <li>Finaliser les modalités pratiques</li>
+                    <li>Répondre à vos questions</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin: 25px 0;">
+                <a href="https://kemetservices.com" class="cta-button">Découvrir nos autres formations</a>
+            </div>
+
+            <div class="contact-info">
+                <h3 style="color: #0f766e; margin-top: 0;">📧 Besoin d'aide ?</h3>
+                <p style="margin: 0;">
+                    <strong>Email :</strong> <a href="mailto:ssbokola@gmail.com" style="color: #0f766e;">ssbokola@gmail.com</a><br>
+                    <strong>Téléphone :</strong> <a href="tel:${registration.phone}" style="color: #0f766e;">Nous vous rappelons</a><br>
+                    <strong>Site web :</strong> <a href="https://kemetservices.com" style="color: #0f766e;">kemetservices.com</a>
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p style="margin: 0; font-size: 14px; color: #64748b;">
+                <strong>Kemet Services</strong> - Formation et Conseil Pharmaceutique<br>
+                Optimisation des performances pharmaceutiques en Côte d'Ivoire<br>
+                📧 Cet email a été envoyé automatiquement suite à votre inscription
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+`;
+
+  const textContent = `
+✅ CONFIRMATION D'INSCRIPTION - KEMET SERVICES
+
+Bonjour ${registration.participantName},
+
+Nous avons bien reçu votre inscription à la formation "${registration.trainingTitle}".
+
+RÉCAPITULATIF:
+- Formation: ${registration.trainingTitle}
+- Participant: ${registration.participantName}
+- Rôle: ${registration.role}
+- Officine: ${registration.officine}
+- Participants: ${registration.participantsCount} personne(s)
+- Type: ${registration.sessionType === 'inter-entreprise' ? 'Inter-entreprise' : 'Intra-entreprise'}
+- Date d'inscription: ${registration.createdAt.toLocaleDateString('fr-FR')}
+
+PROCHAINES ÉTAPES:
+Notre équipe va vous contacter sous 24h pour confirmer les détails et planifier votre formation.
+
+CONTACT:
+Email: ssbokola@gmail.com
+Site web: https://kemetservices.com
+
+Merci de votre confiance !
+
+Kemet Services
+Formation et Conseil Pharmaceutique
+`;
+
+  const mailOptions = {
+    from: `"Kemet Services" <${process.env.GMAIL_USER}>`,
+    to: registration.email,
+    subject: subject,
+    text: textContent,
+    html: htmlContent,
+    replyTo: process.env.GMAIL_USER // Email de réponse
+  };
+
+    console.log(`▶️ Envoi de l'email de confirmation à ${registration.email}`);
+    await gmailTransporter.sendMail(mailOptions);
+    console.log(`✅ Email de confirmation envoyé avec succès à ${registration.email}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Erreur lors de la construction/envoi de la confirmation participant:', error);
+    return false;
+  }
+}
+
 // Fonction pour tester la configuration Gmail
 export async function testGmailConnection(): Promise<boolean> {
   if (!gmailTransporter) {
