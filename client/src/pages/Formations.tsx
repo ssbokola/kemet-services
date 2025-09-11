@@ -15,19 +15,121 @@ const mainCategories = [
 
 // Sous-catégories pour pharmaciens
 const pharmacienSubCategories = [
-  { id: 'stock', name: 'Gestion des stocks', color: 'bg-chart-4' },
   { id: 'qualite', name: 'Qualité', color: 'bg-chart-2' },
-  { id: 'finances', name: 'Finances', color: 'bg-chart-3' }
+  { id: 'finances', name: 'Finances', color: 'bg-chart-3' },
+  { id: 'stock', name: 'Stock', color: 'bg-chart-4' },
+  { id: 'potentiel-humain', name: 'Potentiel Humain', color: 'bg-chart-5' }
 ];
 
 const formations = [
   // FORMATIONS POUR PHARMACIENS
-  // Gestion des stocks
+  
+  // QUALITÉ (5 formations)
   {
     id: 1,
     targetAudience: 'pharmaciens',
+    category: 'qualite',
+    title: 'Initiation à la Qualité (Norme ISO 9001-V2015)',
+    description: 'Découvrir les fondamentaux de la norme ISO 9001 version 2015 appliquée à la pharmacie',
+    duration: '6h',
+    price: '75 000 F',
+    format: 'Présentiel',
+    icon: Users,
+    objectives: ['Comprendre les exigences ISO 9001-2015', 'Mettre en place un système qualité', 'Préparer la certification']
+  },
+  {
+    id: 2,
+    targetAudience: 'pharmaciens',
+    category: 'qualite',
+    title: 'La Gestion des Risques pour le Pharmacien (ISO 31000 V2018)',
+    description: 'Maîtriser la gestion des risques selon la norme ISO 31000 version 2018',
+    duration: '6h',
+    price: '80 000 F',
+    format: 'Présentiel',
+    icon: Users,
+    objectives: ['Identifier et évaluer les risques', 'Mettre en place un plan de gestion', 'Suivre et améliorer le processus']
+  },
+  {
+    id: 3,
+    targetAudience: 'pharmaciens',
+    category: 'qualite',
+    title: 'Les Bonnes Pratiques Officinales',
+    description: 'Maîtriser les bonnes pratiques officinales pour une pharmacie conforme',
+    duration: '8h',
+    price: '90 000 F',
+    format: 'Présentiel',
+    icon: BookOpen,
+    objectives: ['Appliquer les BPO', 'Assurer la conformité réglementaire', 'Améliorer la qualité de service']
+  },
+  {
+    id: 4,
+    targetAudience: 'pharmaciens',
+    category: 'qualite',
+    title: 'Le Management par Objectif',
+    description: 'Développer un management efficace basé sur la définition et l\'atteinte d\'objectifs',
+    duration: '6h',
+    price: '85 000 F',
+    format: 'Présentiel',
+    icon: TrendingUp,
+    objectives: ['Définir des objectifs SMART', 'Mettre en place un suivi', 'Motiver les équipes']
+  },
+  {
+    id: 5,
+    targetAudience: 'pharmaciens',
+    category: 'qualite',
+    title: 'Mesurer la Performance de son Officine (FDX 50-171)',
+    description: 'Utiliser les indicateurs de performance selon la norme FDX 50-171',
+    duration: '6h',
+    price: '80 000 F',
+    format: 'Présentiel',
+    icon: TrendingUp,
+    objectives: ['Identifier les KPI pertinents', 'Mettre en place un tableau de bord', 'Analyser et améliorer les performances']
+  },
+
+  // FINANCES (3 formations)
+  {
+    id: 6,
+    targetAudience: 'pharmaciens',
+    category: 'finances',
+    title: 'L\'Optimisation Fiscale en Pharmacie',
+    description: 'Maîtriser les stratégies d\'optimisation fiscale adaptées aux pharmacies',
+    duration: '6h',
+    price: '90 000 F',
+    format: 'Présentiel',
+    icon: DollarSign,
+    objectives: ['Comprendre la fiscalité officinale', 'Optimiser les charges fiscales', 'Planifier la fiscalité']
+  },
+  {
+    id: 7,
+    targetAudience: 'pharmaciens',
+    category: 'finances',
+    title: 'La Finance pour le Pharmacien (Cost Killing)',
+    description: 'Optimiser la gestion financière et réduire les coûts en officine',
+    duration: '8h',
+    price: '95 000 F',
+    format: 'Présentiel',
+    icon: DollarSign,
+    objectives: ['Analyser les coûts', 'Identifier les économies possibles', 'Mettre en place un plan d\'action']
+  },
+  {
+    id: 8,
+    targetAudience: 'pharmaciens',
+    category: 'finances',
+    title: 'Le Management Stratégique en Officine',
+    description: 'Développer une vision stratégique et piloter la performance de l\'officine',
+    duration: '8h',
+    price: '100 000 F',
+    format: 'Présentiel',
+    icon: TrendingUp,
+    objectives: ['Élaborer une stratégie', 'Piloter la performance', 'Anticiper les évolutions du marché']
+  },
+
+  // STOCK (3 formations)
+  {
+    id: 9,
+    targetAudience: 'pharmaciens',
     category: 'stock',
-    title: 'Réduire les Écarts de Stock',
+    title: 'La Gestion des Écarts de Stock',
     description: 'Comprendre les enjeux d\'un stock conforme et maîtriser les bonnes pratiques pour réduire les écarts',
     duration: '4h',
     price: '50 000 F',
@@ -36,10 +138,10 @@ const formations = [
     objectives: ['Comprendre les enjeux d\'un stock conforme', 'Identifier causes et conséquences des écarts', 'Maîtriser les bonnes pratiques de réduction']
   },
   {
-    id: 2,
+    id: 10,
     targetAudience: 'pharmaciens',
     category: 'stock',
-    title: 'Réduire les Périmés en Pharmacie',
+    title: 'La Gestion des Périmés en Officine',
     description: 'Comprendre les causes des péremptions et apprendre les bonnes pratiques de stockage',
     duration: '4h',
     price: '50 000 F',
@@ -48,47 +150,71 @@ const formations = [
     objectives: ['Causes et conséquences des périmés', 'Bonnes pratiques de prévention', 'Procédures de stockage optimales']
   },
   {
-    id: 3,
+    id: 11,
     targetAudience: 'pharmaciens',
     category: 'stock',
-    title: 'Gérer Efficacement la Commande',
-    description: 'Maîtriser les techniques de gestion des stocks et optimiser le processus de commande',
+    title: 'La Gestion des Ruptures en Officine',
+    description: 'Anticiper et gérer efficacement les ruptures de stock en pharmacie',
     duration: '4h',
-    price: '50 000 F',
+    price: '55 000 F',
     format: 'Présentiel',
     icon: TrendingUp,
-    objectives: ['Comprendre les enjeux de gestion des commandes', 'Maîtriser les techniques de gestion', 'Optimiser pour réduire coûts et améliorer satisfaction']
+    objectives: ['Identifier les causes de rupture', 'Mettre en place des alertes', 'Gérer la relation avec les patients']
   },
-  // Qualité
+
+  // POTENTIEL HUMAIN (4 formations)
   {
-    id: 6,
+    id: 12,
     targetAudience: 'pharmaciens',
-    category: 'qualite',
-    title: 'Gérer les Risques Opérationnels',
-    description: 'Comprendre, identifier et maîtriser les risques opérationnels en pharmacie',
-    duration: '4h',
+    category: 'potentiel-humain',
+    title: 'Développer son Identité Managériale et son Leadership',
+    description: 'Renforcer ses compétences de leader et développer son style de management',
+    duration: '8h',
+    price: '90 000 F',
+    format: 'Présentiel',
+    icon: Users,
+    objectives: ['Définir son style de management', 'Développer son leadership', 'Motiver et fédérer ses équipes']
+  },
+  {
+    id: 13,
+    targetAudience: 'pharmaciens',
+    category: 'potentiel-humain',
+    title: 'La Gestion des Compétences pour le Pharmacien',
+    description: 'Optimiser la gestion des compétences et développer les talents de son équipe',
+    duration: '6h',
     price: '75 000 F',
     format: 'Présentiel',
     icon: Users,
-    objectives: ['Comprendre les types de risques opérationnels', 'Identifier et évaluer les risques', 'Mettre en place un plan d\'action de gestion']
+    objectives: ['Évaluer les compétences', 'Élaborer un plan de développement', 'Accompagner la montée en compétences']
   },
-  // Finances
   {
-    id: 7,
+    id: 14,
     targetAudience: 'pharmaciens',
-    category: 'finances',
-    title: 'Gestion Efficace de la Trésorerie',
-    description: 'Optimiser la gestion de trésorerie et améliorer la performance financière de l\'officine',
+    category: 'potentiel-humain',
+    title: 'Réussir son Recrutement en Officine',
+    description: 'Maîtriser les techniques de recrutement pour constituer une équipe performante',
     duration: '6h',
-    price: '90 000 F',
+    price: '70 000 F',
     format: 'Présentiel',
-    icon: DollarSign,
-    objectives: ['Maîtriser les flux de trésorerie', 'Optimiser les encaissements', 'Gérer les investissements et financements']
+    icon: Users,
+    objectives: ['Définir le profil de poste', 'Mener un entretien efficace', 'Intégrer le nouvel employé']
+  },
+  {
+    id: 15,
+    targetAudience: 'pharmaciens',
+    category: 'potentiel-humain',
+    title: 'Gestion du Changement et du Stress',
+    description: 'Accompagner le changement et gérer le stress en milieu professionnel',
+    duration: '6h',
+    price: '75 000 F',
+    format: 'Présentiel',
+    icon: Heart,
+    objectives: ['Comprendre les mécanismes du changement', 'Gérer la résistance', 'Prévenir et gérer le stress']
   },
   
   // FORMATIONS POUR AUXILIAIRES
   {
-    id: 8,
+    id: 16,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
     title: 'Recouvrer Efficacement les Créances',
@@ -100,7 +226,7 @@ const formations = [
     objectives: ['Comprendre les enjeux du recouvrement', 'Maîtriser les techniques de négociation', 'Gérer les situations difficiles']
   },
   {
-    id: 4,
+    id: 17,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
     title: 'Maîtriser le Processus Réception et Mise à Disposition des Médicaments',
@@ -112,7 +238,7 @@ const formations = [
     objectives: ['Principes de réception des médicaments', 'Vérification des commandes', 'Gestion des retours et situations exceptionnelles']
   },
   {
-    id: 9,
+    id: 18,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
     title: 'Initiation aux Bonnes Pratiques Officinales',
@@ -124,7 +250,7 @@ const formations = [
     objectives: ['Comprendre les bonnes pratiques officinales', 'Appliquer les procédures qualité', 'Assurer la conformité réglementaire']
   },
   {
-    id: 10,
+    id: 19,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
     title: 'Self Leadership',
@@ -136,7 +262,7 @@ const formations = [
     objectives: ['Développer la confiance en soi', 'Améliorer la communication', 'Gérer son temps et ses priorités']
   },
   {
-    id: 11,
+    id: 20,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
     title: 'Gérer Efficacement la Commande en Officine',
@@ -148,7 +274,7 @@ const formations = [
     objectives: ['Comprendre le processus de commande', 'Utiliser les outils de gestion', 'Optimiser les approvisionnements']
   },
   {
-    id: 12,
+    id: 21,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
     title: 'Optimiser la Relation Client en Officine',
@@ -160,7 +286,7 @@ const formations = [
     objectives: ['Maîtriser les techniques d\'accueil', 'Gérer les réclamations', 'Fidéliser la clientèle']
   },
   {
-    id: 5,
+    id: 22,
     targetAudience: 'auxiliaires',
     category: 'auxiliaires',
     title: 'Conseiller l\'Orthopédie en Officine',
