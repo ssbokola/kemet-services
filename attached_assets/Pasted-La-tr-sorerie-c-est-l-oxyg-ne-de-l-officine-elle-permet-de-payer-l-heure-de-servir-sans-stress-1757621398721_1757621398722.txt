@@ -1,0 +1,19 @@
+La trésorerie, c’est l’oxygène de l’officine : elle permet de payer à l’heure, de servir sans stress et de décider avec clarté. On la subit quand on découvre trop tard un creux ; on la maîtrise quand on le voit venir.
+
+Le point de départ, c’est le cycle cash : BFR = Stock + Créances clients – Dettes fournisseurs. Votre mission : réduire ce qui immobilise (stock, créances) et optimiser ce qui vous donne de l’air (délais fournisseurs).
+
+Quatre repères simples, chaque semaine :
+
+Un solde et une prévision à 13 semaines pour visualiser à l’avance les creux et les pics.
+Le BFR en FCFA et en jours de CA (combien de jours de ventes sont “coincés”).
+Le DSO (jours de crédit clients) et le taux de recouvrement à J+60 pour éviter les impayés qui s’installent.
+Le DPO (jours fournisseurs) et les échéances lourdes à venir pour planifier sans surprise.
+
+Le rituel qui change tout (15 min, chaque lundi) Mettez à jour votre Tréso 13 semaines : encaissements (comptant + recouvrements) vs décaissements (fournisseurs, salaires, charges). Fixez un seuil d’alerte = 2 semaines de charges fixes et prenez une décision immédiate si le solde passe dessous (décaler une facture, accélérer un recouvrement, réduire une commande). Petit geste, grande sérénité.
+
+Cas express (inspiré du terrain ivoirien)
+Nous avons personnellement expérimenté une situation "intéressante" lors de la fermeture du CHU de Yopougon; l'officine étant proche de ce grand hôpital a vu son activité chuter de 70 % après cette fermeture temporaire. En 2 semaines, l’équipe a gelé les achats B/C, a recalibré les points de commande sur les A, a négocié un passage de J+5 à J+30 avec la majorité des grossistes et a lancé un inventaire tournant (10–15 réf. A/jour), pour éliminer les écarts quantitatifs. La prévision 13 semaines est passée en mode “stress” (ventes –70 %, recouvrements plus lents) pour cibler précisément les creux. En quatre mois, l’officine a libéré du cash (écoulement raisonnable des surstocks + retours négociés), a sécurisé les traitements chroniques (HTA/diabète) et a stabilisé le service. Résultat typique : –30 % de ruptures sur le Top 100, DSO raccourci, quelques jours de DPO gagnés, et surtout une visibilité à 4 semaines retrouvée. Cette période nous a permis de procéder à des réformes dans chaque processus; faire monter en compétences nos équipes et surtout tester notre résilience.
+
+📩 Besoin du modèle Tréso 13 semaines (format Kemet Services) + guide d’utilisation ? Écrivez “TRESO13” en commentaire ou en DM — on vous l’envoie.
+
+#Pharmacie #Trésorerie #Gestion #Officine #CôteDIvoire #KemetServices
