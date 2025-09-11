@@ -43,51 +43,40 @@ export function Newsletter({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Newsletter form submitted with email:', email);
     
     if (!email.trim()) {
-      console.log('Validation error: empty email');
       setErrorMessage('Veuillez saisir votre adresse email');
       setStatus('error');
       return;
     }
 
     if (!validateEmail(email)) {
-      console.log('Validation error: invalid email format');
       setErrorMessage('Veuillez saisir une adresse email valide');
       setStatus('error');
       return;
     }
 
-    console.log('Email validation passed, starting submission');
     setStatus('loading');
     setErrorMessage('');
 
     try {
-      console.log('Starting API simulation...');
       // Simulate API call - in real app, this would call your newsletter API
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      console.log('API simulation completed, setting success state...');
       setStatus('success');
-      console.log('Status set to success, clearing email...');
       setEmail('');
       
-      console.log('Triggering success toast...');
       toast({
         title: "Inscription réussie !",
         description: "Merci de vous être inscrit à notre newsletter. Vous recevrez bientôt nos dernières actualités.",
       });
 
-      console.log('Toast triggered, setting timeout for reset...');
       // Reset after success display
       setTimeout(() => {
-        console.log('Resetting status to idle...');
         setStatus('idle');
       }, 3000);
       
     } catch (error) {
-      console.error('Error in newsletter submission:', error);
       setStatus('error');
       setErrorMessage('Une erreur est survenue. Veuillez réessayer.');
       

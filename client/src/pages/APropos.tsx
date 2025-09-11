@@ -11,10 +11,14 @@ import {
   TrendingUp,
   CheckCircle,
   Lightbulb,
-  Zap
+  Zap,
+  GraduationCap,
+  Briefcase,
+  BarChart3
 } from 'lucide-react';
 import Header from '@/components/Header';
 import { KemetClientTimeline } from '@/components/ui/timeline';
+import founderImage from '@assets/1757573169268_1757594043126.jpg';
 
 const valeurs = [
   {
@@ -231,8 +235,126 @@ export default function APropos() {
         </div>
       </section>
 
-      {/* Call to Action */}
+      {/* Fondateur */}
       <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Notre Fondateur</h2>
+            <p className="text-lg text-muted-foreground">
+              Une expertise pharmaceutique et managériale unique en Afrique
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="text-center lg:text-left">
+              <img 
+                src={founderImage} 
+                alt="Bokola Tinni Sonhon, Fondateur de Kemet Services"
+                className="w-64 h-64 rounded-lg object-cover mx-auto lg:mx-0 mb-6 shadow-lg"
+                data-testid="img-founder"
+              />
+              <h3 className="text-2xl font-bold text-foreground mb-2">Dr. Bokola Tinni Sonhon</h3>
+              <p className="text-lg text-primary font-medium mb-4">Pharmacien d'Officine • Fondateur</p>
+              <p className="text-muted-foreground">
+                "Mon expérience terrain combinée à ma formation en management me permet d'accompagner 
+                concrètement les pharmaciens africains vers l'excellence opérationnelle."
+              </p>
+            </div>
+            
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3">
+                    <Briefcase className="w-6 h-6 text-primary" />
+                    Expérience Terrain
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Gérant de Pharmacie depuis 2021</p>
+                      <p className="text-sm text-muted-foreground">Pharmacie Saint Clément, Yopougon</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">8 ans de management d'équipe</p>
+                      <p className="text-sm text-muted-foreground">Direction d'équipes de 20+ personnes</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Gestion de crise et transformation</p>
+                      <p className="text-sm text-muted-foreground">Conduite du changement organisationnel</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3">
+                    <GraduationCap className="w-6 h-6 text-primary" />
+                    Formation d'Excellence
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Doctorat en Pharmacie</p>
+                      <p className="text-sm text-muted-foreground">Université Mohammed V (2012)</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">MBA + Master Qualité</p>
+                      <p className="text-sm text-muted-foreground">CERAP & Institut Africain de la Qualité Totale (2019)</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Certifications Leadership</p>
+                      <p className="text-sm text-muted-foreground">Leadership Managérial & Self Leadership (2020)</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3">
+                    <BarChart3 className="w-6 h-6 text-primary" />
+                    Expertise Spécialisée
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Diagnostic organisationnel et tableaux de bord</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Management par la Qualité en pharmacie</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span>Gestion Prévisionnelle des Emplois et Carrières</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-16 bg-muted/30">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-foreground mb-4">
             Prêt à transformer votre pharmacie ?
