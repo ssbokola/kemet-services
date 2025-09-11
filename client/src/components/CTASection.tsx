@@ -14,7 +14,7 @@ export default function CTASection() {
   };
 
   const handleEmailClick = () => {
-    window.location.href = 'mailto:kmtcabj@gmail.com';
+    window.location.href = 'mailto:infos@kemetservices.com';
   };
 
   return (
@@ -58,7 +58,7 @@ export default function CTASection() {
                 className="text-primary hover:underline font-medium"
                 data-testid="button-cta-email"
               >
-                kmtcabj@gmail.com
+                infos@kemetservices.com
               </button>
             </div>
           </CardContent>

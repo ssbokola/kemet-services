@@ -403,7 +403,7 @@ export default function Diagnostic() {
                             J'accepte de recevoir des communications marketing de Kemet Services (formations, conseils, offres spéciales). Je peux me désinscrire à tout moment.
                           </Label>
                           <p className="text-xs text-muted-foreground mt-1">
-                            Optionnel - Vous pouvez vous désinscrire en nous contactant à kmtcabj@gmail.com
+                            Optionnel - Vous pouvez vous désinscrire en nous contactant à infos@kemetservices.com
                           </p>
                         </div>
                       </div>

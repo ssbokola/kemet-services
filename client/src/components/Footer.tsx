@@ -26,7 +26,7 @@ const footerLinks = {
 
 export default function Footer() {
   const handleEmailClick = () => {
-    window.location.href = 'mailto:kmtcabj@gmail.com';
+    window.location.href = 'mailto:infos@kemetservices.com';
   };
 
   const handleWhatsAppClick = () => {
@@ -74,7 +74,7 @@ export default function Footer() {
                 data-testid="button-footer-email"
               >
                 <Mail className="w-4 h-4 mr-3" />
-                kmtcabj@gmail.com
+                infos@kemetservices.com
               </button>
               <button 
                 onClick={handleMapsClick}

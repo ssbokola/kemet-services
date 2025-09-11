@@ -238,7 +238,7 @@ export default function PolitiqueCookies() {
                   
                   <div className="mt-6 p-4 bg-muted/50 rounded-lg">
                     <h4 className="font-semibold mb-2">Pour exercer vos droits :</h4>
-                    <p>Contactez-nous : <strong>kmtcabj@gmail.com</strong></p>
+                    <p>Contactez-nous : <strong>infos@kemetservices.com</strong></p>
                     <p>Ou consultez notre <a href="/confidentialite" className="text-primary hover:underline">Politique de Confidentialité</a></p>
                   </div>
                 </CardContent>
@@ -266,7 +266,7 @@ export default function PolitiqueCookies() {
                 <CardContent className="space-y-4">
                   <p>Pour toute question concernant l'utilisation des cookies :</p>
                   <div className="bg-muted/50 p-4 rounded-lg">
-                    <p><strong>Email :</strong> kmtcabj@gmail.com</p>
+                    <p><strong>Email :</strong> infos@kemetservices.com</p>
                     <p><strong>Objet :</strong> "Question - Politique de cookies"</p>
                   </div>
                   

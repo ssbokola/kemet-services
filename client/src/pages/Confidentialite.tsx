@@ -33,8 +33,8 @@ export default function Confidentialite() {
                   <p><strong>Kemet Services</strong></p>
                   <p>Cabinet de formation et consultance pharmaceutique</p>
                   <p>Abidjan, Côte d'Ivoire</p>
-                  <p>Email : kmtcabj@gmail.com</p>
-                  <p>Téléphone : +225 759 068 744</p>
+                  <p>Email : infos@kemetservices.com</p>
+                  <p>Téléphone : +225 75 90 68 xxx</p>
                 </CardContent>
               </Card>
 
@@ -65,7 +65,7 @@ export default function Confidentialite() {
                     
                     <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg mt-4">
                       <h4 className="font-semibold mb-1">Opt-out marketing</h4>
-                      <p className="text-sm">Pour vous désinscrire des communications marketing : <strong>envoyez "STOP" à kmtcabj@gmail.com</strong> ou cliquez sur le lien de désinscription dans nos emails.</p>
+                      <p className="text-sm">Pour vous désinscrire des communications marketing : <strong>envoyez "STOP" à infos@kemetservices.com</strong> ou cliquez sur le lien de désinscription dans nos emails.</p>
                     </div>
                   </div>
                 </CardContent>
@@ -171,7 +171,7 @@ export default function Confidentialite() {
                   
                   <div className="mt-6 p-4 bg-muted/50 rounded-lg">
                     <h4 className="font-semibold mb-2">Pour exercer vos droits :</h4>
-                    <p>Contactez-nous par email : <strong>kmtcabj@gmail.com</strong></p>
+                    <p>Contactez-nous par email : <strong>infos@kemetservices.com</strong></p>
                     <p>Délai de réponse : <strong>30 jours maximum</strong></p>
                     <p>Une pièce d'identité pourra être demandée pour vérifier votre identité.</p>
                   </div>
@@ -226,7 +226,7 @@ export default function Confidentialite() {
                       <li>Une évaluation des risques résiduels</li>
                       <li>L'opposition aux transferts (sous conditions légales)</li>
                     </ul>
-                    <p className="text-sm mt-2"><strong>Contact :</strong> kmtcabj@gmail.com (objet : "Transferts - Article 46 RGPD")</p>
+                    <p className="text-sm mt-2"><strong>Contact :</strong> infos@kemetservices.com (objet : "Transferts - Article 46 RGPD")</p>
                   </div>
                 </CardContent>
               </Card>
@@ -267,7 +267,7 @@ export default function Confidentialite() {
                   <div>
                     <h4 className="font-semibold mb-2">1. Nous contacter directement</h4>
                     <div className="bg-muted/50 p-3 rounded-lg">
-                      <p><strong>Email :</strong> kmtcabj@gmail.com</p>
+                      <p><strong>Email :</strong> infos@kemetservices.com</p>
                       <p><strong>Objet :</strong> "Réclamation - Protection des données"</p>
                       <p><strong>Délai de réponse :</strong> 30 jours maximum</p>
                     </div>
@@ -302,7 +302,7 @@ export default function Confidentialite() {
                 <CardContent className="space-y-4">
                   <div className="bg-muted/50 p-3 rounded-lg mb-4">
                     <h4 className="font-semibold mb-1">Délégué à la Protection des Données (DPO)</h4>
-                    <p className="text-sm"><strong>Statut :</strong> Aucun DPO n'est désigné pour le moment (non obligatoire selon l'Article 37 RGPD pour notre type d'activité). Pour toute question relative à la protection des données, contactez directement : kmtcabj@gmail.com</p>
+                    <p className="text-sm"><strong>Statut :</strong> Aucun DPO n'est désigné pour le moment (non obligatoire selon l'Article 37 RGPD pour notre type d'activité). Pour toute question relative à la protection des données, contactez directement : infos@kemetservices.com</p>
                   </div>
                   
                   <p>Cette politique peut être mise à jour. Toute modification substantielle vous sera notifiée par email ou via un avis sur notre site.</p>

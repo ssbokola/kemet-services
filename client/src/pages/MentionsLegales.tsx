@@ -34,8 +34,8 @@ export default function MentionsLegales() {
                     <p><strong>Dénomination sociale :</strong> Kemet Services</p>
                     <p><strong>Forme juridique :</strong> Entreprise individuelle / Cabinet de formation et consultance</p>
                     <p><strong>Siège social :</strong> Abidjan, Côte d'Ivoire</p>
-                    <p><strong>Email :</strong> kmtcabj@gmail.com</p>
-                    <p><strong>Téléphone :</strong> +225 759 068 744</p>
+                    <p><strong>Email :</strong> infos@kemetservices.com</p>
+                    <p><strong>Téléphone :</strong> +225 75 90 68 xxx</p>
                   </div>
                   
                   <div>
@@ -179,9 +179,9 @@ export default function MentionsLegales() {
                   <p>Pour toute question relative aux présentes mentions légales ou au fonctionnement du site :</p>
                   
                   <div className="bg-muted/50 p-4 rounded-lg">
-                    <p><strong>Email :</strong> kmtcabj@gmail.com</p>
-                    <p><strong>Téléphone :</strong> +225 759 068 744</p>
-                    <p><strong>WhatsApp :</strong> +225 759 068 744</p>
+                    <p><strong>Email :</strong> infos@kemetservices.com</p>
+                    <p><strong>Téléphone :</strong> +225 75 90 68 xxx</p>
+                    <p><strong>WhatsApp :</strong> +225 75 90 68 xxx</p>
                     <p><strong>Horaires :</strong> Lundi à Vendredi, 8h00 - 17h00 (GMT)</p>
                   </div>
                 </CardContent>

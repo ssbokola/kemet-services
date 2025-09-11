@@ -99,7 +99,7 @@ export default function Contact() {
     const body = encodeURIComponent(
       `Bonjour,\n\nJe souhaite obtenir plus d'informations sur vos services.\n\nCordialement,\n${formData.nom || '[Votre nom]'}`
     );
-    window.open(`mailto:contact@kemetservices.ci?subject=${subject}&body=${body}`, '_blank');
+    window.open(`mailto:infos@kemetservices.com?subject=${subject}&body=${body}`, '_blank');
   };
 
   if (isSubmitted) {
@@ -288,7 +288,7 @@ export default function Contact() {
                             J'accepte de recevoir des communications marketing de Kemet Services (formations, conseils, offres spéciales). Je peux me désinscrire à tout moment.
                           </Label>
                           <p className="text-xs text-muted-foreground mt-1">
-                            Optionnel - Vous pouvez vous désinscrire en nous contactant à kmtcabj@gmail.com
+                            Optionnel - Vous pouvez vous désinscrire en nous contactant à infos@kemetservices.com
                           </p>
                         </div>
                       </div>
@@ -332,7 +332,7 @@ export default function Contact() {
                   data-testid="button-whatsapp-contact"
                 >
                   <MessageCircle className="w-4 h-4 mr-3" />
-                  WhatsApp : +225 75 90 68 744
+                  WhatsApp : +225 75 90 68 xxx
                 </Button>
                 
                 <Button 
@@ -342,7 +342,7 @@ export default function Contact() {
                   data-testid="button-email-contact"
                 >
                   <Mail className="w-4 h-4 mr-3" />
-                  contact@kemetservices.ci
+                  infos@kemetservices.com
                 </Button>
               </CardContent>
             </Card>

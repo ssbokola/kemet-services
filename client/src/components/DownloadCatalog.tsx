@@ -237,7 +237,7 @@ export function DownloadCatalog({
     
     doc.setFontSize(11);
     doc.setFont(undefined, 'normal');
-    doc.text('Email: ssbokola@gmail.com', 25, yPos);
+    doc.text('Email: infos@kemetservices.com', 25, yPos);
     yPos += 7;
     doc.text('WhatsApp: +225 07 59 06 87 44', 25, yPos);
     yPos += 15;
