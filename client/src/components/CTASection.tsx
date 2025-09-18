@@ -1,19 +1,31 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MessageCircle, Phone, ArrowRight } from 'lucide-react';
+import { trackWhatsAppClick, trackEvent } from '@/components/GoogleAnalytics';
 
 export default function CTASection() {
   const handleWhatsAppClick = () => {
     console.log('WhatsApp CTA triggered');
+    trackWhatsAppClick();
     window.open('https://wa.me/225759068744', '_blank');
   };
 
   const handleDiagnosticClick = () => {
     console.log('Diagnostic CTA triggered');
+    trackEvent('diagnostic_button_click', {
+      event_category: 'conversion',
+      event_label: 'cta_diagnostic',
+      value: 1
+    });
     // In a real app, this would open contact form
   };
 
   const handleEmailClick = () => {
+    trackEvent('email_click', {
+      event_category: 'contact',
+      event_label: 'cta_email',
+      value: 1
+    });
     window.location.href = 'mailto:infos@kemetservices.com';
   };
 

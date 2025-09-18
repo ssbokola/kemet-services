@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/Header';
 import { Link } from 'wouter';
+import { trackWhatsAppClick, trackContactFormSubmit, trackEvent } from '@/components/GoogleAnalytics';
 
 const roleOptions = [
   { value: 'pharmacien-titulaire', label: 'Pharmacien(ne) Titulaire' },
@@ -64,6 +65,9 @@ export default function Contact() {
     
     setIsLoading(true);
     
+    // Track form submission
+    trackContactFormSubmit('contact');
+    
     // Simulation d'envoi
     await new Promise(resolve => setTimeout(resolve, 1500));
     
@@ -88,18 +92,36 @@ export default function Contact() {
   };
 
   const handleWhatsAppClick = () => {
+    // Track WhatsApp click first
+    trackWhatsAppClick();
+    
     const message = encodeURIComponent(
       `Bonjour Kemet Services,\n\nJe souhaite obtenir plus d'informations sur vos services.\n\nCordialement,\n${formData.nom || '[Votre nom]'}`
     );
-    window.open(`https://wa.me/225759068744?text=${message}`, '_blank');
+    
+    // Small delay to ensure tracking completes
+    setTimeout(() => {
+      window.open(`https://wa.me/225759068744?text=${message}`, '_blank');
+    }, 100);
   };
 
   const handleEmailClick = () => {
+    // Track email click first
+    trackEvent('email_click', {
+      event_category: 'contact',
+      event_label: 'contact_page_email',
+      value: 1
+    });
+    
     const subject = encodeURIComponent('Demande d\'information - Kemet Services');
     const body = encodeURIComponent(
       `Bonjour,\n\nJe souhaite obtenir plus d'informations sur vos services.\n\nCordialement,\n${formData.nom || '[Votre nom]'}`
     );
-    window.open(`mailto:infos@kemetservices.com?subject=${subject}&body=${body}`, '_blank');
+    
+    // Small delay to ensure tracking completes
+    setTimeout(() => {
+      window.open(`mailto:infos@kemetservices.com?subject=${subject}&body=${body}`, '_blank');
+    }, 100);
   };
 
   if (isSubmitted) {

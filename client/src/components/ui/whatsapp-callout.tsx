@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MessageCircle, X, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { trackWhatsAppClick } from '@/components/GoogleAnalytics';
 
 interface WhatsAppCalloutProps {
   phoneNumber?: string;
@@ -35,12 +36,16 @@ export function WhatsAppCallout({
   }, [autoShow, showDelay]);
 
   const handleWhatsAppClick = () => {
+    // Track WhatsApp click first
+    trackWhatsAppClick();
+    
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
     
-    // Analytics tracking
-    console.log('WhatsApp callout clicked');
+    // Small delay to ensure tracking completes
+    setTimeout(() => {
+      window.open(whatsappUrl, '_blank');
+    }, 100);
   };
 
   const handleClose = () => {

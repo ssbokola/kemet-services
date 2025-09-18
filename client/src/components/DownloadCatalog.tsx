@@ -7,6 +7,7 @@ import { Download, FileText, Mail, CheckCircle, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { jsPDF } from 'jspdf';
+import { trackFormationPDFDownload } from '@/components/GoogleAnalytics';
 
 interface DownloadCatalogProps {
   variant?: 'default' | 'compact' | 'button-only';
@@ -37,6 +38,8 @@ export function DownloadCatalog({
     // For button-only variant, skip email validation
     if (variant === 'button-only') {
       triggerDownload();
+      // Track PDF download for direct download
+      trackFormationPDFDownload('catalogue_formations_direct');
       return;
     }
 
@@ -69,6 +72,8 @@ export function DownloadCatalog({
       // Trigger download after success
       setTimeout(() => {
         triggerDownload();
+        // Track PDF download
+        trackFormationPDFDownload('catalogue_formations');
         setStatus('idle');
         setEmail('');
       }, 1000);

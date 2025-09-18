@@ -9,6 +9,7 @@ import CookieManager from "@/components/CookieManager";
 import CookieBanner from "@/components/CookieBanner";
 import CookiePreferences from "@/components/CookiePreferences";
 import { HelmetProvider } from "react-helmet-async";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Home from "@/pages/Home";
 import Formations from "@/pages/Formations";
 import Diagnostic from "@/pages/Diagnostic";
@@ -45,8 +46,11 @@ function Router() {
 }
 
 function App() {
+  const GA4_TRACKING_ID = import.meta.env.VITE_GA4_TRACKING_ID;
+
   return (
     <HelmetProvider>
+      <GoogleAnalytics trackingId={GA4_TRACKING_ID} />
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="light">
           <CookieManager>

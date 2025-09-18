@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Mail, MapPin, Linkedin } from 'lucide-react';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
+import { trackWhatsAppClick, trackEvent } from '@/components/GoogleAnalytics';
 
 const footerLinks = {
   services: [
@@ -26,10 +27,16 @@ const footerLinks = {
 
 export default function Footer() {
   const handleEmailClick = () => {
+    trackEvent('email_click', {
+      event_category: 'contact',
+      event_label: 'footer_email',
+      value: 1
+    });
     window.location.href = 'mailto:infos@kemetservices.com';
   };
 
   const handleWhatsAppClick = () => {
+    trackWhatsAppClick();
     window.open('https://wa.me/225759068744', '_blank');
   };
 
@@ -39,6 +46,11 @@ export default function Footer() {
   };
 
   const handleLinkedInClick = () => {
+    trackEvent('linkedin_click', {
+      event_category: 'social',
+      event_label: 'footer_linkedin',
+      value: 1
+    });
     window.open('https://linkedin.com/company/kemet-services', '_blank', 'noopener,noreferrer');
   };
 
