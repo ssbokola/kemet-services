@@ -19,6 +19,7 @@ import {
 import Header from '@/components/Header';
 import { KemetClientTimeline } from '@/components/ui/timeline';
 import founderImage from '@assets/1757573169268_1757594043126.jpg';
+import SEO from '@/components/SEO';
 
 const valeurs = [
   {
@@ -70,6 +71,12 @@ const atouts = [
 export default function APropos() {
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="À propos de Kemet Services - Expertise Pharmacie Côte d'Ivoire"
+        description="Découvrez Kemet Services : cabinet de conseil spécialisé en formations et consultance pour pharmacies en Côte d'Ivoire. Expertise ISO 9001, vision pan-africaine, proximité terrain."
+        canonical="/a-propos"
+        keywords="Kemet Services, expert pharmacie Côte d'Ivoire, consultant pharmaceutique, formation pharmacie Afrique, ISO 9001 pharmacie, cabinet conseil pharmacie, vision pan-africaine"
+      />
       <Header />
       
       {/* Hero Section */}

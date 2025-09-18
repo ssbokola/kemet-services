@@ -13,6 +13,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import Header from '@/components/Header';
+import SEO from '@/components/SEO';
 
 const consultingPacks = [
   {
@@ -152,6 +153,12 @@ const consultingPacks = [
 export default function Consulting() {
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Consultance Pharmacie - DJANVOUE, CLIENTÈLE, WAYO, TRÉSORERIE"
+        description="Services de consultance spécialisés pour pharmacies en Côte d'Ivoire : gestion RH, acquisition clientèle, optimisation stocks, trésorerie et risk management. Devis gratuit."
+        canonical="/consulting"
+        keywords="consultance pharmacie Côte d'Ivoire, conseil pharmacie, GPEC pharmacie, gestion stocks pharmacie, trésorerie officine, risk management pharmacie, diagnostic pharmacie gratuit"
+      />
       <Header />
       
       {/* Hero Section */}

@@ -15,8 +15,8 @@ interface SEOProps {
 const DEFAULT_TITLE = "Kemet Services - Formation et Consultance Pharmacie Côte d'Ivoire";
 const DEFAULT_DESCRIPTION = "Formations ciblées et consultance opérationnelle pour pharmacies d'officine en Côte d'Ivoire. Expertise ISO, gestion des stocks, optimisation de la trésorerie et performance.";
 const DEFAULT_KEYWORDS = "formation pharmacie, consultance pharmacie, Côte d'Ivoire, ISO 9001, gestion stocks, trésorerie officine, performance pharmacie";
-const SITE_URL = "https://kemetservices.com";
-const DEFAULT_IMAGE = `${SITE_URL}/images/og-image.jpg`;
+const SITE_URL = import.meta.env.VITE_SITE_URL || "https://kemetservices.com";
+const DEFAULT_IMAGE = `${SITE_URL}/images/hero-formation.jpg`;
 
 export default function SEO({
   title,
@@ -54,6 +54,9 @@ export default function SEO({
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:type" content="image/jpeg" />
       <meta property="og:url" content={currentUrl} />
       <meta property="og:site_name" content="Kemet Services" />
       <meta property="og:locale" content="fr_FR" />
@@ -85,11 +88,11 @@ export default function SEO({
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "Organization",
+          "@type": "ProfessionalService",
           "name": "Kemet Services",
           "description": "Formations ciblées et consultance opérationnelle pour pharmacies d'officine en Côte d'Ivoire",
           "url": SITE_URL,
-          "logo": `${SITE_URL}/images/logo-kemet.png`,
+          "logo": `${SITE_URL}/images/logo.png`,
           "image": ogImage,
           "address": {
             "@type": "PostalAddress",
@@ -99,23 +102,29 @@ export default function SEO({
           },
           "contactPoint": {
             "@type": "ContactPoint",
-            "telephone": "+225-01-02-03-04-05",
             "contactType": "customer service",
             "availableLanguage": ["French"]
           },
-          "sameAs": [
-            "https://wa.me/2250102030405"
-          ],
           "areaServed": {
             "@type": "Country",
             "name": "Côte d'Ivoire"
           },
-          "serviceType": [
-            "Formation professionnelle",
-            "Consultance pharmaceutique",
-            "Certification ISO",
-            "Gestion des stocks",
-            "Optimisation de trésorerie"
+          "makesOffer": [
+            {
+              "@type": "Service",
+              "name": "Formation professionnelle pharmaceutique",
+              "description": "Formations ISO 9001, gestion des stocks, trésorerie pour pharmaciens et auxiliaires"
+            },
+            {
+              "@type": "Service",
+              "name": "Consultance pharmaceutique",
+              "description": "Audit et optimisation des processus d'officine en Côte d'Ivoire"
+            },
+            {
+              "@type": "Service", 
+              "name": "Certification ISO",
+              "description": "Accompagnement à la certification ISO 9001 pour pharmacies"
+            }
           ]
         })}
       </script>
