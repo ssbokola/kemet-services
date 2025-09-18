@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Clock, Users, BookOpen, TrendingUp, Heart, DollarSign, UserPlus } from 'lucide-react';
+import { Clock, Users, BookOpen, TrendingUp, Heart, DollarSign, UserPlus, Download } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { formations, mainCategories, pharmacienSubCategories } from '@shared/formations';
+import { generateCatalogPDF } from '@/utils/pdfGenerator';
 
 export default function Formations() {
   const [selectedMainCategory, setSelectedMainCategory] = useState('all');
@@ -56,9 +57,20 @@ export default function Formations() {
             <h1 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-6">
               Catalogue de formations
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Formations spécialisées pour pharmaciens et personnel d'officine en Côte d'Ivoire
             </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                onClick={generateCatalogPDF}
+                size="lg"
+                className="gap-2"
+                data-testid="button-download-catalog"
+              >
+                <Download className="w-5 h-5" />
+                Télécharger le catalogue PDF
+              </Button>
+            </div>
           </div>
         </section>
 
