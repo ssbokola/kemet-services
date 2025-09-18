@@ -18,102 +18,13 @@ import Header from '@/components/Header';
 import { KemetNewsletter } from '@/components/ui/newsletter';
 
 const categories = [
-  { id: 'tous', name: 'Tous les articles', count: 5 },
-  { id: 'gestion-stock', name: 'Gestion des stocks', count: 3 },
+  { id: 'tous', name: 'Tous les articles', count: 3 },
+  { id: 'gestion-stock', name: 'Gestion des stocks', count: 1 },
   { id: 'performance', name: 'Performance', count: 1 },
   { id: 'finance', name: 'Finance & Trésorerie', count: 1 }
 ];
 
 const articles = [
-  {
-    id: 'ecarts-stock-causes-solutions',
-    title: 'Les écarts de stock : causes et solutions pratiques',
-    excerpt: 'Découvrez les principales causes des écarts de stock en pharmacie et les solutions concrètes pour les réduire drastiquement.',
-    content: `
-# Les écarts de stock : causes et solutions pratiques
-
-Les écarts de stock représentent l'un des défis majeurs des pharmacies ivoiriennes. Un écart de stock de 15% peut représenter plusieurs millions de FCFA de perte annuelle.
-
-## Les principales causes d'écarts
-
-### 1. Erreurs de saisie
-- Erreurs lors de la réception des marchandises
-- Saisies incorrectes dans le logiciel de gestion
-- Confusion entre les références similaires
-
-### 2. Vols et démarques
-- Vols internes ou externes
-- Produits endommagés non déclarés
-- Péremptions non comptabilisées
-
-### 3. Processus défaillants
-- Absence de contrôles réguliers
-- Procédures mal définies
-- Formation insuffisante du personnel
-
-## Solutions pratiques
-
-### Mise en place de contrôles
-Effectuez des inventaires partiels hebdomadaires sur les produits à forte rotation.
-
-### Formation du personnel
-Assurez-vous que chaque membre de l'équipe maîtrise les procédures de stock.
-
-### Système de double contrôle
-Implémentez un système de vérification croisée pour les mouvements importants.
-
-> **À retenir :** Un bon système de gestion des stocks peut réduire les écarts de 80% en 6 mois.
-    `,
-    author: 'Équipe Kemet Services',
-    date: '2024-09-15',
-    readTime: '5 min',
-    category: 'gestion-stock',
-    tags: ['Stock', 'Inventaire', 'Procédures'],
-    formationLiee: 'La Gestion des Écarts de Stock'
-  },
-  {
-    id: 'fefo-first-expired-first-out',
-    title: 'FEFO : optimiser la rotation des médicaments',
-    excerpt: 'La méthode FEFO (First Expired, First Out) est essentielle pour minimiser les périmés. Guide pratique pour sa mise en œuvre.',
-    content: `
-# FEFO : optimiser la rotation des médicaments
-
-La méthode FEFO (First Expired, First Out) consiste à délivrer en priorité les produits qui ont la date de péremption la plus proche.
-
-## Pourquoi adopter la méthode FEFO ?
-
-### Réduction des périmés
-En Côte d'Ivoire, les périmés représentent en moyenne 5-8% du chiffre d'affaires des pharmacies. La méthode FEFO peut réduire ce taux à moins de 2%.
-
-### Amélioration de la trésorerie
-Moins de périmés = moins de pertes financières = meilleure trésorerie.
-
-## Mise en pratique
-
-### 1. Organisation physique
-- Rangement par date de péremption
-- Étiquetage visible des dates
-- Séparation claire des lots
-
-### 2. Formation des équipes
-Tous les collaborateurs doivent comprendre et appliquer le principe FEFO.
-
-### 3. Contrôles réguliers
-Vérifiez mensuellement l'application correcte de la méthode.
-
-## Outils technologiques
-
-Les logiciels modernes peuvent automatiser le FEFO en générant des alertes.
-
-> **À retenir :** La méthode FEFO peut réduire vos périmés de 70% dès les premiers mois d'application.
-    `,
-    author: 'Dr. Kossonou MARIE',
-    date: '2024-09-10',
-    readTime: '4 min',
-    category: 'gestion-stock',
-    tags: ['FEFO', 'Périmés', 'Rotation'],
-    formationLiee: 'La Gestion des Périmés en Officine'
-  },
   {
     id: 'tableau-bord-pharmacie-kpi',
     title: 'Créer un tableau de bord efficace pour votre pharmacie',
