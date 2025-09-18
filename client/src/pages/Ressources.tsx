@@ -18,88 +18,13 @@ import Header from '@/components/Header';
 import { KemetNewsletter } from '@/components/ui/newsletter';
 
 const categories = [
-  { id: 'tous', name: 'Tous les articles', count: 2 },
+  { id: 'tous', name: 'Tous les articles', count: 1 },
   { id: 'gestion-stock', name: 'Gestion des stocks', count: 1 },
   { id: 'performance', name: 'Performance', count: 0 },
-  { id: 'finance', name: 'Finance & Trésorerie', count: 1 }
+  { id: 'finance', name: 'Finance & Trésorerie', count: 0 }
 ];
 
 const articles = [
-  {
-    id: 'tresorerie-oxygene-officine',
-    title: 'La trésorerie : l\'oxygène de votre officine',
-    excerpt: 'Maîtrisez votre trésorerie pour payer à l\'heure, servir sans stress et décider avec clarté. Guide pratique avec outils concrets.',
-    content: `
-# La trésorerie : l'oxygène de votre officine
-
-La trésorerie, c'est l'oxygène de l'officine : elle permet de payer à l'heure, de servir sans stress et de décider avec clarté. On la subit quand on découvre trop tard un creux ; on la maîtrise quand on le voit venir.
-
-## Le cycle cash : votre boussole financière
-
-Le point de départ, c'est le cycle cash : **BFR = Stock + Créances clients – Dettes fournisseurs**
-
-Votre mission : réduire ce qui immobilise (stock, créances) et optimiser ce qui vous donne de l'air (délais fournisseurs).
-
-## Quatre repères simples, chaque semaine
-
-### 1. Visibilité à 13 semaines
-Un solde et une prévision à 13 semaines pour visualiser à l'avance les creux et les pics.
-
-### 2. BFR en perspective
-Le BFR en FCFA et en jours de CA (combien de jours de ventes sont "coincés").
-
-### 3. Suivi des créances
-Le DSO (jours de crédit clients) et le taux de recouvrement à J+60 pour éviter les impayés qui s'installent.
-
-### 4. Gestion des fournisseurs
-Le DPO (jours fournisseurs) et les échéances lourdes à venir pour planifier sans surprise.
-
-## Le rituel qui change tout (15 min, chaque lundi)
-
-### Mise à jour Tréso 13 semaines
-- **Encaissements :** comptant + recouvrements
-- **Décaissements :** fournisseurs, salaires, charges
-
-### Seuil d'alerte
-Fixez un seuil d'alerte = **2 semaines de charges fixes**
-
-### Action immédiate
-Si le solde passe dessous :
-- Décaler une facture
-- Accélérer un recouvrement  
-- Réduire une commande
-
-> **Petit geste, grande sérénité**
-
-## Cas concret : La crise du CHU de Yopougon
-
-### Le défi
-Fermeture temporaire du CHU de Yopougon → Chute d'activité de **70%** pour l'officine voisine
-
-### Les actions en 2 semaines
-1. **Gel des achats** sur les produits B/C
-2. **Recalibrage** des points de commande sur les produits A
-3. **Négociation** passage de J+5 à J+30 avec les grossistes
-4. **Inventaire tournant** (10-15 réf. A/jour) pour éliminer les écarts
-
-### Le résultat
-Maintien de la trésorerie malgré la crise grâce à une réaction rapide et structurée.
-
-## Outils Kemet Services
-
-📩 **Besoin du modèle Tréso 13 semaines** (format Kemet Services) + guide d'utilisation ?
-
-Contactez-nous pour recevoir vos outils personnalisés.
-
-> **À retenir :** Une trésorerie maîtrisée, c'est la liberté de développer votre officine sans stress financier.
-    `,
-    author: 'Équipe Kemet Services',
-    date: '2024-09-20',
-    readTime: '7 min',
-    category: 'finance',
-    tags: ['Trésorerie', 'BFR', 'Gestion financière', 'Cash flow'],
-    formationLiee: 'Optimisation de la Trésorerie d\'Officine'
-  },
   {
     id: '5-erreurs-gestion-stocks-officine',
     title: '5 erreurs fréquentes dans la gestion des stocks en officine et comment les éviter efficacement',
