@@ -86,7 +86,7 @@ En officine, nous savons tous qu'un petit oubli dans la gestion des stocks peut 
     `,
     author: 'Équipe Kemet Services',
     date: '2024-09-25',
-    readTime: '6 min',
+    readTime: '3 min',
     category: 'gestion-stock',
     tags: ['Stock', 'Erreurs courantes', 'Procédures', 'FEFO'],
     formationLiee: 'La Gestion des Stocks et Approvisionnements'
