@@ -8,6 +8,7 @@ import { KemetWhatsAppCallout } from "@/components/ui/whatsapp-callout";
 import CookieManager from "@/components/CookieManager";
 import CookieBanner from "@/components/CookieBanner";
 import CookiePreferences from "@/components/CookiePreferences";
+import { HelmetProvider } from "react-helmet-async";
 import Home from "@/pages/Home";
 import Formations from "@/pages/Formations";
 import Diagnostic from "@/pages/Diagnostic";
@@ -45,19 +46,21 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light">
-        <CookieManager>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-            <CookieBanner />
-            <CookiePreferences />
-            <KemetWhatsAppCallout.Default autoShow={true} showDelay={5000} />
-          </TooltipProvider>
-        </CookieManager>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light">
+          <CookieManager>
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+              <CookieBanner />
+              <CookiePreferences />
+              <KemetWhatsAppCallout.Default autoShow={true} showDelay={5000} />
+            </TooltipProvider>
+          </CookieManager>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
