@@ -5,7 +5,6 @@ import { trackWhatsAppClick, trackEvent } from '@/components/GoogleAnalytics';
 
 export default function CTASection() {
   const handleWhatsAppClick = () => {
-    console.log('WhatsApp CTA triggered');
     trackWhatsAppClick();
     window.open('https://wa.me/225759068744', '_blank');
   };

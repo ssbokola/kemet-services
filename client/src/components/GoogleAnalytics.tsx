@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
 
 interface GoogleAnalyticsProps {
@@ -14,13 +14,20 @@ declare global {
   }
 }
 
-// Hook pour tracker les pages
+// Hook pour tracker les pages avec prévention du double page_view
 export const usePageTracking = (trackingId?: string) => {
   const [location] = useLocation();
+  const isFirstPageTracked = useRef(false);
 
   useEffect(() => {
     if (trackingId && window.gtag) {
-      window.gtag('config', trackingId, {
+      // Éviter le double page_view : un seul page_view par navigation
+      if (!isFirstPageTracked.current) {
+        isFirstPageTracked.current = true;
+      }
+      
+      // Envoyer l'événement page_view explicite (compatible avec send_page_view: false)
+      window.gtag('event', 'page_view', {
         page_path: location,
         page_title: document.title,
         page_location: window.location.href
@@ -29,10 +36,14 @@ export const usePageTracking = (trackingId?: string) => {
   }, [location, trackingId]);
 };
 
-// Fonction utilitaire pour tracker les événements
+// Fonction utilitaire pour tracker les événements avec transport beacon
 export const trackEvent = (eventName: string, parameters: Record<string, any> = {}) => {
   if (window.gtag) {
-    window.gtag('event', eventName, parameters);
+    // Utiliser transport beacon pour la fiabilité
+    window.gtag('event', eventName, {
+      transport_type: 'beacon',
+      ...parameters
+    });
   }
 };
 
@@ -78,82 +89,66 @@ export const trackWhatsAppClick = () => {
 };
 
 const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ trackingId }) => {
-  // Ne pas charger GA4 si pas d'ID de tracking ou en développement local sans variable explicite  
-  const shouldLoadGA = trackingId && (
-    import.meta.env.PROD || 
-    import.meta.env.VITE_GA_DEV === 'true' ||
-    import.meta.env.DEV // Vite utilise DEV au lieu de NODE_ENV === 'development'
+  // Vérifier que l'ID est un vrai ID GA4
+  const isGA4Id = trackingId?.startsWith('G-');
+  
+  // Ne supporter que GA4 (G-*) pour éviter la confusion GTM
+  if (trackingId && !isGA4Id) {
+    console.warn('⚠️ Google Analytics: Seuls les IDs GA4 (G-*) sont supportés. ID reçu:', trackingId);
+    return null;
+  }
+  
+  // Déterminer si nous devons charger GA
+  const shouldLoadGA = (
+    // Toujours charger en production si trackingId est fourni et valide
+    (import.meta.env.PROD && isGA4Id) ||
+    // En développement, charger seulement si VITE_GA_DEV='true' explicitement
+    import.meta.env.VITE_GA_DEV === 'true'
   );
 
-  // Debug: Log tracking configuration (remove in production)
+  // Debug: Log tracking configuration (development only)
   useEffect(() => {
     if (import.meta.env.DEV) {
       console.log('Google Analytics Debug:', {
         trackingId,
         shouldLoadGA,
+        isGA4Id,
         env: import.meta.env.NODE_ENV,
-        isDev: import.meta.env.NODE_ENV === 'development',
         isProd: import.meta.env.PROD,
         gaDevMode: import.meta.env.VITE_GA_DEV,
         conditions: {
-          hastrackingId: !!trackingId,
+          hasTrackingId: !!trackingId,
+          isValidGA4: isGA4Id,
           isProdEnv: import.meta.env.PROD,
-          isGaDevTrue: import.meta.env.VITE_GA_DEV === 'true',
-          isViteDev: import.meta.env.DEV
+          isGaDevTrue: import.meta.env.VITE_GA_DEV === 'true'
         }
       });
     }
-  }, [trackingId, shouldLoadGA]);
+  }, [trackingId, shouldLoadGA, isGA4Id]);
 
   // Hook pour tracker automatiquement les changements de page
   usePageTracking(shouldLoadGA ? trackingId : undefined);
 
-  if (!shouldLoadGA) {
+  if (!shouldLoadGA || !isGA4Id) {
     return null;
   }
 
-  // Détecter si c'est Google Tag Manager (GTM-) ou Google Analytics 4 (G-)
-  const isGTM = trackingId?.startsWith('GTM-');
-  const isGA4 = trackingId?.startsWith('G-');
-
   return (
     <Helmet>
-      {isGTM ? (
-        // Google Tag Manager
-        <>
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${trackingId}`} />
-          <script>
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${trackingId}');
-            `}
-          </script>
-        </>
-      ) : isGA4 ? (
-        // Google Analytics 4
-        <>
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${trackingId}`} />
-          <script>
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${trackingId}', {
-                page_title: document.title,
-                page_location: window.location.href,
-                send_page_view: true
-              });
-            `}
-          </script>
-        </>
-      ) : (
-        // ID de tracking non reconnu
-        <script>
-          {`console.warn('Google Analytics: ID de tracking non reconnu:', '${trackingId}');`}
-        </script>
-      )}
+      {/* Google Analytics 4 - Script optimisé */}
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${trackingId}`} />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${trackingId}', {
+              send_page_view: false
+            });
+          `,
+        }}
+      />
     </Helmet>
   );
 };

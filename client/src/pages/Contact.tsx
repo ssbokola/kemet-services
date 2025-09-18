@@ -92,21 +92,18 @@ export default function Contact() {
   };
 
   const handleWhatsAppClick = () => {
-    // Track WhatsApp click first
+    // Track WhatsApp click with beacon transport for reliability
     trackWhatsAppClick();
     
     const message = encodeURIComponent(
       `Bonjour Kemet Services,\n\nJe souhaite obtenir plus d'informations sur vos services.\n\nCordialement,\n${formData.nom || '[Votre nom]'}`
     );
     
-    // Small delay to ensure tracking completes
-    setTimeout(() => {
-      window.open(`https://wa.me/225759068744?text=${message}`, '_blank');
-    }, 100);
+    window.open(`https://wa.me/225759068744?text=${message}`, '_blank');
   };
 
   const handleEmailClick = () => {
-    // Track email click first
+    // Track email click with beacon transport for reliability
     trackEvent('email_click', {
       event_category: 'contact',
       event_label: 'contact_page_email',
@@ -118,10 +115,7 @@ export default function Contact() {
       `Bonjour,\n\nJe souhaite obtenir plus d'informations sur vos services.\n\nCordialement,\n${formData.nom || '[Votre nom]'}`
     );
     
-    // Small delay to ensure tracking completes
-    setTimeout(() => {
-      window.open(`mailto:infos@kemetservices.com?subject=${subject}&body=${body}`, '_blank');
-    }, 100);
+    window.open(`mailto:infos@kemetservices.com?subject=${subject}&body=${body}`, '_blank');
   };
 
   if (isSubmitted) {

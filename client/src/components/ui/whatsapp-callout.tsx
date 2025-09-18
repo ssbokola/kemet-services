@@ -36,16 +36,13 @@ export function WhatsAppCallout({
   }, [autoShow, showDelay]);
 
   const handleWhatsAppClick = () => {
-    // Track WhatsApp click first
+    // Track WhatsApp click with beacon transport for reliability
     trackWhatsAppClick();
     
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
     
-    // Small delay to ensure tracking completes
-    setTimeout(() => {
-      window.open(whatsappUrl, '_blank');
-    }, 100);
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleClose = () => {
