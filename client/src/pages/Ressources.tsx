@@ -18,69 +18,13 @@ import Header from '@/components/Header';
 import { KemetNewsletter } from '@/components/ui/newsletter';
 
 const categories = [
-  { id: 'tous', name: 'Tous les articles', count: 3 },
+  { id: 'tous', name: 'Tous les articles', count: 2 },
   { id: 'gestion-stock', name: 'Gestion des stocks', count: 1 },
-  { id: 'performance', name: 'Performance', count: 1 },
+  { id: 'performance', name: 'Performance', count: 0 },
   { id: 'finance', name: 'Finance & Trésorerie', count: 1 }
 ];
 
 const articles = [
-  {
-    id: 'tableau-bord-pharmacie-kpi',
-    title: 'Créer un tableau de bord efficace pour votre pharmacie',
-    excerpt: 'Les indicateurs clés (KPI) indispensables pour piloter votre officine et prendre les bonnes décisions au bon moment.',
-    content: `
-# Créer un tableau de bord efficace pour votre pharmacie
-
-Un tableau de bord bien conçu vous permet de piloter votre pharmacie avec précision et d'anticiper les problèmes.
-
-## Les KPI indispensables
-
-### 1. Indicateurs financiers
-- Chiffre d'affaires quotidien/mensuel
-- Marge brute par famille de produits
-- Créances clients et délais de paiement
-
-### 2. Indicateurs de stock
-- Taux de rotation des produits
-- Valeur des périmés mensuels
-- Nombre de ruptures de stock
-
-### 3. Indicateurs RH
-- Taux d'absentéisme
-- Productivité par collaborateur
-- Satisfaction client
-
-## Outils de mesure
-
-### Logiciels spécialisés
-Utilisez des outils adaptés aux pharmacies ivoiriennes.
-
-### Fréquence de suivi
-- Quotidien : CA, stock critique
-- Hebdomadaire : Rotation, performance équipe
-- Mensuel : Analyse globale, tendances
-
-## Conseils pratiques
-
-### Simplicité avant tout
-Ne surchargez pas votre tableau de bord. 5-7 indicateurs suffisent.
-
-### Visuels clairs
-Utilisez des graphiques simples et des codes couleurs.
-
-### Actions correctives
-Chaque indicateur doit déboucher sur des actions concrètes.
-
-> **À retenir :** Un bon tableau de bord consulté quotidiennement peut améliorer votre rentabilité de 15% en un an.
-    `,
-    author: 'Équipe Kemet Services',
-    date: '2024-09-05',
-    readTime: '6 min',
-    category: 'performance',
-    tags: ['KPI', 'Tableau de bord', 'Management'],
-    formationLiee: 'Mesurer la Performance de son Officine'
-  },
   {
     id: 'tresorerie-oxygene-officine',
     title: 'La trésorerie : l\'oxygène de votre officine',
