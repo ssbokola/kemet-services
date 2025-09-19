@@ -1,21 +1,25 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import { insertTrainingRegistrationSchema } from "@shared/schema";
+import { db } from "./db";
+import { insertTrainingRegistrationSchema, trainingRegistrations } from "@shared/schema";
 import { z } from "zod";
 // import { sendRegistrationNotification } from "./email"; // Unused - file logging active
 import { logRegistrationNotification } from "./notifications";
 import { sendGmailNotification, sendParticipantConfirmation } from "./gmail";
+import adminRoutes from "./routes/admin";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Admin routes
+  app.use('/api/admin', adminRoutes);
   // Training registration endpoint
   app.post('/api/training-registrations', async (req, res) => {
     try {
       // Validate request body using Zod schema
       const validatedData = insertTrainingRegistrationSchema.parse(req.body);
       
-      // Create training registration in storage
-      const registration = await storage.createTrainingRegistration(validatedData);
+      // Create training registration in database
+      const registrationResult = await db.insert(trainingRegistrations).values(validatedData).returning();
+      const registration = registrationResult[0];
       
       // Send notifications (asynchronously, don't block response)
       Promise.allSettled([
@@ -92,11 +96,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Optional: Get training registrations endpoint (for admin purposes)
   app.get('/api/training-registrations', async (req, res) => {
     try {
-      const registrations = await storage.getTrainingRegistrations();
-      console.log(`DEBUG: Found ${registrations.length} registrations in storage`);
+      const registrations = await db.select().from(trainingRegistrations);
+      console.log(`DEBUG: Found ${registrations.length} registrations in database`);
       
       // Return non-PII summary data only
-      const summary = registrations.map((reg: any) => ({
+      const summary = registrations.map((reg) => ({
         id: reg.id,
         trainingTitle: reg.trainingTitle,
         participantsCount: reg.participantsCount,

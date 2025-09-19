@@ -23,6 +23,9 @@ import NotFound from "@/pages/not-found";
 import MentionsLegales from "@/pages/MentionsLegales";
 import Confidentialite from "@/pages/Confidentialite";
 import PolitiqueCookies from "@/pages/PolitiqueCookies";
+import AdminLogin from "@/pages/admin/AdminLogin";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminInscriptions from "@/pages/admin/AdminInscriptions";
 
 function Router() {
   return (
@@ -39,6 +42,9 @@ function Router() {
       <Route path="/mentions-legales" component={MentionsLegales} />
       <Route path="/confidentialite" component={Confidentialite} />
       <Route path="/politique-cookies" component={PolitiqueCookies} />
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/admin/registrations" component={AdminInscriptions} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
