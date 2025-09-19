@@ -19,13 +19,107 @@ import { KemetNewsletter } from '@/components/ui/newsletter';
 import SEO from '@/components/SEO';
 
 const categories = [
-  { id: 'tous', name: 'Tous les articles', count: 1 },
-  { id: 'gestion-stock', name: 'Gestion des stocks', count: 1 },
+  { id: 'tous', name: 'Tous les articles', count: 2 },
+  { id: 'gestion-stock', name: 'Gestion des stocks', count: 2 },
   { id: 'performance', name: 'Performance', count: 0 },
   { id: 'finance', name: 'Finance & Trésorerie', count: 0 }
 ];
 
 const articles = [
+  {
+    id: 'comment-eviter-ruptures-stock-pharmacie',
+    title: 'Guide pratique – Comment éviter les ruptures de stock dans votre pharmacie',
+    excerpt: 'Un guide complet pour comprendre les causes des ruptures de stock et mettre en place des stratégies efficaces pour les prévenir dans votre officine.',
+    content: `
+# 🌱 Guide pratique – Comment éviter les ruptures de stock dans votre pharmacie
+
+## 💬 Introduction
+
+Imaginez : un client entre, pressé, il cherche un médicament pour son enfant malade. Vous ouvrez le tiroir… vide. Ce silence devant l'étagère, c'est une occasion ratée : le client repart frustré, et vous, vous perdez à la fois une vente et un peu de sa confiance.
+
+Les ruptures de stock, ça arrive à tout le monde. Mais bonne nouvelle : il existe des méthodes simples pour en réduire la fréquence. Voyons ensemble comment.
+
+---
+
+## Les causes fréquentes des ruptures de stock
+
+Plusieurs facteurs expliquent pourquoi une pharmacie peut se retrouver en rupture de stock sur certains produits.
+
+### • Commande tardive 
+Lorsque le stock diminue progressivement sans qu'aucune commande ne soit lancée à temps, il devient inévitable de manquer le produit au moment où un client en a besoin. Cette inattention à la baisse des niveaux de stock conduit directement à la rupture.
+
+### • Manque de communication 
+Si le personnel au comptoir ne signale pas l'absence d'un produit, l'information ne remonte pas et aucune mesure corrective n'est prise. Ce défaut de communication interne aggrave le risque de ne pas pouvoir répondre à une demande.
+
+### • Dépendance à un seul fournisseur 
+S'appuyer sur un unique grossiste peut se révéler risqué. En cas de rupture chez ce partenaire, il devient impossible de s'approvisionner rapidement, laissant la pharmacie dans l'impasse.
+
+### • Produits saisonniers 
+Certains médicaments, comme ceux contre la toux, la grippe ou le paludisme, connaissent des pics de demande à des périodes précises de l'année. Même si ces hausses sont prévisibles, elles sont souvent sous-estimées, ce qui expose l'officine à des ruptures évitables.
+
+---
+
+## Les bonnes pratiques pour prévenir les ruptures de stock
+
+Pour limiter les situations de pénurie dans votre officine, il est essentiel d'adopter quelques réflexes simples mais efficaces.
+
+### • Constituer un stock de sécurité pour les produits vitaux 
+Il est recommandé de maintenir en permanence un petit stock tampon sur les médicaments essentiels, notamment ceux classés parmi les Top 300 ou en catégorie A. Ce stock de sécurité permet de faire face aux imprévus sans impacter la délivrance de traitements critiques.
+
+### • Paramétrer des seuils d'alerte dans le logiciel métier 
+En programmant des seuils d'alerte sur votre outil de gestion, vous êtes averti automatiquement dès qu'un produit atteint un niveau critique. Cela facilite l'anticipation des commandes avant qu'une rupture ne survienne.
+
+### • Varier les grossistes pour plus de flexibilité 
+S'appuyer sur plusieurs fournisseurs évite la dépendance à un seul interlocuteur. En cas de rupture chez votre grossiste habituel, vous avez ainsi la possibilité de vous approvisionner rapidement auprès d'un autre partenaire.
+
+### • Observer les variations saisonnières 
+Il est pertinent de noter chaque année les périodes de forte demande (par exemple, lors des pics de grippe, de paludisme ou de toux). Cette observation vous permet d'anticiper et d'ajuster vos commandes en conséquence.
+
+### • Réaliser des mini-inventaires réguliers 
+Effectuer des contrôles rapides et fréquents, en particulier sur les rayons sensibles, aide à détecter rapidement toute anomalie et à réagir avant qu'un produit ne vienne à manquer.
+
+### • Exploiter les données pour cibler les produits à risque 
+L'analyse des données de votre officine permet d'identifier les références fréquemment concernées par les ruptures. Vous pouvez alors concentrer vos efforts de prévention sur ces produits spécifiques.
+
+---
+
+## Gérer la situation avec professionnalisme
+
+Face à une rupture de stock, il est primordial d'adopter une attitude professionnelle et transparente envers le client. Il convient d'éviter toute improvisation et d'informer clairement la personne concernée de la situation. Cette transparence renforce la relation de confiance avec la clientèle et permet d'apaiser d'éventuelles inquiétudes.
+
+Lorsque le produit demandé n'est plus disponible, il est recommandé de proposer immédiatement une alternative qui aura été préalablement validée par le pharmacien. Cela garantit que la solution proposée respecte la sécurité et l'efficacité du traitement du patient.
+
+Si aucune alternative satisfaisante n'est envisageable sur le moment, il peut s'avérer nécessaire de passer une commande urgente afin de répondre au besoin du client dans les meilleurs délais. Cette réactivité témoigne du sérieux de l'officine et de son engagement envers la satisfaction du patient.
+
+Enfin, il est essentiel de noter chaque incident de rupture. Garder une trace de ces situations permettra par la suite d'analyser les causes et d'en tirer des enseignements utiles pour améliorer la gestion des stocks et prévenir de futures pénuries.
+
+---
+
+## Suivre pour s'améliorer
+
+Pour progresser dans la gestion des ruptures de stock, il est important de mettre en place un suivi rigoureux. Commencez par compter chaque mois le nombre de ruptures survenues dans votre officine et analysez leur évolution dans le temps. Ce suivi régulier permet de mesurer l'efficacité des actions mises en place et d'identifier les tendances.
+
+Il est également recommandé de réunir l'ensemble de l'équipe au moins une fois par mois afin d'ajuster collectivement les seuils d'alerte et les méthodes de gestion utilisées. Cette démarche collaborative favorise l'implication de chacun et permet d'adapter rapidement les pratiques aux réalités du terrain.
+
+L'objectif est de trouver le juste équilibre : il s'agit d'éviter les ruptures, tout en veillant à ne pas surstocker inutilement, ce qui aurait pour conséquence de bloquer votre trésorerie. Un suivi attentif et des ajustements réguliers sont donc essentiels pour optimiser la gestion des stocks et garantir un service de qualité à vos clients.
+
+---
+
+## Conclusion
+
+Il est illusoire de penser qu'une pharmacie puisse totalement éliminer le risque de rupture de stock. Cependant, ce qui fait véritablement la différence, c'est la capacité de l'équipe officinale à anticiper, maîtriser et réduire ces situations. En adoptant une gestion rigoureuse et professionnelle, la pharmacie parvient non seulement à limiter le stress généré par les ruptures, mais aussi à renforcer la confiance de sa clientèle. Cette démarche contribue également à l'amélioration de la rentabilité de l'officine.
+
+> **À retenir :** Une approche méthodique et un suivi régulier peuvent réduire vos ruptures de stock de 70% en quelques mois.
+
+**Kemet Services** vous accompagne dans cette démarche d'optimisation avec des formations pratiques et un suivi personnalisé 💚.
+    `,
+    author: 'Dr. Kouamé ADJOUA',
+    date: '2024-09-19',
+    readTime: '5 min',
+    category: 'gestion-stock',
+    tags: ['Ruptures de stock', 'Prévention', 'Gestion proactive', 'Seuils d\'alerte'],
+    formationLiee: 'La Gestion des Stocks et Approvisionnements'
+  },
   {
     id: '5-erreurs-gestion-stocks-officine',
     title: '5 erreurs fréquentes dans la gestion des stocks en officine et comment les éviter efficacement',
