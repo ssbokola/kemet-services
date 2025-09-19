@@ -113,7 +113,7 @@ Il est illusoire de penser qu'une pharmacie puisse totalement éliminer le risqu
 
 **Kemet Services** vous accompagne dans cette démarche d'optimisation avec des formations pratiques et un suivi personnalisé 💚.
     `,
-    author: 'Dr. Kouamé ADJOUA',
+    author: 'Dr SONHON Bokola Tinni',
     date: '2024-09-19',
     readTime: '5 min',
     category: 'gestion-stock',
