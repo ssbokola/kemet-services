@@ -191,6 +191,7 @@ En officine, nous savons tous qu'un petit oubli dans la gestion des stocks peut 
 export default function Ressources() {
   const [selectedCategory, setSelectedCategory] = useState('tous');
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedArticles, setExpandedArticles] = useState(new Set());
 
   const filteredArticles = articles.filter(article => {
     const matchesCategory = selectedCategory === 'tous' || article.category === selectedCategory;
@@ -199,6 +200,16 @@ export default function Ressources() {
                          article.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
+
+  const toggleArticleExpansion = (articleId: string) => {
+    const newExpanded = new Set(expandedArticles);
+    if (newExpanded.has(articleId)) {
+      newExpanded.delete(articleId);
+    } else {
+      newExpanded.add(articleId);
+    }
+    setExpandedArticles(newExpanded);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -330,16 +341,45 @@ export default function Ressources() {
                       </div>
                     </div>
                     
-                    {/* Aperçu du contenu */}
+                    {/* Aperçu ou contenu complet */}
                     <div className="prose prose-sm max-w-none mb-4">
-                      <div className="text-muted-foreground">
-                        {article.content.split('\n').slice(3, 6).join('\n')}...
-                      </div>
+                      {expandedArticles.has(article.id) ? (
+                        <div 
+                          className="text-foreground"
+                          dangerouslySetInnerHTML={{
+                            __html: article.content
+                              .replace(/^# /gm, '## ')
+                              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                              .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                              .replace(/### (.*)/g, '<h4>$1</h4>')
+                              .replace(/## (.*)/g, '<h3>$1</h3>')
+                              .replace(/^> (.*)/gm, '<blockquote>$1</blockquote>')
+                              .replace(/---/g, '<hr>')
+                              .replace(/\n\n/g, '</p><p>')
+                              .replace(/^(.*)$/gm, '<p>$1</p>')
+                              .replace(/<p><\/p>/g, '')
+                              .replace(/<p><h/g, '<h')
+                              .replace(/<\/h([1-6])><\/p>/g, '</h$1>')
+                              .replace(/<p><hr><\/p>/g, '<hr>')
+                              .replace(/<p><blockquote>/g, '<blockquote><p>')
+                              .replace(/<\/blockquote><\/p>/g, '</p></blockquote>')
+                          }}
+                        />
+                      ) : (
+                        <div className="text-muted-foreground">
+                          {article.content.split('\n').slice(3, 6).join('\n')}...
+                        </div>
+                      )}
                     </div>
                     
                     <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
-                      <Button variant="outline" className="flex-1" data-testid={`button-read-${article.id}`}>
-                        Lire l'article complet
+                      <Button 
+                        variant="outline" 
+                        className="flex-1" 
+                        onClick={() => toggleArticleExpansion(article.id)}
+                        data-testid={`button-read-${article.id}`}
+                      >
+                        {expandedArticles.has(article.id) ? 'Voir le résumé' : 'Lire l\'article complet'}
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                       
