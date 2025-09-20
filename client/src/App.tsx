@@ -26,6 +26,7 @@ import PolitiqueCookies from "@/pages/PolitiqueCookies";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminInscriptions from "@/pages/admin/AdminInscriptions";
+import AdminContacts from "@/pages/admin/AdminContacts";
 
 function Router() {
   return (
@@ -45,6 +46,7 @@ function Router() {
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/registrations" component={AdminInscriptions} />
+      <Route path="/admin/contacts" component={AdminContacts} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

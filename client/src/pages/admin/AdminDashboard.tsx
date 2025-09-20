@@ -83,6 +83,26 @@ export default function AdminDashboard() {
     logoutMutation.mutate();
   };
 
+  const handleNavigation = (itemId: string) => {
+    switch (itemId) {
+      case 'dashboard':
+        // Déjà sur le dashboard
+        break;
+      case 'registrations':
+        setLocation('/admin/registrations');
+        break;
+      case 'contacts':
+        setLocation('/admin/contacts');
+        break;
+      case 'analytics':
+        // TODO: implémenter analytics
+        break;
+      case 'settings':
+        // TODO: implémenter settings
+        break;
+    }
+  };
+
   const menuItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, active: true },
     { id: 'registrations', label: 'Inscriptions', icon: BookOpen, badge: stats?.totalRegistrations },
@@ -123,6 +143,7 @@ export default function AdminDashboard() {
               key={item.id}
               variant={item.active ? "secondary" : "ghost"}
               className={`w-full justify-start ${!sidebarOpen && 'px-2'}`}
+              onClick={() => handleNavigation(item.id)}
               data-testid={`button-nav-${item.id}`}
             >
               <item.icon className={`w-4 h-4 ${sidebarOpen && 'mr-2'}`} />

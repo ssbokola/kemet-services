@@ -210,20 +210,51 @@ router.get('/contacts', requireAdminAuth(), async (req, res) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 20;
     const offset = (page - 1) * limit;
+    const search = req.query.search as string;
+    const type = req.query.type as string;
     const status = req.query.status as string;
+    const priority = req.query.priority as string;
     
+    // Construire les filtres
     const contacts = await db
       .select()
       .from(contactRequests)
-      .where(status && status !== 'all' ? eq(contactRequests.status, status) : undefined)
+      .where(
+        and(
+          search ? 
+            sql`(
+              lower(${contactRequests.name}) LIKE lower(${`%${search}%`}) OR 
+              lower(${contactRequests.email}) LIKE lower(${`%${search}%`}) OR 
+              lower(${contactRequests.company}) LIKE lower(${`%${search}%`}) OR
+              lower(${contactRequests.subject}) LIKE lower(${`%${search}%`})
+            )` : undefined,
+          type && type !== 'all' ? eq(contactRequests.type, type) : undefined,
+          status && status !== 'all' ? eq(contactRequests.status, status) : undefined,
+          priority && priority !== 'all' ? eq(contactRequests.priority, priority) : undefined
+        )
+      )
       .orderBy(desc(contactRequests.createdAt))
       .limit(limit)
       .offset(offset);
     
-    const totalQuery = db.select({ count: count() }).from(contactRequests);
-    const totalCount = status && status !== 'all' 
-      ? await totalQuery.where(eq(contactRequests.status, status))
-      : await totalQuery;
+    // Compter le total avec les mêmes filtres
+    const totalCount = await db
+      .select({ count: count() })
+      .from(contactRequests)
+      .where(
+        and(
+          search ? 
+            sql`(
+              lower(${contactRequests.name}) LIKE lower(${`%${search}%`}) OR 
+              lower(${contactRequests.email}) LIKE lower(${`%${search}%`}) OR 
+              lower(${contactRequests.company}) LIKE lower(${`%${search}%`}) OR
+              lower(${contactRequests.subject}) LIKE lower(${`%${search}%`})
+            )` : undefined,
+          type && type !== 'all' ? eq(contactRequests.type, type) : undefined,
+          status && status !== 'all' ? eq(contactRequests.status, status) : undefined,
+          priority && priority !== 'all' ? eq(contactRequests.priority, priority) : undefined
+        )
+      );
     
     res.json({
       contacts,
@@ -236,6 +267,67 @@ router.get('/contacts', requireAdminAuth(), async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des contacts:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// Export CSV des contacts
+router.get('/contacts/export', requireAdminAuth(), async (req, res) => {
+  try {
+    const search = req.query.search as string;
+    const type = req.query.type as string;
+    const status = req.query.status as string;
+    const priority = req.query.priority as string;
+    
+    // Récupérer tous les contacts avec les filtres appliqués (sans pagination)
+    const contacts = await db
+      .select()
+      .from(contactRequests)
+      .where(
+        and(
+          search ? 
+            sql`(
+              lower(${contactRequests.name}) LIKE lower(${`%${search}%`}) OR 
+              lower(${contactRequests.email}) LIKE lower(${`%${search}%`}) OR 
+              lower(${contactRequests.company}) LIKE lower(${`%${search}%`}) OR
+              lower(${contactRequests.subject}) LIKE lower(${`%${search}%`})
+            )` : undefined,
+          type && type !== 'all' ? eq(contactRequests.type, type) : undefined,
+          status && status !== 'all' ? eq(contactRequests.status, status) : undefined,
+          priority && priority !== 'all' ? eq(contactRequests.priority, priority) : undefined
+        )
+      )
+      .orderBy(desc(contactRequests.createdAt));
+    
+    // Générer le CSV
+    const csvHeader = [
+      'ID', 'Type', 'Nom', 'Email', 'Téléphone', 'Entreprise', 'Sujet', 'Message',
+      'Service consulting', 'Statut', 'Priorité', 'Date création', 'Date modification'
+    ].join(',');
+    
+    const csvRows = contacts.map(contact => [
+      contact.id,
+      contact.type,
+      `"${contact.name}"`,
+      contact.email,
+      contact.phone || '',
+      `"${contact.company || ''}"`,
+      `"${contact.subject || ''}"`,
+      `"${contact.message.replace(/"/g, '""')}"`,
+      `"${contact.consultingService || ''}"`,
+      contact.status,
+      contact.priority,
+      contact.createdAt.toISOString(),
+      contact.updatedAt.toISOString()
+    ].join(','));
+    
+    const csv = [csvHeader, ...csvRows].join('\n');
+    
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="contacts-${new Date().toISOString().split('T')[0]}.csv"`);
+    res.send('\uFEFF' + csv); // BOM pour Excel
+  } catch (error) {
+    console.error('Erreur lors de l\'export CSV:', error);
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 });
