@@ -50,10 +50,10 @@ export default function Formations() {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Catalogue de Formations Pharmacie - ISO, Stocks, Trésorerie"
-        description="Découvrez nos formations spécialisées pour pharmaciens et auxiliaires en Côte d'Ivoire : ISO 9001, gestion des stocks, trésorerie, potentiel humain. Téléchargez notre catalogue PDF gratuit."
+        title="Catalogue Formations Pharmacie Côte d'Ivoire - ISO 9001, Stocks, Trésorerie"
+        description="Formations spécialisées pour pharmaciens titulaires et auxiliaires en Côte d'Ivoire et Afrique de l'Ouest : certification ISO 9001, gestion optimisée des stocks, maîtrise de la trésorerie, développement du potentiel humain. Catalogue PDF gratuit à télécharger."
         canonical="/formations"
-        keywords="formation pharmacien Côte d'Ivoire, formation auxiliaire pharmacie, ISO 9001 pharmacie, gestion stocks officine, trésorerie pharmacie, formation continue pharmacie, catalogue formations PDF"
+        keywords="formation pharmacien Côte d'Ivoire, formation auxiliaire pharmacie Abidjan, certification ISO 9001 pharmacie, formation gestion stocks officine, formation trésorerie pharmacie, formation continue pharmaceutique, catalogue formations PDF gratuit, formation qualité pharmacie, optimisation stocks pharmacie, formation potentiel humain pharmacie, Afrique de l'Ouest, formation professionnelle pharmacie"
       />
       <Header />
       

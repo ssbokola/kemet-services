@@ -12,9 +12,9 @@ interface SEOProps {
   modifiedTime?: string;
 }
 
-const DEFAULT_TITLE = "Kemet Services - Formation et Consultance Pharmacie Côte d'Ivoire";
-const DEFAULT_DESCRIPTION = "Formations ciblées et consultance opérationnelle pour pharmacies d'officine en Côte d'Ivoire. Expertise ISO, gestion des stocks, optimisation de la trésorerie et performance.";
-const DEFAULT_KEYWORDS = "formation pharmacie, consultance pharmacie, Côte d'Ivoire, ISO 9001, gestion stocks, trésorerie officine, performance pharmacie";
+const DEFAULT_TITLE = "Kemet Services - Formation et Consultance Pharmacie Côte d'Ivoire et Afrique";
+const DEFAULT_DESCRIPTION = "Formations spécialisées et consultance opérationnelle pour pharmacies d'officine en Côte d'Ivoire et Afrique de l'Ouest. Expertise ISO 9001, gestion des stocks, optimisation de la trésorerie, amélioration de la performance. Services pour pharmaciens titulaires et auxiliaires.";
+const DEFAULT_KEYWORDS = "formation pharmacie Côte d'Ivoire, consultance pharmacie Afrique, ISO 9001 pharmacie, gestion stocks officine, trésorerie pharmacie, formation pharmacien titulaire, formation auxiliaire pharmacie, consultant pharmaceutique Abidjan, optimisation pharmacie, diagnostic pharmacie gratuit, certification ISO pharmacie, Burkina Faso, Mali, Sénégal, Niger, formation continue pharmacie";
 const SITE_URL = import.meta.env.VITE_SITE_URL || "https://kemetservices.com";
 const DEFAULT_IMAGE = `${SITE_URL}/images/hero-formation.jpg`;
 
@@ -45,6 +45,9 @@ export default function SEO({
       <meta name="language" content="fr-FR" />
       <meta name="geo.region" content="CI" />
       <meta name="geo.country" content="Côte d'Ivoire" />
+      <meta name="geo.placename" content="Abidjan" />
+      <meta name="ICBM" content="5.36, -4.0083" />
+      <meta name="DC.coverage" content="Afrique de l'Ouest" />
 
       {/* Canonical URL */}
       <link rel="canonical" href={currentUrl} />
@@ -88,44 +91,98 @@ export default function SEO({
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "ProfessionalService",
+          "@type": ["ProfessionalService", "EducationalOrganization"],
           "name": "Kemet Services",
-          "description": "Formations ciblées et consultance opérationnelle pour pharmacies d'officine en Côte d'Ivoire",
+          "description": "Formations spécialisées et consultance opérationnelle pour pharmacies d'officine en Côte d'Ivoire et Afrique de l'Ouest",
           "url": SITE_URL,
           "logo": `${SITE_URL}/images/logo.png`,
           "image": ogImage,
+          "sameAs": [
+            "https://www.linkedin.com/company/kemet-services",
+            "https://wa.me/2250707070707"
+          ],
           "address": {
             "@type": "PostalAddress",
             "addressCountry": "CI",
             "addressLocality": "Abidjan",
-            "addressRegion": "Côte d'Ivoire"
+            "addressRegion": "Côte d'Ivoire",
+            "streetAddress": "Abidjan, Côte d'Ivoire"
           },
           "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "customer service",
-            "availableLanguage": ["French"]
+            "availableLanguage": ["French"],
+            "telephone": "+225-07-07-07-07-07",
+            "email": "contact@kemetservices.com"
           },
-          "areaServed": {
-            "@type": "Country",
-            "name": "Côte d'Ivoire"
-          },
+          "areaServed": [
+            {
+              "@type": "Country",
+              "name": "Côte d'Ivoire"
+            },
+            {
+              "@type": "Place",
+              "name": "Afrique de l'Ouest"
+            }
+          ],
+          "serviceType": "Formation et Consultance Pharmaceutique",
+          "knowsAbout": [
+            "ISO 9001",
+            "Gestion des stocks pharmaceutiques",
+            "Trésorerie d'officine",
+            "Optimisation des processus",
+            "Formation continue pharmaceutique"
+          ],
           "makesOffer": [
             {
               "@type": "Service",
-              "name": "Formation professionnelle pharmaceutique",
-              "description": "Formations ISO 9001, gestion des stocks, trésorerie pour pharmaciens et auxiliaires"
+              "name": "Formation Qualité ISO 9001",
+              "description": "Formation spécialisée pour la certification ISO 9001 des pharmacies d'officine",
+              "provider": "Kemet Services",
+              "areaServed": "Côte d'Ivoire",
+              "audience": {
+                "@type": "Audience",
+                "audienceType": "Pharmaciens titulaires et auxiliaires"
+              }
             },
             {
               "@type": "Service",
-              "name": "Consultance pharmaceutique",
-              "description": "Audit et optimisation des processus d'officine en Côte d'Ivoire"
+              "name": "Formation Gestion des Stocks",
+              "description": "Optimisation de la gestion des stocks et réduction des discordances en pharmacie",
+              "provider": "Kemet Services",
+              "areaServed": "Côte d'Ivoire"
             },
             {
-              "@type": "Service", 
-              "name": "Certification ISO",
-              "description": "Accompagnement à la certification ISO 9001 pour pharmacies"
+              "@type": "Service",
+              "name": "Formation Trésorerie d'Officine",
+              "description": "Maîtrise de la trésorerie et optimisation financière des pharmacies",
+              "provider": "Kemet Services",
+              "areaServed": "Côte d'Ivoire"
+            },
+            {
+              "@type": "Service",
+              "name": "Consultance DJANVOUE",
+              "description": "Gestion du potentiel humain et optimisation RH en pharmacie",
+              "provider": "Kemet Services",
+              "areaServed": "Côte d'Ivoire"
+            },
+            {
+              "@type": "Service",
+              "name": "Consultance CLIENTÈLE",
+              "description": "Stratégies d'acquisition et de fidélisation de clientèle pharmaceutique",
+              "provider": "Kemet Services",
+              "areaServed": "Côte d'Ivoire"
+            },
+            {
+              "@type": "Service",
+              "name": "Diagnostic Gratuit",
+              "description": "Audit gratuit des processus et performance des pharmacies d'officine",
+              "provider": "Kemet Services",
+              "areaServed": "Côte d'Ivoire",
+              "priceRange": "Gratuit"
             }
-          ]
+          ],
+          "hasCredential": "Expert en formations pharmaceutiques et ISO 9001"
         })}
       </script>
     </Helmet>

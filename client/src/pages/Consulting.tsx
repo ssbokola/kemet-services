@@ -154,10 +154,10 @@ export default function Consulting() {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Consultance Pharmacie - DJANVOUE, CLIENTÈLE, WAYO, TRÉSORERIE"
-        description="Services de consultance spécialisés pour pharmacies en Côte d'Ivoire : gestion RH, acquisition clientèle, optimisation stocks, trésorerie et risk management. Devis gratuit."
+        title="Consultance Pharmacie Côte d'Ivoire - DJANVOUE, CLIENTÈLE, WAYO, TRÉSORERIE, ISO 9001"
+        description="Services de consultance spécialisés pour pharmacies d'officine en Côte d'Ivoire et Afrique de l'Ouest : GPEC et gestion RH, acquisition clientèle, optimisation gestion stocks, trésorerie, risk management, certification ISO 9001. Diagnostic gratuit et devis personnalisé."
         canonical="/consulting"
-        keywords="consultance pharmacie Côte d'Ivoire, conseil pharmacie, GPEC pharmacie, gestion stocks pharmacie, trésorerie officine, risk management pharmacie, diagnostic pharmacie gratuit"
+        keywords="consultance pharmacie Côte d'Ivoire, conseil pharmacie Abidjan, GPEC pharmacie, gestion RH officine, optimisation stocks pharmacie, trésorerie officine, risk management pharmacie, certification ISO 9001 pharmacie, diagnostic pharmacie gratuit, consultant pharmaceutique Côte d'Ivoire, audit pharmacie, amélioration performance officine, Afrique de l'Ouest"
       />
       <Header />
       
