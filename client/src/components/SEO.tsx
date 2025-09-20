@@ -108,6 +108,11 @@ export default function SEO({
             "addressRegion": "Côte d'Ivoire",
             "streetAddress": "Abidjan, Côte d'Ivoire"
           },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "5.3599517",
+            "longitude": "-4.0082563"
+          },
           "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "customer service",
@@ -208,5 +213,175 @@ export function ArticleSEO({
       modifiedTime={modifiedTime}
       keywords={keywords}
     />
+  );
+}
+
+// Composant SEO spécialisé pour la page Formations
+export function FormationsSEO({
+  title,
+  description,
+  canonical,
+  keywords
+}: Omit<SEOProps, 'ogType'>) {
+  const SITE_URL = import.meta.env.VITE_SITE_URL || "https://kemetservices.com";
+  
+  return (
+    <>
+      <SEO
+        title={title}
+        description={description}
+        canonical={canonical}
+        keywords={keywords}
+      />
+      <Helmet>
+        {/* Schema markup spécifique aux formations */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Formations Pharmaceutiques Kemet Services",
+            "description": "Catalogue de formations spécialisées pour pharmaciens et auxiliaires en Côte d'Ivoire",
+            "provider": {
+              "@type": "EducationalOrganization",
+              "name": "Kemet Services",
+              "url": SITE_URL
+            },
+            "itemListElement": [
+              {
+                "@type": "Course",
+                "name": "Formation Qualité ISO 9001",
+                "description": "Formation spécialisée pour la certification ISO 9001 des pharmacies d'officine",
+                "provider": "Kemet Services",
+                "courseMode": ["in-person", "blended"],
+                "inLanguage": "fr",
+                "audience": {
+                  "@type": "Audience",
+                  "audienceType": "Pharmaciens titulaires et auxiliaires"
+                },
+                "areaServed": "Côte d'Ivoire",
+                "teaches": "Système de management de la qualité ISO 9001:2015"
+              },
+              {
+                "@type": "Course",
+                "name": "Formation Gestion des Stocks",
+                "description": "Optimisation de la gestion des stocks et réduction des discordances en pharmacie",
+                "provider": "Kemet Services",
+                "courseMode": ["in-person", "blended"],
+                "inLanguage": "fr",
+                "audience": {
+                  "@type": "Audience",
+                  "audienceType": "Pharmaciens titulaires et auxiliaires"
+                },
+                "areaServed": "Côte d'Ivoire",
+                "teaches": "Gestion optimisée des stocks pharmaceutiques"
+              },
+              {
+                "@type": "Course",
+                "name": "Formation Trésorerie d'Officine",
+                "description": "Maîtrise de la trésorerie et optimisation financière des pharmacies",
+                "provider": "Kemet Services",
+                "courseMode": ["in-person", "blended"],
+                "inLanguage": "fr",
+                "audience": {
+                  "@type": "Audience",
+                  "audienceType": "Pharmaciens titulaires"
+                },
+                "areaServed": "Côte d'Ivoire",
+                "teaches": "Optimisation financière et trésorerie d'officine"
+              }
+            ]
+          })}
+        </script>
+      </Helmet>
+    </>
+  );
+}
+
+// Composant SEO spécialisé pour la page Consulting
+export function ConsultingSEO({
+  title,
+  description,
+  canonical,
+  keywords
+}: Omit<SEOProps, 'ogType'>) {
+  const SITE_URL = import.meta.env.VITE_SITE_URL || "https://kemetservices.com";
+  
+  return (
+    <>
+      <SEO
+        title={title}
+        description={description}
+        canonical={canonical}
+        keywords={keywords}
+      />
+      <Helmet>
+        {/* Schema markup spécifique aux services de consulting */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Services de Consultance Pharmaceutique Kemet Services",
+            "description": "Services de consultance spécialisés pour pharmacies d'officine en Côte d'Ivoire",
+            "provider": {
+              "@type": "ProfessionalService",
+              "name": "Kemet Services",
+              "url": SITE_URL
+            },
+            "itemListElement": [
+              {
+                "@type": "Service",
+                "name": "DJANVOUE - Gestion RH et GPEC",
+                "description": "État des lieux, objectifs SMART, évaluation compétences/motivation pour optimiser votre équipe",
+                "provider": "Kemet Services",
+                "serviceType": "Consultance en Ressources Humaines",
+                "areaServed": "Côte d'Ivoire",
+                "audience": "Pharmacies d'officine",
+                "category": "GPEC Pharmacie"
+              },
+              {
+                "@type": "Service",
+                "name": "CLIENTÈLE - Acquisition & Fidélisation",
+                "description": "Stratégie commerciale, base clients et suivi satisfaction pour développer votre patientèle",
+                "provider": "Kemet Services",
+                "serviceType": "Consultance Commerciale",
+                "areaServed": "Côte d'Ivoire",
+                "audience": "Pharmacies d'officine",
+                "category": "Développement Commercial"
+              },
+              {
+                "@type": "Service",
+                "name": "WAYO - Gestion Stock et Périmés",
+                "description": "Maîtrise des écarts et périmés avec indicateurs et tableaux de bord personnalisés",
+                "provider": "Kemet Services",
+                "serviceType": "Optimisation Stocks",
+                "areaServed": "Côte d'Ivoire",
+                "audience": "Pharmacies d'officine",
+                "category": "Gestion des Stocks"
+              },
+              {
+                "@type": "Service",
+                "name": "TRÉSORERIE - Optimisation Financière",
+                "description": "Budget, suivi et analyse des charges pour optimiser votre trésorerie et réduire les coûts",
+                "provider": "Kemet Services",
+                "serviceType": "Consultance Financière",
+                "areaServed": "Côte d'Ivoire",
+                "audience": "Pharmacies d'officine",
+                "category": "Optimisation Financière"
+              },
+              {
+                "@type": "Service",
+                "name": "ISO 9001:2015 - Certification Qualité",
+                "description": "SWOT, diagnostic qualité, plan d'action et accompagnement à la certification ISO 9001",
+                "provider": "Kemet Services",
+                "serviceType": "Certification ISO",
+                "areaServed": "Côte d'Ivoire",
+                "audience": "Pharmacies d'officine",
+                "category": "Système Management Qualité"
+              }
+            ]
+          })}
+        </script>
+      </Helmet>
+    </>
   );
 }

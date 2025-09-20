@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Principales pages
+Allow: /
+Allow: /formations
+Allow: /consulting
+Allow: /a-propos
+Allow: /contact
+Allow: /diagnostic
+
+# Pages administratives - Blocage
+Disallow: /admin/
+Disallow: /api/
+
+# Informations légales autorisées
+Allow: /mentions-legales
+Allow: /confidentialite
+
+# Sitemap
+Sitemap: https://kemetservices.com/sitemap.xml
+
+# Optimisation pour Afrique - Moteurs de recherche locaux
+User-agent: googlebot
+Allow: /
+
+User-agent: bingbot
+Allow: /
