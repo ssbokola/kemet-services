@@ -61,17 +61,27 @@ export function WhatsAppCallout({
   };
 
   return (
-    <div 
-      className={cn(
-        'fixed z-50 transition-all duration-300 ease-in-out',
-        positionClasses[position],
-        className
+    <>
+      {/* Backdrop when expanded */}
+      {isExpanded && (
+        <div 
+          className="fixed inset-0 bg-black/10 z-30"
+          onClick={handleClose}
+          data-testid="whatsapp-backdrop"
+        />
       )}
-      data-testid="whatsapp-callout"
-    >
+      
+      <div 
+        className={cn(
+          'fixed z-40 transition-all duration-300 ease-in-out',
+          positionClasses[position],
+          className
+        )}
+        data-testid="whatsapp-callout"
+      >
       {/* Expanded Card */}
       {isExpanded && (
-        <Card className="mb-4 w-80 shadow-lg border-green-200 animate-in slide-in-from-bottom-2 duration-300">
+        <Card className="mb-4 w-80 sm:w-72 max-w-[calc(100vw-3rem)] shadow-lg border-green-200 animate-in slide-in-from-bottom-2 duration-300">
           <CardContent className="p-4">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-2">
@@ -159,7 +169,8 @@ export function WhatsAppCallout({
         'bg-green-600/20 animate-ping pointer-events-none',
         isExpanded && 'hidden'
       )} />
-    </div>
+      </div>
+    </>
   );
 }
 

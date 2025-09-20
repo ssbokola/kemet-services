@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import Header from '@/components/Header';
 import { ConsultingSEO } from '@/components/SEO';
+import { useLocation } from 'wouter';
+import { trackWhatsAppClick } from '@/components/GoogleAnalytics';
 
 const consultingPacks = [
   {
@@ -151,6 +153,28 @@ const consultingPacks = [
 ];
 
 export default function Consulting() {
+  const [, setLocation] = useLocation();
+
+  const handleConsultingContact = (packName: string) => {
+    // Navigate to contact page with consulting package pre-selected
+    setLocation(`/contact?service=consulting&pack=${packName}`);
+  };
+
+  const handleDiagnosticClick = () => {
+    setLocation('/diagnostic');
+  };
+
+  const handleWhatsAppClick = (packName?: string) => {
+    trackWhatsAppClick();
+    
+    const baseMessage = packName 
+      ? `Bonjour,\n\nJe suis intéressé(e) par votre pack de consulting "${packName}" pour optimiser ma pharmacie.\n\nPouvez-vous me donner plus d'informations et un devis ?\n\nCordialement`
+      : `Bonjour,\n\nJe suis intéressé(e) par vos services de consulting pour optimiser ma pharmacie.\n\nPouvez-vous me donner plus d'informations ?\n\nCordialement`;
+    
+    const encodedMessage = encodeURIComponent(baseMessage);
+    window.open(`https://wa.me/225759068744?text=${encodedMessage}`, '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <ConsultingSEO 
@@ -264,7 +288,11 @@ export default function Consulting() {
                         <span className="text-sm text-muted-foreground">Tarif :</span>
                         <span className="font-semibold text-primary">{pack.price}</span>
                       </div>
-                      <Button className="w-full" data-testid={`button-contact-${pack.id}`}>
+                      <Button 
+                        className="w-full" 
+                        onClick={() => handleConsultingContact(pack.name)}
+                        data-testid={`button-contact-${pack.id}`}
+                      >
                         Demander un devis
                       </Button>
                     </div>
@@ -287,10 +315,19 @@ export default function Consulting() {
             et des résultats mesurables.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" data-testid="button-cta-contact">
+            <Button 
+              size="lg" 
+              onClick={handleDiagnosticClick}
+              data-testid="button-cta-contact"
+            >
               Demander un diagnostic gratuit
             </Button>
-            <Button variant="outline" size="lg" data-testid="button-cta-whatsapp">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              onClick={() => handleWhatsAppClick()}
+              data-testid="button-cta-whatsapp"
+            >
               Discuter sur WhatsApp
             </Button>
           </div>
