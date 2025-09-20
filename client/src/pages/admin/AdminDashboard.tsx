@@ -13,15 +13,54 @@ import {
   Menu,
   X,
   TrendingUp,
+  TrendingDown,
   Mail,
-  Calendar
+  Calendar,
+  ArrowUp,
+  ArrowDown,
+  Target,
+  Activity
 } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
+} from 'recharts';
 
 interface DashboardStats {
   totalRegistrations: number;
   totalContacts: number;
+  conversionRate: number;
+  totalLeads: number;
+  registrationsGrowthDaily: number;
+  registrationsGrowthMonthly: number;
+  contactsGrowthDaily: number;
+  contactsGrowthMonthly: number;
+  periods: {
+    today: { registrations: number; contacts: number };
+    yesterday: { registrations: number; contacts: number };
+    last7Days: { registrations: number; contacts: number };
+    last30Days: { registrations: number; contacts: number };
+    thisMonth: { registrations: number; contacts: number };
+    lastMonth: { registrations: number; contacts: number };
+  };
+  breakdown: {
+    registrationsByRole: Array<{ label: string; value: number }>;
+    registrationsBySessionType: Array<{ label: string; value: number }>;
+    contactsByType: Array<{ label: string; value: number }>;
+    contactsByStatus: Array<{ label: string; value: number }>;
+    contactsByPriority: Array<{ label: string; value: number }>;
+  };
   recentRegistrations: any[];
   recentContacts: any[];
 }
@@ -204,55 +243,309 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {/* Inscriptions totales */}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex-1">
                       <p className="text-sm font-medium text-muted-foreground">Inscriptions totales</p>
-                      <p className="text-2xl font-bold text-foreground">{stats?.totalRegistrations || 0}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-2xl font-bold text-foreground">{stats?.totalRegistrations || 0}</p>
+                        {stats?.registrationsGrowthMonthly !== undefined && (
+                          <div className={`flex items-center text-xs px-2 py-1 rounded-full ${
+                            stats.registrationsGrowthMonthly >= 0 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {stats.registrationsGrowthMonthly >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                            {Math.abs(stats.registrationsGrowthMonthly)}%
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {stats?.periods.thisMonth.registrations || 0} ce mois
+                      </p>
                     </div>
                     <BookOpen className="w-8 h-8 text-blue-600" />
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Contacts totaux */}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex-1">
                       <p className="text-sm font-medium text-muted-foreground">Contacts totaux</p>
-                      <p className="text-2xl font-bold text-foreground">{stats?.totalContacts || 0}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-2xl font-bold text-foreground">{stats?.totalContacts || 0}</p>
+                        {stats?.contactsGrowthMonthly !== undefined && (
+                          <div className={`flex items-center text-xs px-2 py-1 rounded-full ${
+                            stats.contactsGrowthMonthly >= 0 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {stats.contactsGrowthMonthly >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+                            {Math.abs(stats.contactsGrowthMonthly)}%
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {stats?.periods.thisMonth.contacts || 0} ce mois
+                      </p>
                     </div>
                     <MessageSquare className="w-8 h-8 text-green-600" />
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Taux de conversion */}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex-1">
                       <p className="text-sm font-medium text-muted-foreground">Taux de conversion</p>
-                      <p className="text-2xl font-bold text-foreground">12.5%</p>
+                      <p className="text-2xl font-bold text-foreground">{stats?.conversionRate || 0}%</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {stats?.totalLeads || 0} prospects total
+                      </p>
                     </div>
-                    <TrendingUp className="w-8 h-8 text-orange-600" />
+                    <Target className="w-8 h-8 text-orange-600" />
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Activité aujourd'hui */}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Ce mois</p>
-                      <p className="text-2xl font-bold text-foreground">+23%</p>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-muted-foreground">Aujourd'hui</p>
+                      <p className="text-2xl font-bold text-foreground">
+                        {(stats?.periods.today.registrations || 0) + (stats?.periods.today.contacts || 0)}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {stats?.periods.today.registrations || 0} inscriptions, {stats?.periods.today.contacts || 0} contacts
+                      </p>
                     </div>
-                    <BarChart3 className="w-8 h-8 text-purple-600" />
+                    <Activity className="w-8 h-8 text-purple-600" />
                   </div>
                 </CardContent>
               </Card>
             </div>
           )}
+
+          {/* Section de graphiques */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+            {/* Répartition des contacts par type */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Contacts par type</CardTitle>
+                <CardDescription>Répartition des demandes</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {stats?.breakdown.contactsByType?.length ? (
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={stats.breakdown.contactsByType}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={60}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={(entry) => `${entry.label}: ${entry.value}`}
+                      >
+                        {stats.breakdown.contactsByType.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={['#0088FE', '#00C49F', '#FFBB28', '#FF8042'][index % 4]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-[200px] flex items-center justify-center text-muted-foreground">
+                    Aucune donnée disponible
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Répartition des inscriptions par rôle */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Inscriptions par rôle</CardTitle>
+                <CardDescription>Types de participants</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {stats?.breakdown.registrationsByRole?.length ? (
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={stats.breakdown.registrationsByRole}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="label" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="value" fill="#8884d8" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-[200px] flex items-center justify-center text-muted-foreground">
+                    Aucune donnée disponible
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Statut des contacts */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Statut des contacts</CardTitle>
+                <CardDescription>Suivi des demandes</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {stats?.breakdown.contactsByStatus?.length ? (
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={stats.breakdown.contactsByStatus}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={60}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={(entry) => `${entry.label}: ${entry.value}`}
+                      >
+                        {stats.breakdown.contactsByStatus.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'][index % 4]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-[200px] flex items-center justify-center text-muted-foreground">
+                    Aucune donnée disponible
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Métriques de période */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Activité par période</CardTitle>
+                <CardDescription>Comparaison des périodes récentes</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                    <div>
+                      <p className="font-medium">Aujourd'hui</p>
+                      <p className="text-sm text-muted-foreground">
+                        {(stats?.periods.today.registrations || 0) + (stats?.periods.today.contacts || 0)} total
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <Badge variant="outline">
+                        {stats?.periods.today.registrations || 0} inscr. | {stats?.periods.today.contacts || 0} cont.
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
+                    <div>
+                      <p className="font-medium">7 derniers jours</p>
+                      <p className="text-sm text-muted-foreground">
+                        {(stats?.periods.last7Days.registrations || 0) + (stats?.periods.last7Days.contacts || 0)} total
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <Badge variant="secondary">
+                        {stats?.periods.last7Days.registrations || 0} inscr. | {stats?.periods.last7Days.contacts || 0} cont.
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-muted/20 rounded-lg">
+                    <div>
+                      <p className="font-medium">30 derniers jours</p>
+                      <p className="text-sm text-muted-foreground">
+                        {(stats?.periods.last30Days.registrations || 0) + (stats?.periods.last30Days.contacts || 0)} total
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <Badge>
+                        {stats?.periods.last30Days.registrations || 0} inscr. | {stats?.periods.last30Days.contacts || 0} cont.
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Performance mensuelle</CardTitle>
+                <CardDescription>Évolution ce mois vs mois dernier</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium">Inscriptions</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">
+                          {stats?.periods.thisMonth.registrations || 0} vs {stats?.periods.lastMonth.registrations || 0}
+                        </span>
+                        {stats?.registrationsGrowthMonthly !== undefined && (
+                          <Badge variant={stats.registrationsGrowthMonthly >= 0 ? "default" : "destructive"}>
+                            {stats.registrationsGrowthMonthly >= 0 ? "+" : ""}{stats.registrationsGrowthMonthly}%
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(((stats?.periods.thisMonth.registrations || 0) / Math.max((stats?.periods.lastMonth.registrations || 1), 1)) * 100, 100)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium">Contacts</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-muted-foreground">
+                          {stats?.periods.thisMonth.contacts || 0} vs {stats?.periods.lastMonth.contacts || 0}
+                        </span>
+                        {stats?.contactsGrowthMonthly !== undefined && (
+                          <Badge variant={stats.contactsGrowthMonthly >= 0 ? "default" : "destructive"}>
+                            {stats.contactsGrowthMonthly >= 0 ? "+" : ""}{stats.contactsGrowthMonthly}%
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-green-600 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(((stats?.periods.thisMonth.contacts || 0) / Math.max((stats?.periods.lastMonth.contacts || 1), 1)) * 100, 100)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-foreground">{stats?.conversionRate || 0}%</p>
+                      <p className="text-sm text-muted-foreground">Taux de conversion global</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Inscriptions récentes */}

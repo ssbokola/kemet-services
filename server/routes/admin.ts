@@ -119,21 +119,146 @@ router.post('/setup', async (req, res) => {
 // Dashboard - Statistiques générales
 router.get('/dashboard/stats', requireAdminAuth(), async (req, res) => {
   try {
+    // Dates pour les périodes
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const last7Days = new Date(today);
+    last7Days.setDate(last7Days.getDate() - 7);
+    const last30Days = new Date(today);
+    last30Days.setDate(last30Days.getDate() - 30);
+    const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
     const [
+      // Totaux généraux
       registrationsCount,
       contactsCount,
+      
+      // Statistiques par période - Inscriptions
+      registrationsToday,
+      registrationsYesterday,
+      registrationsLast7Days,
+      registrationsLast30Days,
+      registrationsThisMonth,
+      registrationsLastMonth,
+      
+      // Statistiques par période - Contacts
+      contactsToday,
+      contactsYesterday,
+      contactsLast7Days,
+      contactsLast30Days,
+      contactsThisMonth,
+      contactsLastMonth,
+      
+      // Répartition par type/statut
+      registrationsByRole,
+      registrationsBySessionType,
+      contactsByType,
+      contactsByStatus,
+      contactsByPriority,
+      
+      // Récents
       recentRegistrations,
       recentContacts
     ] = await Promise.all([
+      // Totaux généraux
       db.select({ count: count() }).from(trainingRegistrations),
       db.select({ count: count() }).from(contactRequests),
+      
+      // Inscriptions par période
+      db.select({ count: count() }).from(trainingRegistrations).where(sql`${trainingRegistrations.createdAt} >= ${today.toISOString()}`),
+      db.select({ count: count() }).from(trainingRegistrations).where(sql`${trainingRegistrations.createdAt} >= ${yesterday.toISOString()} AND ${trainingRegistrations.createdAt} < ${today.toISOString()}`),
+      db.select({ count: count() }).from(trainingRegistrations).where(sql`${trainingRegistrations.createdAt} >= ${last7Days.toISOString()}`),
+      db.select({ count: count() }).from(trainingRegistrations).where(sql`${trainingRegistrations.createdAt} >= ${last30Days.toISOString()}`),
+      db.select({ count: count() }).from(trainingRegistrations).where(sql`${trainingRegistrations.createdAt} >= ${currentMonth.toISOString()}`),
+      db.select({ count: count() }).from(trainingRegistrations).where(sql`${trainingRegistrations.createdAt} >= ${lastMonth.toISOString()} AND ${trainingRegistrations.createdAt} < ${currentMonth.toISOString()}`),
+      
+      // Contacts par période
+      db.select({ count: count() }).from(contactRequests).where(sql`${contactRequests.createdAt} >= ${today.toISOString()}`),
+      db.select({ count: count() }).from(contactRequests).where(sql`${contactRequests.createdAt} >= ${yesterday.toISOString()} AND ${contactRequests.createdAt} < ${today.toISOString()}`),
+      db.select({ count: count() }).from(contactRequests).where(sql`${contactRequests.createdAt} >= ${last7Days.toISOString()}`),
+      db.select({ count: count() }).from(contactRequests).where(sql`${contactRequests.createdAt} >= ${last30Days.toISOString()}`),
+      db.select({ count: count() }).from(contactRequests).where(sql`${contactRequests.createdAt} >= ${currentMonth.toISOString()}`),
+      db.select({ count: count() }).from(contactRequests).where(sql`${contactRequests.createdAt} >= ${lastMonth.toISOString()} AND ${contactRequests.createdAt} < ${currentMonth.toISOString()}`),
+      
+      // Répartitions
+      db.select({ role: trainingRegistrations.role, count: count() }).from(trainingRegistrations).groupBy(trainingRegistrations.role),
+      db.select({ sessionType: trainingRegistrations.sessionType, count: count() }).from(trainingRegistrations).groupBy(trainingRegistrations.sessionType),
+      db.select({ type: contactRequests.type, count: count() }).from(contactRequests).groupBy(contactRequests.type),
+      db.select({ status: contactRequests.status, count: count() }).from(contactRequests).groupBy(contactRequests.status),
+      db.select({ priority: contactRequests.priority, count: count() }).from(contactRequests).groupBy(contactRequests.priority),
+      
+      // Récents
       db.select().from(trainingRegistrations).orderBy(desc(trainingRegistrations.createdAt)).limit(5),
       db.select().from(contactRequests).orderBy(desc(contactRequests.createdAt)).limit(5)
     ]);
 
+    // Calculer les taux de croissance
+    const calculateGrowth = (current: number, previous: number) => {
+      if (previous === 0) return current > 0 ? 100 : 0;
+      return Math.round(((current - previous) / previous) * 100);
+    };
+
+    // Calculer le taux de conversion (contacts qui deviennent inscriptions)
+    const totalLeads = contactsCount[0].count + registrationsCount[0].count;
+    const conversionRate = totalLeads > 0 ? Math.round((registrationsCount[0].count / totalLeads) * 100) : 0;
+
     res.json({
+      // Totaux
       totalRegistrations: registrationsCount[0].count,
       totalContacts: contactsCount[0].count,
+      
+      // Métriques de performance
+      conversionRate,
+      totalLeads,
+      
+      // Période actuelle vs précédente
+      registrationsGrowthDaily: calculateGrowth(registrationsToday[0].count, registrationsYesterday[0].count),
+      registrationsGrowthMonthly: calculateGrowth(registrationsThisMonth[0].count, registrationsLastMonth[0].count),
+      contactsGrowthDaily: calculateGrowth(contactsToday[0].count, contactsYesterday[0].count),
+      contactsGrowthMonthly: calculateGrowth(contactsThisMonth[0].count, contactsLastMonth[0].count),
+      
+      // Statistiques par période
+      periods: {
+        today: {
+          registrations: registrationsToday[0].count,
+          contacts: contactsToday[0].count
+        },
+        yesterday: {
+          registrations: registrationsYesterday[0].count,
+          contacts: contactsYesterday[0].count
+        },
+        last7Days: {
+          registrations: registrationsLast7Days[0].count,
+          contacts: contactsLast7Days[0].count
+        },
+        last30Days: {
+          registrations: registrationsLast30Days[0].count,
+          contacts: contactsLast30Days[0].count
+        },
+        thisMonth: {
+          registrations: registrationsThisMonth[0].count,
+          contacts: contactsThisMonth[0].count
+        },
+        lastMonth: {
+          registrations: registrationsLastMonth[0].count,
+          contacts: contactsLastMonth[0].count
+        }
+      },
+      
+      // Répartitions
+      breakdown: {
+        registrationsByRole: registrationsByRole.map(r => ({ label: r.role, value: r.count })),
+        registrationsBySessionType: registrationsBySessionType.map(r => ({ label: r.sessionType, value: r.count })),
+        contactsByType: contactsByType.map(c => ({ label: c.type, value: c.count })),
+        contactsByStatus: contactsByStatus.map(c => ({ label: c.status, value: c.count })),
+        contactsByPriority: contactsByPriority.map(c => ({ label: c.priority, value: c.count }))
+      },
+      
+      // Récents (pour l'affichage détaillé)
       recentRegistrations,
       recentContacts
     });
