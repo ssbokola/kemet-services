@@ -7,8 +7,13 @@ import { z } from "zod";
 import { logRegistrationNotification } from "./notifications";
 import { sendGmailNotification, sendParticipantConfirmation } from "./gmail";
 import adminRoutes from "./routes/admin";
+import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // SEO routes - Dynamic sitemap and robots.txt
+  app.get('/sitemap.xml', serveDynamicSitemap);
+  app.get('/robots.txt', serveDynamicRobots);
+  
   // Admin routes
   app.use('/api/admin', adminRoutes);
   // Training registration endpoint
