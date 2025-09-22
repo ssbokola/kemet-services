@@ -19,7 +19,8 @@ import {
   ArrowUp,
   ArrowDown,
   Target,
-  Activity
+  Activity,
+  Shield
 } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -136,6 +137,9 @@ export default function AdminDashboard() {
       case 'analytics':
         // TODO: implémenter analytics
         break;
+      case 'spf':
+        setLocation('/admin/spf');
+        break;
       case 'settings':
         // TODO: implémenter settings
         break;
@@ -147,6 +151,7 @@ export default function AdminDashboard() {
     { id: 'registrations', label: 'Inscriptions', icon: BookOpen, badge: stats?.totalRegistrations },
     { id: 'contacts', label: 'Contacts', icon: MessageSquare, badge: stats?.totalContacts },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'spf', label: 'Config SPF', icon: Shield },
     { id: 'settings', label: 'Paramètres', icon: Settings },
   ];
 

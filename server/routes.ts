@@ -7,6 +7,7 @@ import { z } from "zod";
 import { logRegistrationNotification } from "./notifications";
 import { sendGmailNotification, sendParticipantConfirmation } from "./gmail";
 import adminRoutes from "./routes/admin";
+import spfRoutes from "./routes/spf";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -16,6 +17,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Admin routes
   app.use('/api/admin', adminRoutes);
+  
+  // SPF configuration routes
+  app.use('/api/spf', spfRoutes);
   // Training registration endpoint
   app.post('/api/training-registrations', async (req, res) => {
     try {

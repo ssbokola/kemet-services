@@ -27,6 +27,7 @@ import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminInscriptions from "@/pages/admin/AdminInscriptions";
 import AdminContacts from "@/pages/admin/AdminContacts";
+import SPFConfig from "@/pages/admin/SPFConfig";
 
 function Router() {
   return (
@@ -47,6 +48,7 @@ function Router() {
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/registrations" component={AdminInscriptions} />
       <Route path="/admin/contacts" component={AdminContacts} />
+      <Route path="/admin/spf" component={SPFConfig} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
