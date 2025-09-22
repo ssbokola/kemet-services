@@ -137,8 +137,14 @@ export default function AdminDashboard() {
       case 'analytics':
         // TODO: implémenter analytics
         break;
+      case 'email-auth':
+        setLocation('/admin/email-auth');
+        break;
       case 'spf':
         setLocation('/admin/spf');
+        break;
+      case 'dkim':
+        setLocation('/admin/dkim');
         break;
       case 'settings':
         // TODO: implémenter settings
@@ -151,7 +157,9 @@ export default function AdminDashboard() {
     { id: 'registrations', label: 'Inscriptions', icon: BookOpen, badge: stats?.totalRegistrations },
     { id: 'contacts', label: 'Contacts', icon: MessageSquare, badge: stats?.totalContacts },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'email-auth', label: 'Authentification Email', icon: Shield },
     { id: 'spf', label: 'Config SPF', icon: Shield },
+    { id: 'dkim', label: 'Config DKIM', icon: Shield },
     { id: 'settings', label: 'Paramètres', icon: Settings },
   ];
 

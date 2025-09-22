@@ -8,6 +8,7 @@ import { logRegistrationNotification } from "./notifications";
 import { sendGmailNotification, sendParticipantConfirmation } from "./gmail";
 import adminRoutes from "./routes/admin";
 import spfRoutes from "./routes/spf";
+import dkimRoutes from "./routes/dkim";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -20,6 +21,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // SPF configuration routes
   app.use('/api/spf', spfRoutes);
+  
+  // DKIM configuration routes
+  app.use('/api/dkim', dkimRoutes);
   // Training registration endpoint
   app.post('/api/training-registrations', async (req, res) => {
     try {
