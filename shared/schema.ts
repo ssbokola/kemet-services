@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, boolean, timestamp, index, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -34,20 +34,119 @@ export const adminSessions = pgTable("admin_sessions", {
 
 export type AdminSession = typeof adminSessions.$inferSelect;
 
-// Table des utilisateurs (conservée pour compatibilité)
+// Session storage table - Required for Replit Auth
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// User storage table - Extended for Replit Auth compatibility
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  // Existing fields (legacy)
+  username: text("username").unique(),
+  password: text("password"),
+  // Replit Auth fields
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  role: text("role").notNull().default('participant'), // participant, admin
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
-
-export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+// Formation course catalog
+export const courses = pgTable("courses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description").notNull(),
+  category: text("category").notNull(), // 'quality', 'finance', 'stock', 'hr', 'auxiliaires'
+  level: text("level").notNull(), // 'debutant', 'intermediaire', 'avance'
+  duration: integer("duration").notNull(), // en minutes
+  price: integer("price").notNull(), // en centimes
+  isPublished: boolean("ispublished").notNull().default(false),
+  thumbnail: text("thumbnail"),
+  objectives: text("objectives").array(),
+  prerequisites: text("prerequisites").array(),
+  targetAudience: text("targetaudience").array(),
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+  updatedAt: timestamp("updatedat").defaultNow().notNull(),
+});
+
+export const insertCourseSchema = createInsertSchema(courses)
+  .omit({ id: true, createdAt: true, updatedAt: true })
+  .extend({
+    title: z.string().trim().min(5, 'Le titre doit contenir au moins 5 caractères'),
+    slug: z.string().trim().min(3, 'Le slug doit contenir au moins 3 caractères'),
+    description: z.string().trim().min(20, 'La description doit contenir au moins 20 caractères'),
+    category: z.enum(['quality', 'finance', 'stock', 'hr', 'auxiliaires']),
+    level: z.enum(['debutant', 'intermediaire', 'avance']),
+    duration: z.coerce.number().min(15, 'La durée doit être d\'au moins 15 minutes'),
+    price: z.coerce.number().min(0, 'Le prix ne peut pas être négatif'),
+    objectives: z.string().array().optional(),
+    prerequisites: z.string().array().optional(),
+    targetAudience: z.string().array().optional(),
+  });
+
+export type InsertCourse = z.infer<typeof insertCourseSchema>;
+export type Course = typeof courses.$inferSelect;
+
+// Course modules and lessons
+export const courseModules = pgTable("course_modules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  courseId: varchar("courseid").notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  title: text("title").notNull(),
+  description: text("description"),
+  order: integer("order").notNull(),
+  isPublished: boolean("ispublished").notNull().default(false),
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+});
+
+export const courseLessons = pgTable("course_lessons", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  moduleId: varchar("moduleid").notNull().references(() => courseModules.id, { onDelete: 'cascade' }),
+  title: text("title").notNull(),
+  content: text("content").notNull(), // Markdown content
+  videoUrl: text("videourl"),
+  duration: integer("duration"), // en minutes
+  order: integer("order").notNull(),
+  isPublished: boolean("ispublished").notNull().default(false),
+  isFree: boolean("isfree").notNull().default(false), // Lesson accessible sans inscription
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+});
+
+// User enrollment and access management
+export const enrollments = pgTable("enrollments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("userid").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  courseId: varchar("courseid").notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  status: text("status").notNull().default('active'), // 'active', 'suspended', 'completed', 'expired'
+  enrolledAt: timestamp("enrolledat").defaultNow().notNull(),
+  expiresAt: timestamp("expiresat"), // null = permanent access
+  completedAt: timestamp("completedat"),
+  progressPercent: integer("progresspercent").notNull().default(0),
+});
+
+// User lesson progress tracking
+export const lessonProgress = pgTable("lesson_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("userid").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  lessonId: varchar("lessonid").notNull().references(() => courseLessons.id, { onDelete: 'cascade' }),
+  status: text("status").notNull().default('not_started'), // 'not_started', 'in_progress', 'completed'
+  timeSpent: integer("timespent").notNull().default(0), // en secondes
+  completedAt: timestamp("completedat"),
+  lastAccessedAt: timestamp("lastaccessedat").defaultNow().notNull(),
+});
 
 // Table des inscriptions aux formations
 export const trainingRegistrations = pgTable("training_registrations", {

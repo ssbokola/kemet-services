@@ -1,13 +1,13 @@
-import { type User, type InsertUser, type TrainingRegistration, type InsertTrainingRegistration } from "@shared/schema";
+import { type User, type UpsertUser, type TrainingRegistration, type InsertTrainingRegistration } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
 // you might need
 
 export interface IStorage {
+  // User operations - Required for Replit Auth
   getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   // Training registrations methods
   createTrainingRegistration(registration: InsertTrainingRegistration): Promise<TrainingRegistration>;
@@ -28,17 +28,39 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const existingUser = this.users.get(userData.id!);
+    const now = new Date();
+    
+    if (existingUser) {
+      // Update existing user
+      const updatedUser: User = {
+        ...existingUser,
+        ...userData,
+        updatedAt: now,
+      };
+      this.users.set(userData.id!, updatedUser);
+      return updatedUser;
+    } else {
+      // Create new user
+      const id = userData.id || randomUUID();
+      const user: User = {
+        id,
+        // Legacy fields for compatibility
+        username: null,
+        password: null,
+        // Replit Auth fields
+        email: userData.email || null,
+        firstName: userData.firstName || null,
+        lastName: userData.lastName || null,
+        profileImageUrl: userData.profileImageUrl || null,
+        role: userData.role || 'participant',
+        createdAt: now,
+        updatedAt: now,
+      };
+      this.users.set(id, user);
+      return user;
+    }
   }
 
   // Training registrations methods

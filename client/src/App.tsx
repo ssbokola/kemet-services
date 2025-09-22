@@ -30,6 +30,12 @@ import AdminContacts from "@/pages/admin/AdminContacts";
 import SPFConfig from "@/pages/admin/SPFConfig";
 import DKIMConfig from "@/pages/admin/DKIMConfig";
 import EmailAuthOverview from "@/pages/admin/EmailAuthOverview";
+// Pages participantes sécurisées - blueprint:javascript_log_in_with_replit
+import ParticipantDashboard from "@/pages/ParticipantDashboard";
+import ParticipantFormations from "@/pages/ParticipantFormations";
+import ParticipantCatalogue from "@/pages/ParticipantCatalogue";
+import Login from "@/pages/Login";
+import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
   return (
@@ -53,6 +59,12 @@ function Router() {
       <Route path="/admin/spf" component={SPFConfig} />
       <Route path="/admin/dkim" component={DKIMConfig} />
       <Route path="/admin/email-auth" component={EmailAuthOverview} />
+      {/* Route de connexion - blueprint:javascript_log_in_with_replit */}
+      <Route path="/login" component={Login} />
+      {/* Routes participants sécurisées - blueprint:javascript_log_in_with_replit */}
+      <Route path="/participant/dashboard" component={ParticipantDashboard} />
+      <Route path="/participant/formations" component={ParticipantFormations} />
+      <Route path="/participant/catalogue" component={ParticipantCatalogue} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

@@ -9,12 +9,43 @@ import { sendGmailNotification, sendParticipantConfirmation } from "./gmail";
 import adminRoutes from "./routes/admin";
 import spfRoutes from "./routes/spf";
 import dkimRoutes from "./routes/dkim";
+import trainingRoutes from "./routes/training";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
+// Authentification Replit Auth - blueprint:javascript_log_in_with_replit
+import { setupAuth, isAuthenticated } from "./replitAuth";
+import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware - blueprint:javascript_log_in_with_replit
+  await setupAuth(app);
+  
   // SEO routes - Dynamic sitemap and robots.txt
   app.get('/sitemap.xml', serveDynamicSitemap);
   app.get('/robots.txt', serveDynamicRobots);
+  
+  // Auth routes - blueprint:javascript_log_in_with_replit
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const claims = req.user.claims;
+      
+      // Always construct user data from session claims with correct field names
+      const userData = {
+        id: claims.sub,
+        email: claims.email || null,
+        firstName: claims.first_name || null,
+        lastName: claims.last_name || null,
+        profileImageUrl: claims.profile_image_url || null,
+        role: 'participant' as const
+      };
+
+      // Upsert user - creates if missing, updates if exists
+      const user = await storage.upsertUser(userData);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
   
   // Admin routes
   app.use('/api/admin', adminRoutes);
@@ -24,6 +55,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // DKIM configuration routes
   app.use('/api/dkim', dkimRoutes);
+  
+  // Training routes sécurisées - blueprint:javascript_log_in_with_replit
+  app.use('/api/training', trainingRoutes);
   // Training registration endpoint
   app.post('/api/training-registrations', async (req, res) => {
     try {
