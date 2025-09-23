@@ -134,6 +134,9 @@ export default function AdminDashboard() {
       case 'contacts':
         setLocation('/admin/contacts');
         break;
+      case 'courses':
+        setLocation('/admin/courses');
+        break;
       case 'analytics':
         // TODO: implémenter analytics
         break;
@@ -156,6 +159,7 @@ export default function AdminDashboard() {
     { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, active: true },
     { id: 'registrations', label: 'Inscriptions', icon: BookOpen, badge: stats?.totalRegistrations },
     { id: 'contacts', label: 'Contacts', icon: MessageSquare, badge: stats?.totalContacts },
+    { id: 'courses', label: 'Formations', icon: BookOpen },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'email-auth', label: 'Authentification Email', icon: Shield },
     { id: 'spf', label: 'Config SPF', icon: Shield },
