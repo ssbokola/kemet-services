@@ -65,6 +65,9 @@ export const users = pgTable("users", {
   isTemporaryPassword: boolean("is_temporary_password").default(false),
   lastLoginAt: timestamp("last_login_at"),
   passwordResetAt: timestamp("password_reset_at"),
+  // Token de configuration de mot de passe
+  passwordResetToken: text("password_reset_token"),
+  passwordResetTokenExpiry: timestamp("password_reset_token_expiry"),
 });
 
 // Schema pour la création d'utilisateurs locaux

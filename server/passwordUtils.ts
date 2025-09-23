@@ -2,16 +2,20 @@
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 
-// Génère un mot de passe temporaire sécurisé
+// Génère un mot de passe temporaire cryptographiquement sécurisé
 export function generateTemporaryPassword(): string {
-  const adjectives = ['Fort', 'Rapid', 'Sage', 'Noble', 'Vif', 'Clair', 'Brave', 'Douce'];
-  const nouns = ['Pharma', 'Expert', 'Medic', 'Sante', 'Care', 'Plus', 'Pro', 'Elite'];
-  const numbers = Math.floor(Math.random() * 999) + 100;
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789@#$%&*!';
+  const length = 16;
+  let password = '';
   
-  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  // Utiliser randomBytes pour une génération sécurisée
+  const randomBytesArray = randomBytes(length);
   
-  return `${adjective}${noun}${numbers}!`;
+  for (let i = 0; i < length; i++) {
+    password += chars[randomBytesArray[i] % chars.length];
+  }
+  
+  return password;
 }
 
 // Hash un mot de passe avec bcrypt

@@ -15,6 +15,13 @@ interface ParticipantCredentials {
   temporaryPassword: string;
 }
 
+interface ParticipantSetup {
+  email: string;
+  firstName: string;
+  lastName: string;
+  resetToken: string;
+}
+
 class EmailService {
   private transporter: nodemailer.Transporter;
 
@@ -141,6 +148,131 @@ Nos formations disponibles :
 - Formations Stock - Optimisation des inventaires
 - Formations RH - Management et développement des équipes
 - Formations Auxiliaires - Support technique et maintenance
+
+Pour toute question, contactez-nous.
+
+Cordialement,
+L'équipe Kemet Services
+Experts en formation pharmaceutique
+
+© 2024 Kemet Services - Formation et conseil pharmaceutique en Côte d'Ivoire
+`;
+
+    return await this.sendEmail({
+      to: email,
+      subject,
+      text: textContent,
+      html: htmlContent,
+    });
+  }
+
+  async sendParticipantSetupLink(setup: ParticipantSetup): Promise<boolean> {
+    const { email, firstName, lastName, resetToken } = setup;
+    
+    // Utiliser l'URL de base depuis les variables d'environnement ou fallback localhost pour dev
+    const baseUrl = process.env.BASE_URL || process.env.REPLIT_DEV_DOMAIN 
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+      : 'http://localhost:5000';
+    
+    const setupLink = `${baseUrl}/setup-password?token=${resetToken}`;
+    
+    const subject = 'Configurez votre accès à la plateforme Kemet Services';
+    
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration de votre compte</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #0d9488; color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+        .content { background-color: #f8fafc; padding: 30px; border-radius: 0 0 8px 8px; }
+        .setup-box { background-color: white; padding: 20px; border-radius: 8px; border-left: 4px solid #0d9488; margin: 20px 0; }
+        .button { background-color: #0d9488; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 20px 0; text-align: center; }
+        .footer { text-align: center; color: #64748b; font-size: 14px; margin-top: 30px; }
+        .warning { background-color: #fef3c7; border: 1px solid #d97706; padding: 15px; border-radius: 6px; margin: 15px 0; }
+        .secure { background-color: #dcfce7; border: 1px solid #16a34a; padding: 15px; border-radius: 6px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0;">Bienvenue sur Kemet Services</h1>
+            <p style="margin: 10px 0 0 0;">Plateforme de formation pharmaceutique professionnelle</p>
+        </div>
+        
+        <div class="content">
+            <h2>Bonjour ${firstName} ${lastName},</h2>
+            
+            <p>Votre compte participant a été créé avec succès sur la plateforme de formation Kemet Services.</p>
+            
+            <div class="setup-box">
+                <h3 style="color: #0d9488; margin-top: 0;">Configuration de votre compte</h3>
+                <p>Pour accéder à votre espace de formation, vous devez d'abord configurer votre mot de passe personnel.</p>
+                <p><strong>Votre email de connexion :</strong> ${email}</p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <a href="${setupLink}" class="button">Configurer mon mot de passe</a>
+                </div>
+            </div>
+            
+            <div class="secure">
+                <strong>🔒 Sécurisé :</strong> Ce lien de configuration est unique et sécurisé. Il expire automatiquement après 24 heures pour votre protection.
+            </div>
+            
+            <p>Une fois votre mot de passe configuré, vous aurez accès à toutes nos formations spécialisées :</p>
+            
+            <ul>
+                <li>📊 <strong>Formations Qualité</strong> - Amélioration continue et certification</li>
+                <li>💰 <strong>Formations Finance</strong> - Gestion financière et rentabilité</li>
+                <li>📦 <strong>Formations Stock</strong> - Optimisation des inventaires</li>
+                <li>👥 <strong>Formations RH</strong> - Management et développement des équipes</li>
+                <li>🔧 <strong>Formations Auxiliaires</strong> - Support technique et maintenance</li>
+            </ul>
+            
+            <div class="warning">
+                <strong>⚠️ Important :</strong> Si ce lien expire avant que vous ne puissiez configurer votre compte, contactez-nous pour en recevoir un nouveau.
+            </div>
+            
+            <p>Si vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter.</p>
+            
+            <p>Cordialement,<br>
+            <strong>L'équipe Kemet Services</strong><br>
+            Experts en formation pharmaceutique</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 Kemet Services - Formation et conseil pharmaceutique en Côte d'Ivoire</p>
+            <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre directement.</p>
+        </div>
+    </div>
+</body>
+</html>`;
+
+    const textContent = `
+Bonjour ${firstName} ${lastName},
+
+Votre compte participant a été créé avec succès sur la plateforme de formation Kemet Services.
+
+CONFIGURATION DE VOTRE COMPTE
+Pour accéder à votre espace de formation, configurez votre mot de passe personnel :
+${setupLink}
+
+Votre email de connexion : ${email}
+
+SÉCURISÉ : Ce lien de configuration est unique et expire après 24 heures.
+
+Nos formations disponibles après configuration :
+- Formations Qualité - Amélioration continue et certification
+- Formations Finance - Gestion financière et rentabilité  
+- Formations Stock - Optimisation des inventaires
+- Formations RH - Management et développement des équipes
+- Formations Auxiliaires - Support technique et maintenance
+
+IMPORTANT : Si ce lien expire, contactez-nous pour en recevoir un nouveau.
 
 Pour toute question, contactez-nous.
 

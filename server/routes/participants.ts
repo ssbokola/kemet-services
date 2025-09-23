@@ -5,7 +5,7 @@ import { db } from '../db';
 import { users, insertLocalUserSchema } from '@shared/schema';
 import { requireAdminAuth } from '../auth';
 import { emailService } from '../emailService';
-import { generateTemporaryPassword, hashPassword } from '../passwordUtils';
+import { generateResetToken, hashPassword } from '../passwordUtils';
 import { eq, and, or } from 'drizzle-orm';
 
 const router = Router();
@@ -39,20 +39,22 @@ router.post('/', requireAdminAuth(), async (req, res) => {
       });
     }
 
-    // Générer un mot de passe temporaire
-    const temporaryPassword = generateTemporaryPassword();
-    const hashedPassword = await hashPassword(temporaryPassword);
+    // Générer un token de configuration sécurisé (pas de mot de passe initial)
+    const resetToken = generateResetToken();
+    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 heures
 
     // Créer l'utilisateur dans la base de données
     const newUserData = {
       email: participantData.email,
       firstName: participantData.firstName,
       lastName: participantData.lastName,
-      password: hashedPassword,
+      password: null, // Pas de mot de passe initial - sera configuré via le lien
       authType: 'local' as const,
       role: 'participant' as const,
       status: 'active' as const,
-      isTemporaryPassword: true,
+      isTemporaryPassword: true, // Nécessite configuration
+      passwordResetToken: resetToken,
+      passwordResetTokenExpiry: tokenExpiry,
     };
 
     // Insérer l'utilisateur (gérer les colonnes existantes vs nouvelles)
@@ -66,6 +68,8 @@ router.post('/', requireAdminAuth(), async (req, res) => {
       authType: 'local',
       status: 'active',
       isTemporaryPassword: true,
+      passwordResetToken: newUserData.passwordResetToken,
+      passwordResetTokenExpiry: newUserData.passwordResetTokenExpiry,
     };
 
     const [newUser] = await db
@@ -73,13 +77,13 @@ router.post('/', requireAdminAuth(), async (req, res) => {
       .values(insertData)
       .returning();
 
-    // Envoyer l'email avec les identifiants si demandé
+    // Envoyer l'email avec le lien de configuration si demandé
     if (participantData.sendEmail) {
-      const emailSent = await emailService.sendParticipantCredentials({
+      const emailSent = await emailService.sendParticipantSetupLink({
         email: participantData.email,
         firstName: participantData.firstName,
         lastName: participantData.lastName,
-        temporaryPassword,
+        resetToken,
       });
 
       if (!emailSent) {
@@ -95,7 +99,7 @@ router.post('/', requireAdminAuth(), async (req, res) => {
       message: 'Participant créé avec succès',
       participant: userWithoutPassword,
       emailSent: participantData.sendEmail,
-      temporaryPassword: participantData.sendEmail ? undefined : temporaryPassword, // Seulement si email pas envoyé
+      setupRequired: true, // Indique qu'une configuration de mot de passe est nécessaire
     });
 
   } catch (error) {
