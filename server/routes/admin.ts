@@ -13,7 +13,11 @@ import {
   admins, 
   trainingRegistrations, 
   contactRequests,
-  insertContactRequestSchema 
+  insertContactRequestSchema,
+  courses,
+  courseModules,
+  courseLessons,
+  insertCourseSchema
 } from '@shared/schema';
 
 const router = Router();
@@ -480,6 +484,382 @@ router.patch('/contacts/:id/status', requireAdminAuth(), async (req, res) => {
     res.json({ message: 'Statut mis à jour' });
   } catch (error) {
     console.error('Erreur lors de la mise à jour:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// ==========================================
+// GESTION DES FORMATIONS (COURSES, MODULES, LESSONS)
+// ==========================================
+
+// GET /api/admin/courses - Liste des cours pour l'admin
+router.get('/courses', requireAdminAuth(), async (req, res) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const search = req.query.search as string || '';
+    const category = req.query.category as string || 'all';
+    const published = req.query.published as string || 'all';
+    
+    const offset = (page - 1) * limit;
+    
+    // Construire la requête avec filtres
+    let whereClause: any = undefined;
+    
+    // Construire les conditions WHERE
+    const conditions = [];
+    if (search) {
+      conditions.push(sql`${courses.title} ILIKE ${`%${search}%`} OR ${courses.description} ILIKE ${`%${search}%`}`);
+    }
+    if (category !== 'all') {
+      conditions.push(eq(courses.category, category));
+    }
+    if (published !== 'all') {
+      conditions.push(eq(courses.isPublished, published === 'true'));
+    }
+    
+    if (conditions.length > 0) {
+      whereClause = conditions.length === 1 
+        ? conditions[0]
+        : and(...conditions);
+    }
+    
+    // Appliquer les filtres
+    const query = whereClause 
+      ? db.select().from(courses).where(whereClause)
+      : db.select().from(courses);
+    
+    const countQuery = whereClause
+      ? db.select({ count: count() }).from(courses).where(whereClause)
+      : db.select({ count: count() }).from(courses);
+    
+    const [coursesData, totalResult] = await Promise.all([
+      query.orderBy(desc(courses.createdAt)).limit(limit).offset(offset),
+      countQuery
+    ]);
+    
+    const total = totalResult[0]?.count || 0;
+    const pages = Math.ceil(total / limit);
+    
+    res.json({
+      courses: coursesData,
+      pagination: { page, limit, total, pages }
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des cours:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// POST /api/admin/courses - Créer un nouveau cours
+router.post('/courses', requireAdminAuth(), async (req, res) => {
+  try {
+    const courseData = insertCourseSchema.parse(req.body);
+    
+    // Vérifier que le slug est unique
+    const existingCourse = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.slug, courseData.slug))
+      .limit(1);
+    
+    if (existingCourse.length > 0) {
+      return res.status(400).json({ error: 'Ce slug existe déjà' });
+    }
+    
+    const [newCourse] = await db
+      .insert(courses)
+      .values(courseData)
+      .returning();
+    
+    res.status(201).json(newCourse);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la création du cours:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// GET /api/admin/courses/:id - Détails d'un cours pour l'admin
+router.get('/courses/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const [course] = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.id, id));
+    
+    if (!course) {
+      return res.status(404).json({ error: 'Cours introuvable' });
+    }
+    
+    // Récupérer les modules et leçons associés
+    const modules = await db
+      .select()
+      .from(courseModules)
+      .where(eq(courseModules.courseId, id))
+      .orderBy(asc(courseModules.order));
+    
+    const modulesWithLessons = await Promise.all(
+      modules.map(async (module) => {
+        const lessons = await db
+          .select()
+          .from(courseLessons)
+          .where(eq(courseLessons.moduleId, module.id))
+          .orderBy(asc(courseLessons.order));
+        
+        return { ...module, lessons };
+      })
+    );
+    
+    res.json({ 
+      ...course, 
+      modules: modulesWithLessons 
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération du cours:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// PUT /api/admin/courses/:id - Mettre à jour un cours
+router.put('/courses/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const courseData = insertCourseSchema.parse(req.body);
+    
+    // Vérifier que le cours existe
+    const [existingCourse] = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.id, id));
+    
+    if (!existingCourse) {
+      return res.status(404).json({ error: 'Cours introuvable' });
+    }
+    
+    // Vérifier l'unicité du slug (si changé)
+    if (courseData.slug !== existingCourse.slug) {
+      const courseWithSlug = await db
+        .select()
+        .from(courses)
+        .where(and(eq(courses.slug, courseData.slug), sql`${courses.id} != ${id}`))
+        .limit(1);
+      
+      if (courseWithSlug.length > 0) {
+        return res.status(400).json({ error: 'Ce slug existe déjà' });
+      }
+    }
+    
+    const [updatedCourse] = await db
+      .update(courses)
+      .set({ ...courseData, updatedAt: new Date() })
+      .where(eq(courses.id, id))
+      .returning();
+    
+    res.json(updatedCourse);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la mise à jour du cours:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// DELETE /api/admin/courses/:id - Supprimer un cours
+router.delete('/courses/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Vérifier que le cours existe
+    const [existingCourse] = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.id, id));
+    
+    if (!existingCourse) {
+      return res.status(404).json({ error: 'Cours introuvable' });
+    }
+    
+    // Supprimer le cours (cascade supprimera modules et leçons)
+    await db.delete(courses).where(eq(courses.id, id));
+    
+    res.json({ message: 'Cours supprimé avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la suppression du cours:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// ==========================================
+// GESTION DES MODULES DE COURS
+// ==========================================
+
+// Schéma de validation pour les modules
+const moduleSchema = z.object({
+  courseId: z.string().min(1, 'ID du cours requis'),
+  title: z.string().trim().min(1, 'Titre requis'),
+  description: z.string().optional(),
+  order: z.coerce.number().min(0, 'L\'ordre doit être positif'),
+  isPublished: z.boolean().default(false)
+});
+
+// POST /api/admin/modules - Créer un module
+router.post('/modules', requireAdminAuth(), async (req, res) => {
+  try {
+    const moduleData = moduleSchema.parse(req.body);
+    
+    // Vérifier que le cours existe
+    const [course] = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.id, moduleData.courseId));
+    
+    if (!course) {
+      return res.status(404).json({ error: 'Cours introuvable' });
+    }
+    
+    const [newModule] = await db
+      .insert(courseModules)
+      .values(moduleData)
+      .returning();
+    
+    res.status(201).json(newModule);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la création du module:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// PUT /api/admin/modules/:id - Mettre à jour un module
+router.put('/modules/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const moduleData = moduleSchema.omit({ courseId: true }).parse(req.body);
+    
+    const [updatedModule] = await db
+      .update(courseModules)
+      .set(moduleData)
+      .where(eq(courseModules.id, id))
+      .returning();
+    
+    if (!updatedModule) {
+      return res.status(404).json({ error: 'Module introuvable' });
+    }
+    
+    res.json(updatedModule);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la mise à jour du module:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// DELETE /api/admin/modules/:id - Supprimer un module
+router.delete('/modules/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    await db.delete(courseModules).where(eq(courseModules.id, id));
+    
+    res.json({ message: 'Module supprimé avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la suppression du module:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// ==========================================
+// GESTION DES LEÇONS
+// ==========================================
+
+// Schéma de validation pour les leçons
+const lessonSchema = z.object({
+  moduleId: z.string().min(1, 'ID du module requis'),
+  title: z.string().trim().min(1, 'Titre requis'),
+  content: z.string().trim().min(1, 'Contenu requis'),
+  videoUrl: z.string().url().optional().or(z.literal('')),
+  duration: z.coerce.number().min(0, 'La durée doit être positive').optional(),
+  order: z.coerce.number().min(0, 'L\'ordre doit être positif'),
+  isPublished: z.boolean().default(false),
+  isFree: z.boolean().default(false)
+});
+
+// POST /api/admin/lessons - Créer une leçon
+router.post('/lessons', requireAdminAuth(), async (req, res) => {
+  try {
+    const lessonData = lessonSchema.parse(req.body);
+    
+    // Vérifier que le module existe
+    const [module] = await db
+      .select()
+      .from(courseModules)
+      .where(eq(courseModules.id, lessonData.moduleId));
+    
+    if (!module) {
+      return res.status(404).json({ error: 'Module introuvable' });
+    }
+    
+    const [newLesson] = await db
+      .insert(courseLessons)
+      .values(lessonData)
+      .returning();
+    
+    res.status(201).json(newLesson);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la création de la leçon:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// PUT /api/admin/lessons/:id - Mettre à jour une leçon
+router.put('/lessons/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const lessonData = lessonSchema.omit({ moduleId: true }).parse(req.body);
+    
+    const [updatedLesson] = await db
+      .update(courseLessons)
+      .set(lessonData)
+      .where(eq(courseLessons.id, id))
+      .returning();
+    
+    if (!updatedLesson) {
+      return res.status(404).json({ error: 'Leçon introuvable' });
+    }
+    
+    res.json(updatedLesson);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la mise à jour de la leçon:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// DELETE /api/admin/lessons/:id - Supprimer une leçon
+router.delete('/lessons/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    await db.delete(courseLessons).where(eq(courseLessons.id, id));
+    
+    res.json({ message: 'Leçon supprimée avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la leçon:', error);
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 });
