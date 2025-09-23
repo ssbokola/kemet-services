@@ -10,6 +10,7 @@ import adminRoutes from "./routes/admin";
 import spfRoutes from "./routes/spf";
 import dkimRoutes from "./routes/dkim";
 import trainingRoutes from "./routes/training";
+import participantRoutes from "./routes/participants";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 // Authentification Replit Auth - blueprint:javascript_log_in_with_replit
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -49,6 +50,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Admin routes
   app.use('/api/admin', adminRoutes);
+  
+  // Participant management routes (admin protected)
+  app.use('/api/admin/participants', participantRoutes);
   
   // SPF configuration routes
   app.use('/api/spf', spfRoutes);
