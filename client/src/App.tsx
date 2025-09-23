@@ -28,6 +28,7 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminInscriptions from "@/pages/admin/AdminInscriptions";
 import AdminContacts from "@/pages/admin/AdminContacts";
 import AdminCourses from "@/pages/admin/AdminCourses";
+import AdminParticipants from "@/pages/admin/AdminParticipants";
 import SPFConfig from "@/pages/admin/SPFConfig";
 import DKIMConfig from "@/pages/admin/DKIMConfig";
 import EmailAuthOverview from "@/pages/admin/EmailAuthOverview";
@@ -58,6 +59,7 @@ function Router() {
       <Route path="/admin/registrations" component={AdminInscriptions} />
       <Route path="/admin/contacts" component={AdminContacts} />
       <Route path="/admin/courses" component={AdminCourses} />
+      <Route path="/admin/participants" component={AdminParticipants} />
       <Route path="/admin/spf" component={SPFConfig} />
       <Route path="/admin/dkim" component={DKIMConfig} />
       <Route path="/admin/email-auth" component={EmailAuthOverview} />
