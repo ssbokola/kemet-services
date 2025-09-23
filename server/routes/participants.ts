@@ -57,11 +57,15 @@ router.post('/', requireAdminAuth(), async (req, res) => {
 
     // Insérer l'utilisateur (gérer les colonnes existantes vs nouvelles)
     const insertData: any = {
+      username: newUserData.email, // Utiliser l'email comme username
       email: newUserData.email,
       firstName: newUserData.firstName, // Colonne existante
       lastName: newUserData.lastName,   // Colonne existante
       password: newUserData.password,
       role: newUserData.role,
+      authType: 'local',
+      status: 'active',
+      isTemporaryPassword: true,
     };
 
     const [newUser] = await db

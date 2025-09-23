@@ -53,13 +53,13 @@ export const users = pgTable("users", {
   password: text("password"),
   // Replit Auth fields (existing column names)
   email: varchar("email").unique(),
-  firstName: varchar("firstname"),
-  lastName: varchar("lastname"),
+  firstName: varchar("firstname"), // Note: column name is "firstname"
+  lastName: varchar("lastname"),   // Note: column name is "lastname"
   profileImageUrl: varchar("profileimageurl"),
   role: text("role").notNull().default('participant'), // participant, admin
   createdAt: timestamp("createdat").defaultNow(),
   updatedAt: timestamp("updatedat").defaultNow(),
-  // Local auth fields (new)
+  // Local auth fields (new columns to be added)
   authType: text("auth_type").notNull().default('replit'), // 'replit', 'local'
   status: text("status").notNull().default('active'), // 'active', 'inactive', 'suspended'
   isTemporaryPassword: boolean("is_temporary_password").default(false),
