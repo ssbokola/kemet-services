@@ -23,7 +23,7 @@ class EmailService {
       throw new Error("Variables d'environnement GMAIL_USER et GMAIL_APP_PASSWORD requises");
     }
 
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.GMAIL_USER,

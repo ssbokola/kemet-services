@@ -51,16 +51,55 @@ export const users = pgTable("users", {
   // Existing fields (legacy)
   username: text("username").unique(),
   password: text("password"),
-  // Replit Auth fields
+  // Replit Auth fields (existing column names)
   email: varchar("email").unique(),
-  firstName: varchar("first_name"),
-  lastName: varchar("last_name"),
-  profileImageUrl: varchar("profile_image_url"),
+  firstName: varchar("firstname"),
+  lastName: varchar("lastname"),
+  profileImageUrl: varchar("profileimageurl"),
   role: text("role").notNull().default('participant'), // participant, admin
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("createdat").defaultNow(),
+  updatedAt: timestamp("updatedat").defaultNow(),
+  // Local auth fields (new)
+  authType: text("auth_type").notNull().default('replit'), // 'replit', 'local'
+  status: text("status").notNull().default('active'), // 'active', 'inactive', 'suspended'
+  isTemporaryPassword: boolean("is_temporary_password").default(false),
+  lastLoginAt: timestamp("last_login_at"),
+  passwordResetAt: timestamp("password_reset_at"),
 });
 
+// Schema pour la création d'utilisateurs locaux
+export const insertLocalUserSchema = createInsertSchema(users)
+  .omit({ id: true, createdAt: true, updatedAt: true, lastLoginAt: true, passwordResetAt: true })
+  .extend({
+    email: z.string().trim().email('Adresse email invalide'),
+    firstName: z.string().trim().min(2, 'Le prénom doit contenir au moins 2 caractères'),
+    lastName: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
+    password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
+    authType: z.enum(['replit', 'local']).default('local'),
+    status: z.enum(['active', 'inactive', 'suspended']).default('active'),
+    role: z.enum(['participant', 'admin']).default('participant'),
+    isTemporaryPassword: z.boolean().default(true),
+  });
+
+// Schema pour la connexion locale
+export const localLoginSchema = z.object({
+  email: z.string().trim().email('Adresse email invalide'),
+  password: z.string().min(1, 'Le mot de passe est requis'),
+});
+
+// Schema pour le changement de mot de passe
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, 'Le mot de passe actuel est requis'),
+  newPassword: z.string().min(8, 'Le nouveau mot de passe doit contenir au moins 8 caractères'),
+  confirmPassword: z.string().min(1, 'La confirmation du mot de passe est requise'),
+}).refine(data => data.newPassword === data.confirmPassword, {
+  message: "Les mots de passe ne correspondent pas",
+  path: ["confirmPassword"],
+});
+
+export type InsertLocalUser = z.infer<typeof insertLocalUserSchema>;
+export type LocalLogin = z.infer<typeof localLoginSchema>;
+export type ChangePassword = z.infer<typeof changePasswordSchema>;
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
