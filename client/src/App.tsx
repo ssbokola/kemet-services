@@ -12,7 +12,7 @@ import { HelmetProvider } from "react-helmet-async";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Home from "@/pages/Home";
 import Formations from "@/pages/Formations";
-import FormationsEnAction from "@/pages/FormationsEnAction";
+import Galerie from "@/pages/Galerie";
 import Diagnostic from "@/pages/Diagnostic";
 import Consulting from "@/pages/Consulting";
 import APropos from "@/pages/APropos";
@@ -45,7 +45,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/formations" component={Formations} />
-      <Route path="/formations-en-action" component={FormationsEnAction} />
+      <Route path="/galerie" component={Galerie} />
       <Route path="/diagnostic" component={Diagnostic} />
       <Route path="/consulting" component={Consulting} />
       <Route path="/a-propos" component={APropos} />
