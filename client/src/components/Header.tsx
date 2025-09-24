@@ -4,6 +4,7 @@ import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 const navigation = [
   { name: 'Accueil', href: '/' },
   { name: 'Formations', href: '/formations' },
+  { name: 'Formations en Action', href: '/formations-en-action' },
   { name: 'Consulting', href: '/consulting' },
   { name: 'À propos', href: '/a-propos' },
   { name: 'Ressources', href: '/ressources' },
