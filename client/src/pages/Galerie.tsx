@@ -132,16 +132,16 @@ export default function Galerie() {
 
       <Header />
       
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-teal-50 dark:from-slate-900 dark:to-slate-800">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-primary/10 dark:from-slate-900 dark:to-slate-800">
         {/* Hero Section */}
         <section className="pt-24 pb-16">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-4xl mx-auto">
               <div className="flex items-center justify-center gap-3 mb-6">
-                <Camera className="h-12 w-12 text-teal-600 dark:text-teal-400" />
+                <Camera className="h-12 w-12 text-primary dark:text-primary/80" />
                 <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
                   Galerie
-                  <span className="text-teal-600 dark:text-teal-400"> Médias</span>
+                  <span className="text-primary dark:text-primary/80"> Médias</span>
                 </h1>
               </div>
               <p className="text-xl text-slate-600 dark:text-slate-300 mb-8">
@@ -163,7 +163,7 @@ export default function Galerie() {
                     {/* Category Header */}
                     <div className="text-center">
                       <div className="flex items-center justify-center gap-3 mb-4">
-                        <IconComponent className="h-8 w-8 text-teal-600 dark:text-teal-400" />
+                        <IconComponent className="h-8 w-8 text-primary dark:text-primary/80" />
                         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
                           {category.titre}
                         </h2>
@@ -179,7 +179,7 @@ export default function Galerie() {
                         <Card key={media.id} className="overflow-hidden shadow-xl">
                           <CardContent className="p-0">
                             {/* Media Header */}
-                            <div className="bg-teal-600 dark:bg-teal-700 text-white p-8">
+                            <div className="bg-primary dark:bg-primary/90 text-white p-8">
                               <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
                                 <h3 className="text-2xl md:text-3xl font-bold">
                                   {media.titre}
@@ -201,7 +201,7 @@ export default function Galerie() {
                                   </div>
                                 )}
                               </div>
-                              <p className="text-lg text-teal-50 mb-4">
+                              <p className="text-lg text-primary-foreground/90 mb-4">
                                 {'description' in media ? media.description : ''}
                               </p>
                               {'thematiques' in media && media.thematiques && (
@@ -241,7 +241,7 @@ export default function Galerie() {
                               <div className="bg-slate-50 dark:bg-slate-800 p-8">
                                 <div className="grid md:grid-cols-3 gap-6 text-center">
                                   <div>
-                                    <div className="text-3xl font-bold text-teal-600 dark:text-teal-400 mb-2">
+                                    <div className="text-3xl font-bold text-primary dark:text-primary/80 mb-2">
                                       {media.participants.includes('+') ? media.participants.split('+')[0] + '+' : media.participants}
                                     </div>
                                     <div className="text-slate-600 dark:text-slate-300 font-medium">
@@ -249,7 +249,7 @@ export default function Galerie() {
                                     </div>
                                   </div>
                                   <div>
-                                    <div className="text-3xl font-bold text-teal-600 dark:text-teal-400 mb-2">
+                                    <div className="text-3xl font-bold text-primary dark:text-primary/80 mb-2">
                                       {media.thematiques.length}
                                     </div>
                                     <div className="text-slate-600 dark:text-slate-300 font-medium">
@@ -257,7 +257,7 @@ export default function Galerie() {
                                     </div>
                                   </div>
                                   <div>
-                                    <div className="text-3xl font-bold text-teal-600 dark:text-teal-400 mb-2">
+                                    <div className="text-3xl font-bold text-primary dark:text-primary/80 mb-2">
                                       1
                                     </div>
                                     <div className="text-slate-600 dark:text-slate-300 font-medium">
@@ -279,7 +279,7 @@ export default function Galerie() {
         </section>
 
         {/* Call to Action */}
-        <section className="bg-teal-600 dark:bg-teal-700 py-16">
+        <section className="bg-primary dark:bg-primary/90 py-16">
           <div className="container mx-auto px-4 text-center">
             <div className="flex items-center justify-center gap-3 mb-6">
               <Target className="h-10 w-10 text-white" />
@@ -287,14 +287,14 @@ export default function Galerie() {
                 Prêt à Nous Rejoindre ?
               </h2>
             </div>
-            <p className="text-xl text-teal-50 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-primary-foreground/90 mb-8 max-w-3xl mx-auto">
               Rejoignez notre communauté de pharmaciens qui transforment leurs pratiques grâce à nos formations spécialisées. 
               Des experts reconnus, des méthodes éprouvées, une approche professionnelle.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/formations">
                 <button
-                  className="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-teal-50 transition-colors duration-200"
+                  className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-primary/10 transition-colors duration-200"
                   data-testid="button-formations"
                 >
                   Découvrir Nos Formations
@@ -302,7 +302,7 @@ export default function Galerie() {
               </Link>
               <Link href="/contact">
                 <button
-                  className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-teal-600 transition-colors duration-200"
+                  className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary transition-colors duration-200"
                   data-testid="button-contact"
                 >
                   Nous Contacter
