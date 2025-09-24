@@ -3,6 +3,8 @@ import { Link } from 'wouter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Users, MapPin, Camera, Award, Target } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import formationPhoto1 from '@assets/IMG-20250923-WA0140_1758720885449.jpg';
 import formationPhoto2 from '@assets/IMG-20250923-WA0143_1758720885450.jpg';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
@@ -128,6 +130,8 @@ export default function Galerie() {
         <meta property="og:description" content="Galerie photo et médias de Kemet Services. Découvrez nos formations professionnelles et notre expertise." />
       </Helmet>
 
+      <Header />
+      
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-teal-50 dark:from-slate-900 dark:to-slate-800">
         {/* Hero Section */}
         <section className="pt-24 pb-16">
@@ -308,6 +312,8 @@ export default function Galerie() {
           </div>
         </section>
       </div>
+
+      <Footer />
     </>
   );
 }
