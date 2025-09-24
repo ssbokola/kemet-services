@@ -26,7 +26,7 @@ export default function Galerie() {
             {
               url: formationPhoto1,
               alt: "Formateurs Kemet Services devant le banner de formation",
-              description: "Nos experts formateurs prêts à partager leur expertise en gestion pharmaceutique"
+              description: "Le formateur et une ainée de la profession, ravie"
             },
             {
               url: formationPhoto2,
