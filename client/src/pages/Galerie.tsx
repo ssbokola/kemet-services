@@ -16,9 +16,9 @@ export default function Galerie() {
       icon: Users,
       medias: [
         {
-          id: 'formation-stock-sept2024',
+          id: 'formation-stock-sept2025',
           titre: "Formation Réduction des Écarts de Stock",
-          date: "Septembre 2024",
+          date: "Septembre 2025",
           lieu: "Abidjan, Côte d'Ivoire",
           participants: "25+ pharmaciens",
           thematiques: ["Audit des stocks", "Méthodes de contrôle", "Optimisation des processus", "Outils de gestion"],
