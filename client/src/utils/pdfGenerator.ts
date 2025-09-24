@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import { formations, mainCategories, pharmacienSubCategories } from '@shared/formations';
+import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 export const generateCatalogPDF = () => {
   const pdf = new jsPDF();
@@ -24,6 +25,21 @@ export const generateCatalogPDF = () => {
     }
     return false;
   };
+  
+  // Add Kemet Services logo
+  try {
+    // Calculate logo dimensions (proportional scaling)
+    const logoWidth = 30;
+    const logoHeight = 20; // Approximation for the logo ratio
+    
+    // Position logo at top-right of the page
+    pdf.addImage(logoImage, 'PNG', pageWidth - margin - logoWidth, yPos, logoWidth, logoHeight);
+    
+    // Add some space below the logo
+    yPos += 5;
+  } catch (error) {
+    console.log('Logo could not be added to PDF:', error);
+  }
   
   // Header with title and branding
   pdf.setFontSize(24);

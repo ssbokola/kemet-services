@@ -44,9 +44,9 @@ export default function Galerie() {
       icon: Calendar,
       medias: [
         {
-          id: 'formation-tresorerie-mai2024',
+          id: 'formation-tresorerie-mai2025',
           titre: "Formation Gestion de Trésorerie",
-          date: "28 mai 2024",
+          date: "28 mai 2025",
           lieu: "Abidjan, Côte d'Ivoire",
           participants: "Pharmaciens titulaires",
           description: "Session intensive sur la gestion financière et la trésorerie pour pharmacies d'officine",

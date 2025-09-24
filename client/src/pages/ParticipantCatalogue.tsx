@@ -10,6 +10,7 @@ import { BookOpen, Clock, Star, Users, Filter, Search } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 export default function ParticipantCatalogue() {
   const { toast } = useToast();
@@ -169,9 +170,17 @@ export default function ParticipantCatalogue() {
               </Link>
             </div>
             
-            <h1 className="text-xl font-bold text-primary" data-testid="text-page-title">
-              Catalogue des Formations
-            </h1>
+            <div className="flex items-center gap-3">
+              <img 
+                src={logoImage} 
+                alt="Kemet Services" 
+                className="h-8 w-auto"
+                data-testid="img-logo-participant-catalog"
+              />
+              <h1 className="text-xl font-bold text-primary" data-testid="text-page-title">
+                Catalogue des Formations
+              </h1>
+            </div>
           </div>
         </div>
       </header>

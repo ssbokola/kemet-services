@@ -9,6 +9,7 @@ import { useLocation } from 'wouter';
 import { formations, mainCategories, pharmacienSubCategories } from '@shared/formations';
 import { generateCatalogPDF } from '@/utils/pdfGenerator';
 import { FormationsSEO } from '@/components/SEO';
+import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 
 export default function Formations() {
   const [selectedMainCategory, setSelectedMainCategory] = useState('all');
@@ -61,9 +62,17 @@ export default function Formations() {
         {/* Hero Section */}
         <section className="py-16 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-6">
-              Catalogue de formations
-            </h1>
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <img 
+                src={logoImage} 
+                alt="Kemet Services" 
+                className="h-16 w-auto"
+                data-testid="img-logo-catalog"
+              />
+              <h1 className="text-4xl md:text-5xl font-bold font-serif text-foreground">
+                Catalogue de formations
+              </h1>
+            </div>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Formations spécialisées pour pharmaciens et personnel d'officine en Côte d'Ivoire
             </p>
