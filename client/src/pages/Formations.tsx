@@ -73,9 +73,19 @@ export default function Formations() {
                 Catalogue de formations
               </h1>
             </div>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
               Formations spécialisées pour pharmaciens et personnel d'officine en Côte d'Ivoire
             </p>
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <span className="text-sm text-muted-foreground">Contact direct :</span>
+              <a 
+                href="mailto:ssbokola@gmail.com" 
+                className="text-primary hover:underline font-medium"
+                data-testid="link-contact-catalog"
+              >
+                ssbokola@gmail.com
+              </a>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 onClick={generateCatalogPDF}

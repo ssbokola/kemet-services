@@ -18,39 +18,14 @@ export default function ParticipantCatalogue() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [levelFilter, setLevelFilter] = useState("all");
-
-  // Redirect if not authenticated - blueprint:javascript_log_in_with_replit
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Connexion requise",
-        description: "Vous devez être connecté pour accéder au catalogue.",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated || !user) {
-    return null;
-  }
-
+  
+  // All hooks must be called at the top level
   const queryClient = useQueryClient();
 
-  // Fetch available courses from API - Remove enabled condition to fix hooks order
+  // Fetch available courses from API - Always call hooks unconditionally
   const { data: coursesData = [], isLoading: coursesLoading, error: coursesError } = useQuery({
-    queryKey: ['/api/training/courses']
+    queryKey: ['/api/training/courses'],
+    enabled: isAuthenticated && !isLoading // Only fetch when authenticated
   });
 
   // Enrollment mutation
@@ -79,6 +54,33 @@ export default function ParticipantCatalogue() {
       });
     }
   });
+
+  // Redirect if not authenticated - blueprint:javascript_log_in_with_replit
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast({
+        title: "Connexion requise",
+        description: "Vous devez être connecté pour accéder au catalogue.",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 500);
+      return;
+    }
+  }, [isAuthenticated, isLoading, toast]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user) {
+    return null;
+  }
 
   const allCourses = coursesData.map((course: any) => ({
     ...course,
@@ -190,7 +192,17 @@ export default function ParticipantCatalogue() {
         
         {/* Filters */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6">Explorez nos formations spécialisées</h2>
+          <h2 className="text-2xl font-bold mb-4">Explorez nos formations spécialisées</h2>
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <span className="text-sm text-muted-foreground">Contact formateur :</span>
+            <a 
+              href="mailto:ssbokola@gmail.com" 
+              className="text-primary hover:underline font-medium"
+              data-testid="link-contact-participant-catalog"
+            >
+              ssbokola@gmail.com
+            </a>
+          </div>
           
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             {/* Search */}
