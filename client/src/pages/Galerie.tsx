@@ -10,7 +10,7 @@ import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 export default function Galerie() {
   const mediaCategories = [
     {
-      id: 'formations',
+      id: 'formations-recentes',
       titre: "Nos Formations en Action",
       description: "Découvrez nos sessions de formation professionnelle à travers des moments authentiques",
       icon: Users,
@@ -32,6 +32,66 @@ export default function Galerie() {
               url: formationPhoto2,
               alt: "Photo de groupe avec tous les pharmaciens participants",
               description: "Participants pharmaciens lors de notre formation sur la réduction des écarts de stock"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'formations-anterieures',
+      titre: "Formations Précédentes",
+      description: "Retour en images sur nos précédentes sessions de formation qui ont marqué l'année",
+      icon: Calendar,
+      medias: [
+        {
+          id: 'formation-tresorerie-mai2024',
+          titre: "Formation Gestion de Trésorerie",
+          date: "28 mai 2024",
+          lieu: "Abidjan, Côte d'Ivoire",
+          participants: "Pharmaciens titulaires",
+          description: "Session intensive sur la gestion financière et la trésorerie pour pharmacies d'officine",
+          thematiques: ["Gestion financière", "Optimisation trésorerie", "Analyse des flux", "Rentabilité"],
+          photos: [
+            {
+              url: '/images/tresorerie-salle.jpg',
+              alt: 'Formation Gestion de Trésorerie - Cadre moderne',
+              description: "Formation dans un cadre moderne et professionnel"
+            },
+            {
+              url: '/images/tresorerie-formateur.jpg',
+              alt: 'Formateur expliquant la gestion de trésorerie',
+              description: "Expertise de terrain et approche pédagogique adaptée"
+            },
+            {
+              url: '/images/tresorerie-groupe2.jpg',
+              alt: 'Travail de groupe entre pharmaciens',
+              description: "Exercices pratiques de gestion financière en petits groupes"
+            },
+            {
+              url: '/images/tresorerie-groupe-final.jpg',
+              alt: 'Photo de groupe formation trésorerie',
+              description: "Pharmaciens satisfaits à l'issue de la formation"
+            }
+          ]
+        },
+        {
+          id: 'formation-commande-mars2024',
+          titre: "Formation Gestion de Commande",
+          date: "16 mars 2024",
+          lieu: "Abidjan, Côte d'Ivoire",
+          participants: "Auxiliaires en pharmacie",
+          description: "Formation spécialisée pour les auxiliaires sur la gestion efficace des commandes",
+          thematiques: ["Planification commandes", "Gestion fournisseurs", "Optimisation stocks", "Procédures"],
+          photos: [
+            {
+              url: '/images/hero-formation.jpg',
+              alt: 'Salle de formation avec participants',
+              description: "Session interactive avec les auxiliaires en pharmacie"
+            },
+            {
+              url: '/images/gallery-5.jpg',
+              alt: 'Formateur expert en action',
+              description: "Expertise terrain et accompagnement personnalisé"
             }
           ]
         }
@@ -120,7 +180,7 @@ export default function Galerie() {
                                 <h3 className="text-2xl md:text-3xl font-bold">
                                   {media.titre}
                                 </h3>
-                                {media.date && media.lieu && media.participants && (
+                                {'date' in media && 'lieu' in media && 'participants' in media && (
                                   <div className="flex flex-wrap gap-2">
                                     <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30">
                                       <Calendar className="w-4 h-4 mr-1" />
@@ -138,11 +198,11 @@ export default function Galerie() {
                                 )}
                               </div>
                               <p className="text-lg text-teal-50 mb-4">
-                                {media.description}
+                                {'description' in media ? media.description : ''}
                               </p>
-                              {media.thematiques && (
+                              {'thematiques' in media && media.thematiques && (
                                 <div className="flex flex-wrap gap-2">
-                                  {media.thematiques.map((thematique, index) => (
+                                  {media.thematiques.map((thematique: string, index: number) => (
                                     <Badge key={index} variant="outline" className="border-white/30 text-white hover:bg-white/10">
                                       {thematique}
                                     </Badge>
@@ -173,15 +233,15 @@ export default function Galerie() {
                             </div>
 
                             {/* Stats for formations */}
-                            {media.participants && media.thematiques && (
+                            {'participants' in media && 'thematiques' in media && media.participants && media.thematiques && (
                               <div className="bg-slate-50 dark:bg-slate-800 p-8">
                                 <div className="grid md:grid-cols-3 gap-6 text-center">
                                   <div>
                                     <div className="text-3xl font-bold text-teal-600 dark:text-teal-400 mb-2">
-                                      {media.participants.split('+')[0]}+
+                                      {media.participants.includes('+') ? media.participants.split('+')[0] + '+' : media.participants}
                                     </div>
                                     <div className="text-slate-600 dark:text-slate-300 font-medium">
-                                      Pharmaciens Formés
+                                      {'participants' in media && media.participants.includes('Auxiliaires') ? 'Auxiliaires Formés' : 'Pharmaciens Formés'}
                                     </div>
                                   </div>
                                   <div>

@@ -5,7 +5,6 @@ import ServiceCards from '@/components/ServiceCards';
 import FocusFormations from '@/components/FocusFormations';
 import ConsultingSection from '@/components/ConsultingSection';
 import ResultsSection from '@/components/ResultsSection';
-import FormationGallery from '@/components/FormationGallery';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
@@ -27,7 +26,6 @@ export default function Home() {
         <FocusFormations />
         <ConsultingSection />
         <ResultsSection />
-        <FormationGallery />
         <CTASection />
       </main>
       <Footer />
