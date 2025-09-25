@@ -196,11 +196,11 @@ export default function ParticipantCatalogue() {
           <div className="flex items-center justify-center gap-2 mb-6">
             <span className="text-sm text-muted-foreground">Contact formateur :</span>
             <a 
-              href="mailto:ssbokola@gmail.com" 
+              href="mailto:infos@kemetservices.com" 
               className="text-primary hover:underline font-medium"
               data-testid="link-contact-participant-catalog"
             >
-              ssbokola@gmail.com
+              infos@kemetservices.com
             </a>
           </div>
           

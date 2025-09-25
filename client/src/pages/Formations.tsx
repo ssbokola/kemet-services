@@ -79,11 +79,11 @@ export default function Formations() {
             <div className="flex items-center justify-center gap-2 mb-8">
               <span className="text-sm text-muted-foreground">Contact direct :</span>
               <a 
-                href="mailto:ssbokola@gmail.com" 
+                href="mailto:infos@kemetservices.com" 
                 className="text-primary hover:underline font-medium"
                 data-testid="link-contact-catalog"
               >
-                ssbokola@gmail.com
+                infos@kemetservices.com
               </a>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

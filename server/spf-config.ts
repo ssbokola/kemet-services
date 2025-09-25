@@ -17,7 +17,7 @@ export const emailProviders: EmailProvider[] = [
   {
     name: "Google Workspace/Gmail",
     spfMechanism: "include:_spf.google.com",
-    description: "Utilisé pour l'envoi d'emails via Gmail SMTP (ssbokola@gmail.com)",
+    description: "Utilisé pour l'envoi d'emails via Gmail SMTP (infos@kemetservices.com)",
     isActive: true
   },
   {
@@ -142,7 +142,7 @@ export const domainConfig = {
   emailAddresses: [
     "contact@kemetservices.com",
     "noreply@kemetservices.com", 
-    "ssbokola@gmail.com" // Admin Gmail
+    "infos@kemetservices.com" // Admin Gmail
   ],
   dnsTTL: 3600 // 1 heure
 };

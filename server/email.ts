@@ -56,7 +56,7 @@ interface TrainingRegistration {
 
 export async function sendRegistrationNotification(
   registration: TrainingRegistration,
-  adminEmail = 'ssbokola@gmail.com'
+  adminEmail = 'infos@kemetservices.com'
 ): Promise<boolean> {
   const subject = `🎓 Nouvelle inscription - ${registration.trainingTitle}`;
   

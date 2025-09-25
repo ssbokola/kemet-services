@@ -227,7 +227,7 @@ export const generateCatalogPDF = () => {
     pdf.setFontSize(9);
     pdf.setTextColor(100, 100, 100);
     pdf.text('Kemet Services - Formation et Consultance Pharmacie', margin, pageHeight - 20);
-    pdf.text('Email: ssbokola@gmail.com | Spécialisé pour les pharmacies de Côte d\'Ivoire', margin, pageHeight - 15);
+    pdf.text('Email: infos@kemetservices.com | Spécialisé pour les pharmacies de Côte d\'Ivoire', margin, pageHeight - 15);
     
     // Page number
     pdf.text(`Page ${i} / ${totalPages}`, pageWidth - margin - 20, pageHeight - 15);

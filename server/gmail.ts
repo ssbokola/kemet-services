@@ -47,7 +47,7 @@ interface TrainingRegistration {
 
 export async function sendGmailNotification(
   registration: TrainingRegistration,
-  adminEmail = 'ssbokola@gmail.com'
+  adminEmail = 'infos@kemetservices.com'
 ): Promise<boolean> {
   
   // Créer le transporteur si pas encore fait
@@ -319,7 +319,7 @@ export async function sendParticipantConfirmation(
             <div class="contact-info">
                 <h3 style="color: #0f766e; margin-top: 0;">📧 Besoin d'aide ?</h3>
                 <p style="margin: 0;">
-                    <strong>Email :</strong> <a href="mailto:ssbokola@gmail.com" style="color: #0f766e;">ssbokola@gmail.com</a><br>
+                    <strong>Email :</strong> <a href="mailto:infos@kemetservices.com" style="color: #0f766e;">infos@kemetservices.com</a><br>
                     <strong>Téléphone :</strong> <a href="tel:${registration.phone}" style="color: #0f766e;">Nous vous rappelons</a><br>
                     <strong>Site web :</strong> <a href="https://kemetservices.com" style="color: #0f766e;">kemetservices.com</a>
                 </p>
@@ -358,7 +358,7 @@ PROCHAINES ÉTAPES:
 Notre équipe va vous contacter sous 24h pour confirmer les détails et planifier votre formation.
 
 CONTACT:
-Email: ssbokola@gmail.com
+Email: infos@kemetservices.com
 Site web: https://kemetservices.com
 
 Merci de votre confiance !
