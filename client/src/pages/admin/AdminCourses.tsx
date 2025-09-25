@@ -56,9 +56,10 @@ import {
   Eye,
   EyeOff,
   Clock,
-  Euro
+  Banknote
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { formatPriceCFA } from "@/lib/utils";
 
 interface Course {
   id: string;
@@ -408,10 +409,9 @@ export default function AdminCourses() {
     return labels[level] || level;
   };
 
+  // Utiliser la fonction centralisée de formatage CFA
   const formatPrice = (price: number) => {
-    if (price === 0) return 'Gratuit';
-    const priceInCFA = price / 100;
-    return `${priceInCFA.toLocaleString('fr-FR')} F`;
+    return price === 0 ? 'Gratuit' : formatPriceCFA(price);
   };
 
   const formatDuration = (minutes: number) => {
@@ -592,7 +592,7 @@ export default function AdminCourses() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Euro className="w-3 h-3" />
+                          <Banknote className="w-3 h-3" />
                           <span className="text-sm">{formatPrice(course.price)}</span>
                         </div>
                       </TableCell>

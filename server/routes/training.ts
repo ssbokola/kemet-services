@@ -125,6 +125,7 @@ const enrollmentSchema = z.object({
 router.post('/enroll/:courseId', async (req: any, res) => {
   try {
     const userId = req.user.claims.sub;
+    const userClaims = req.user.claims;
     const { courseId } = req.params;
     
     const validatedData = enrollmentSchema.parse({ courseId });
@@ -137,6 +138,41 @@ router.post('/enroll/:courseId', async (req: any, res) => {
     
     if (!course) {
       return res.status(404).json({ message: 'Course not found' });
+    }
+    
+    // S'assurer que l'utilisateur existe dans la base de données
+    const [existingUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId));
+    
+    if (!existingUser) {
+      // Générer un username pour l'utilisateur OIDC
+      let username = null;
+      if (userClaims.email) {
+        // Utiliser la partie avant @ de l'email comme username
+        username = userClaims.email.split('@')[0];
+      } else {
+        // Utiliser le sub en dernier recours
+        username = `user_${userId.substring(0, 8)}`;
+      }
+      
+      // Créer l'utilisateur depuis les claims OIDC
+      await db
+        .insert(users)
+        .values({
+          id: userId,
+          username: username,
+          email: userClaims.email || null,
+          firstName: userClaims.first_name || null,
+          lastName: userClaims.last_name || null,
+          profileImageUrl: userClaims.profile_image_url || null,
+          role: 'participant',
+          authType: 'replit',
+          status: 'active',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
     }
     
     // Vérifier qu'il n'y a pas déjà une inscription
