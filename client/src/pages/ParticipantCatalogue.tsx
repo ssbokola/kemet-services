@@ -11,6 +11,7 @@ import { Link } from "wouter";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
+import { formatPriceCFA } from "@/lib/utils";
 
 export default function ParticipantCatalogue() {
   const { toast } = useToast();
@@ -319,7 +320,7 @@ export default function ParticipantCatalogue() {
                     {/* Price and Action */}
                     <div className="flex items-center justify-between pt-2 border-t">
                       <div className="text-lg font-bold text-primary">
-                        {course.price}€
+                        {formatPriceCFA(course.price)}
                       </div>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" data-testid={`button-preview-${course.id}`}>

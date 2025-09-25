@@ -409,7 +409,9 @@ export default function AdminCourses() {
   };
 
   const formatPrice = (price: number) => {
-    return price === 0 ? 'Gratuit' : `${(price / 100).toFixed(2)} €`;
+    if (price === 0) return 'Gratuit';
+    const priceInCFA = price / 100;
+    return `${priceInCFA.toLocaleString('fr-FR')} F`;
   };
 
   const formatDuration = (minutes: number) => {

@@ -39,7 +39,7 @@ export const formations: Formation[] = [
     title: 'Initiation à la Qualité (Norme ISO 9001-V2015)',
     description: 'Découvrir les fondamentaux de la norme ISO 9001 version 2015 appliquée à la pharmacie',
     duration: '6h',
-    price: '75 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Users,
     objectives: ['Comprendre les exigences ISO 9001-2015', 'Mettre en place un système qualité', 'Préparer la certification']
@@ -51,7 +51,7 @@ export const formations: Formation[] = [
     title: 'La Gestion des Risques pour le Pharmacien (ISO 31000 V2018)',
     description: 'Maîtriser la gestion des risques selon la norme ISO 31000 version 2018',
     duration: '6h',
-    price: '80 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Users,
     objectives: ['Identifier et évaluer les risques', 'Mettre en place un plan de gestion', 'Suivre et améliorer le processus']
@@ -63,7 +63,7 @@ export const formations: Formation[] = [
     title: 'Les Bonnes Pratiques Officinales',
     description: 'Maîtriser les bonnes pratiques officinales pour une pharmacie conforme',
     duration: '8h',
-    price: '90 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BookOpen,
     objectives: ['Appliquer les BPO', 'Assurer la conformité réglementaire', 'Améliorer la qualité de service']
@@ -75,7 +75,7 @@ export const formations: Formation[] = [
     title: 'Le Management par Objectif',
     description: 'Développer un management efficace basé sur la définition et l\'atteinte d\'objectifs',
     duration: '6h',
-    price: '85 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: TrendingUp,
     objectives: ['Définir des objectifs SMART', 'Mettre en place un suivi', 'Motiver les équipes']
@@ -87,7 +87,7 @@ export const formations: Formation[] = [
     title: 'Les Bonnes Pratiques de Pharmacovigilance',
     description: 'Maîtriser la pharmacovigilance et le signalement des effets indésirables',
     duration: '4h',
-    price: '65 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Heart,
     objectives: ['Comprendre la pharmacovigilance', 'Savoir signaler les effets indésirables', 'Assurer la sécurité patients']
@@ -101,7 +101,7 @@ export const formations: Formation[] = [
     title: 'La Gestion Financière de l\'Officine',
     description: 'Maîtriser la gestion financière et budgétaire de votre pharmacie',
     duration: '8h',
-    price: '95 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: DollarSign,
     objectives: ['Analyser la rentabilité', 'Optimiser la trésorerie', 'Planifier les investissements']
@@ -113,7 +113,7 @@ export const formations: Formation[] = [
     title: 'L\'Analyse des Ratios Financiers',
     description: 'Utiliser les ratios financiers pour piloter votre officine',
     duration: '6h',
-    price: '80 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BarChart3,
     objectives: ['Calculer les ratios clés', 'Interpréter les résultats', 'Prendre des décisions éclairées']
@@ -125,7 +125,7 @@ export const formations: Formation[] = [
     title: 'La Négociation avec les Fournisseurs',
     description: 'Améliorer vos conditions d\'achat par la négociation',
     duration: '4h',
-    price: '70 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Users,
     objectives: ['Préparer la négociation', 'Techniques de négociation', 'Fidéliser les partenaires']
@@ -137,7 +137,7 @@ export const formations: Formation[] = [
     title: 'Le Contrôle de Gestion en Officine',
     description: 'Mettre en place un contrôle de gestion efficace',
     duration: '6h',
-    price: '85 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BarChart3,
     objectives: ['Définir les indicateurs', 'Analyser les écarts', 'Corriger les dérives']
@@ -151,7 +151,7 @@ export const formations: Formation[] = [
     title: 'La Gestion des Périmés en Officine',
     description: 'Réduire drastiquement vos périmés par une gestion optimisée',
     duration: '6h',
-    price: '80 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Package,
     objectives: ['Organiser le rangement FEFO', 'Mettre en place des alertes', 'Réduire les pertes']
@@ -163,7 +163,7 @@ export const formations: Formation[] = [
     title: 'L\'Optimisation des Commandes',
     description: 'Optimiser vos commandes pour réduire les ruptures et le sur-stock',
     duration: '8h',
-    price: '90 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Package,
     objectives: ['Calculer les stocks de sécurité', 'Planifier les commandes', 'Utiliser les outils digitaux']
@@ -175,7 +175,7 @@ export const formations: Formation[] = [
     title: 'L\'Inventaire Tournant et Annuel',
     description: 'Maîtriser les techniques d\'inventaire pour une gestion précise',
     duration: '4h',
-    price: '65 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BarChart3,
     objectives: ['Organiser l\'inventaire', 'Analyser les écarts', 'Corriger les erreurs']
@@ -187,7 +187,7 @@ export const formations: Formation[] = [
     title: 'La Gestion des Stupéfiants et Assimilés',
     description: 'Respecter la réglementation sur les stupéfiants et psychotropes',
     duration: '4h',
-    price: '70 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Shield,
     objectives: ['Connaître la réglementation', 'Gérer les stocks sécurisés', 'Tenir les registres']
@@ -201,7 +201,7 @@ export const formations: Formation[] = [
     title: 'Le Leadership et Management d\'Équipe',
     description: 'Développer vos compétences de leader pour motiver votre équipe',
     duration: '8h',
-    price: '95 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Users,
     objectives: ['Développer son leadership', 'Motiver les équipes', 'Gérer les conflits']
@@ -213,7 +213,7 @@ export const formations: Formation[] = [
     title: 'La Communication Efficace en Officine',
     description: 'Améliorer la communication interne et externe de votre pharmacie',
     duration: '6h',
-    price: '80 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Users,
     objectives: ['Techniques de communication', 'Gestion des conflits', 'Communication client']
@@ -225,7 +225,7 @@ export const formations: Formation[] = [
     title: 'L\'Évaluation et Formation du Personnel',
     description: 'Mettre en place un système d\'évaluation et de formation continue',
     duration: '6h',
-    price: '85 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BookOpen,
     objectives: ['Évaluer les performances', 'Planifier les formations', 'Développer les compétences']
@@ -237,7 +237,7 @@ export const formations: Formation[] = [
     title: 'La Gestion du Stress et du Bien-être au Travail',
     description: 'Créer un environnement de travail sain et productif',
     duration: '4h',
-    price: '70 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Heart,
     objectives: ['Identifier les sources de stress', 'Techniques de gestion', 'Améliorer le bien-être']
@@ -251,7 +251,7 @@ export const formations: Formation[] = [
     title: 'L\'Accueil et Service Client d\'Excellence',
     description: 'Développer un accueil professionnel et chaleureux pour fidéliser la clientèle',
     duration: '6h',
-    price: '60 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Heart,
     objectives: ['Techniques d\'accueil', 'Gérer les réclamations', 'Fidéliser les clients']
@@ -263,7 +263,7 @@ export const formations: Formation[] = [
     title: 'Les Techniques de Vente et de Conseil',
     description: 'Maîtriser les techniques de vente éthique et de conseil pharmaceutique',
     duration: '8h',
-    price: '70 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: TrendingUp,
     objectives: ['Identifier les besoins', 'Argumenter les conseils', 'Conclure la vente']
@@ -275,7 +275,7 @@ export const formations: Formation[] = [
     title: 'La Connaissance des Produits Pharmaceutiques',
     description: 'Approfondir vos connaissances sur les médicaments et parapharmacie',
     duration: '6h',
-    price: '65 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BookOpen,
     objectives: ['Classifications thérapeutiques', 'Indications et contre-indications', 'Conseils associés']
@@ -287,7 +287,7 @@ export const formations: Formation[] = [
     title: 'La Gestion de Commande et Facturation',
     description: 'Maîtriser les processus administratifs de l\'officine',
     duration: '4h',
-    price: '55 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: BarChart3,
     objectives: ['Gérer les commandes', 'Facturation et encaissements', 'Suivi des stocks']
@@ -311,7 +311,7 @@ export const formations: Formation[] = [
     title: 'La Communication Professionnelle',
     description: 'Développer une communication professionnelle efficace',
     duration: '6h',
-    price: '60 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Users,
     objectives: ['Communication verbale et non-verbale', 'Écoute active', 'Gestion des émotions']
@@ -323,7 +323,7 @@ export const formations: Formation[] = [
     title: 'La Gestion des Situations Difficiles',
     description: 'Gérer efficacement les situations délicates et les clients difficiles',
     duration: '4h',
-    price: '55 000 F',
+    price: '50 000 F',
     format: 'Présentiel',
     icon: Clock,
     objectives: ['Désamorcer les tensions', 'Techniques de médiation', 'Rester professionnel']

@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { BookOpen, Clock, CheckCircle, PlayCircle, Lock } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { formatPriceCFA } from "@/lib/utils";
 
 export default function ParticipantFormations() {
   const { toast } = useToast();
@@ -281,7 +282,7 @@ export default function ParticipantFormations() {
                     
                     <div className="flex items-center justify-between pt-2">
                       <div className="text-lg font-bold text-primary">
-                        {course.price}€
+                        {formatPriceCFA(course.price)}
                       </div>
                       <Button 
                         size="sm" 
