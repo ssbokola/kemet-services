@@ -43,7 +43,7 @@ export default function Hero() {
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4">
             <Button 
               size="lg" 
               onClick={handleDiagnosticClick}
@@ -63,10 +63,6 @@ export default function Hero() {
               <MessageCircle className="mr-2 h-5 w-5" />
               Découvrir nos formations
             </Button>
-          </div>
-
-          {/* Kemet Echo Highlight */}
-          <div className="mt-6">
             <Button 
               size="lg" 
               variant="outline"
