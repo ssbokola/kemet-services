@@ -18,6 +18,7 @@ import Consulting from "@/pages/Consulting";
 import APropos from "@/pages/APropos";
 import Ressources from "@/pages/Ressources";
 import Contact from "@/pages/Contact";
+import KemetEcho from "@/pages/KemetEcho";
 import InscriptionFormation from "@/pages/InscriptionFormation";
 import Inscriptions from "@/pages/Inscriptions";
 import NotFound from "@/pages/not-found";
@@ -46,6 +47,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/formations" component={Formations} />
       <Route path="/galerie" component={Galerie} />
+      <Route path="/kemet-echo" component={KemetEcho} />
       <Route path="/diagnostic" component={Diagnostic} />
       <Route path="/consulting" component={Consulting} />
       <Route path="/a-propos" component={APropos} />

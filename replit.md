@@ -6,6 +6,8 @@ Kemet Services is a professional training and consulting platform specifically d
 
 The platform features a modern React-based frontend with comprehensive course management, consulting services, testimonials, and professional branding designed to build trust and demonstrate expertise in the pharmaceutical industry.
 
+**New Product - Kemet Echo**: A customer satisfaction survey web application for pharmacies and clinics, featuring CSAT and NPS metrics, anonymous surveys, real-time dashboard analytics, and automated reporting. Available in three tiers: Freemium (30-day trial), Premium subscription (15,000 FCFA/month), and turnkey packages with tablet hardware, installation, and training.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -43,6 +45,7 @@ Preferred communication style: Simple, everyday language.
 - **Consulting Services**: Multi-step consulting process with clear timelines
 - **Results Showcase**: KPI tracking and testimonial management
 - **Asset Management**: Professional image gallery and brand assets
+- **Kemet Echo Product Page**: Dedicated product page with features showcase, pricing tiers, and demo request form with email notifications
 
 ## External Dependencies
 
@@ -64,7 +67,11 @@ Preferred communication style: Simple, everyday language.
 
 ### Communication Services
 - **WhatsApp Integration**: Direct messaging links for customer communication
-- **Email Integration**: mailto links for professional contact
+- **Email Integration**: Gmail SMTP integration with Nodemailer for automated notifications
+  - Training registration confirmations sent to participants
+  - Admin notifications for training registrations
+  - Kemet Echo demo request notifications to admin team
+  - All emails sent from infos@kemetservices.com business email
 
 ### Image Assets
 - **Professional Photography**: Training session photos and testimonials
@@ -74,3 +81,47 @@ Preferred communication style: Simple, everyday language.
 ### Deployment Platform
 - **Replit**: Cloud-based development and deployment platform
 - **Environment Configuration**: Production and development environment separation
+
+## Recent Changes (September 30, 2025)
+
+### Kemet Echo Integration
+- **Database Schema**: Created `kemet_echo_requests` table to store demo requests with fields for contact information, pharmacy name, offer type (freemium/premium/pack), and consent tracking
+- **API Endpoint**: Implemented POST `/api/kemet-echo-requests` route with Zod validation and automated email notifications
+- **Email Notifications**: Created `sendKemetEchoNotification()` function in gmail.ts with professional HTML templates matching brand design
+- **Frontend Page**: Built comprehensive `/kemet-echo` page featuring:
+  - Hero section with product introduction and key features
+  - Detailed features showcase (CSAT, NPS, anonymous surveys, dashboard, alerts, reports)
+  - Three pricing tiers with clear feature breakdowns
+  - "Why Choose" section highlighting ease of use, security, and local support
+  - Demo request form with full validation and GDPR consent
+- **Navigation**: Added "Kemet Echo" link to main navigation menu between Galerie and Consulting
+- **SEO**: Implemented meta tags and descriptions for Kemet Echo page
+
+### Technical Implementation
+- Uses existing teal design system and shadcn/ui components for brand consistency
+- Follows established patterns for form handling, validation, and error management
+- Integrates with existing Gmail notification infrastructure with file-logging fallback
+- Maintains GDPR compliance with explicit data consent requirements
+- HTML escaping implemented in all email notifications to prevent injection attacks
+- Professional email templates without emojis for brand consistency
+- End-to-end tested and production-ready
+
+### Database Setup Note
+The `kemet_echo_requests` table must exist in the database. If not present, create it using:
+```sql
+CREATE TABLE IF NOT EXISTS kemet_echo_requests (
+  id varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  email text NOT NULL,
+  phone text NOT NULL,
+  pharmacy_name text NOT NULL,
+  offer_type text NOT NULL,
+  message text,
+  data_consent boolean NOT NULL DEFAULT false,
+  status text NOT NULL DEFAULT 'nouveau',
+  assigned_to varchar,
+  notes text,
+  created_at timestamp NOT NULL DEFAULT now(),
+  updated_at timestamp NOT NULL DEFAULT now()
+);
+```

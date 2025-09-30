@@ -267,3 +267,39 @@ export const insertContactRequestSchema = createInsertSchema(contactRequests)
 
 export type InsertContactRequest = z.infer<typeof insertContactRequestSchema>;
 export type ContactRequest = typeof contactRequests.$inferSelect;
+
+// Table des demandes de démo Kemet Echo
+export const kemetEchoRequests = pgTable("kemet_echo_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  pharmacyName: text("pharmacy_name").notNull(),
+  offerType: text("offer_type").notNull(), // 'freemium', 'premium', 'pack'
+  message: text("message"),
+  dataConsent: boolean("data_consent").notNull().default(false),
+  status: text("status").notNull().default('nouveau'), // 'nouveau', 'contacte', 'demo-envoyee', 'converti', 'ferme'
+  assignedTo: varchar("assigned_to"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertKemetEchoRequestSchema = createInsertSchema(kemetEchoRequests)
+  .omit({ id: true, createdAt: true, updatedAt: true, status: true, assignedTo: true, notes: true })
+  .extend({
+    name: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
+    email: z.string().trim().email('Adresse email invalide'),
+    phone: z.string().trim().min(8, 'Numéro de téléphone invalide'),
+    pharmacyName: z.string().trim().min(2, 'Le nom de la pharmacie doit contenir au moins 2 caractères'),
+    offerType: z.enum(['freemium', 'premium', 'pack'], {
+      errorMap: () => ({ message: 'Veuillez sélectionner un type d\'offre' })
+    }),
+    message: z.string().trim().optional(),
+    dataConsent: z.boolean().refine(val => val === true, 
+      'Vous devez accepter le traitement de vos données personnelles'
+    ),
+  });
+
+export type InsertKemetEchoRequest = z.infer<typeof insertKemetEchoRequestSchema>;
+export type KemetEchoRequest = typeof kemetEchoRequests.$inferSelect;

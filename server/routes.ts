@@ -1,11 +1,16 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { db } from "./db";
-import { insertTrainingRegistrationSchema, trainingRegistrations } from "@shared/schema";
+import { 
+  insertTrainingRegistrationSchema, 
+  trainingRegistrations,
+  insertKemetEchoRequestSchema,
+  kemetEchoRequests
+} from "@shared/schema";
 import { z } from "zod";
 // import { sendRegistrationNotification } from "./email"; // Unused - file logging active
-import { logRegistrationNotification } from "./notifications";
-import { sendGmailNotification, sendParticipantConfirmation } from "./gmail";
+import { logRegistrationNotification, logKemetEchoNotification } from "./notifications";
+import { sendGmailNotification, sendParticipantConfirmation, sendKemetEchoNotification } from "./gmail";
 import adminRoutes from "./routes/admin";
 import spfRoutes from "./routes/spf";
 import dkimRoutes from "./routes/dkim";
@@ -165,6 +170,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         success: false,
         error: 'Erreur serveur'
+      });
+    }
+  });
+
+  // Kemet Echo demo request endpoint
+  app.post('/api/kemet-echo-requests', async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validatedData = insertKemetEchoRequestSchema.parse(req.body);
+      
+      // Create Kemet Echo request in database
+      const requestResult = await db.insert(kemetEchoRequests).values(validatedData).returning();
+      const kemetRequest = requestResult[0];
+      
+      // Send notification (asynchronously, don't block response)
+      Promise.allSettled([
+        (async () => {
+          try {
+            const gmailSuccess = await sendKemetEchoNotification(kemetRequest);
+            if (gmailSuccess) {
+              console.log('✅ Notification Kemet Echo envoyée avec succès');
+            } else {
+              console.log('📧 Gmail non configuré - utilisation des fichiers de log');
+              const fileSuccess = logKemetEchoNotification(kemetRequest);
+              if (fileSuccess) {
+                console.log('✅ Notification Kemet Echo enregistrée dans les fichiers de log');
+              }
+            }
+          } catch (error) {
+            console.error('❌ Erreur notification Kemet Echo:', error);
+            console.log('📁 Utilisation du système de fichiers en secours');
+            try {
+              logKemetEchoNotification(kemetRequest);
+            } catch (fileError) {
+              console.error('❌ Erreur système de fichiers:', fileError);
+            }
+          }
+        })()
+      ]);
+      
+      // Return success response
+      console.log('Kemet Echo request created successfully');
+      
+      res.status(201).json({ 
+        success: true, 
+        id: kemetRequest.id,
+        message: 'Demande enregistrée avec succès. Notre équipe vous contactera dans les 24h.'
+      });
+      
+    } catch (error) {
+      console.error('Kemet Echo request error:', error instanceof z.ZodError ? 'Validation failed' : 'Server error');
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          error: 'Données invalides',
+          details: error.errors.map(err => ({
+            field: err.path.join('.'),
+            message: err.message
+          }))
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        error: 'Erreur serveur. Veuillez réessayer plus tard.'
       });
     }
   });

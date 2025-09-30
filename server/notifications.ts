@@ -105,3 +105,77 @@ export function getNotificationsSummary(): { logFile: string; csvFile: string; e
     exists: existsSync(NOTIFICATIONS_FILE) && existsSync(CSV_FILE)
   };
 }
+
+// Interface pour les demandes Kemet Echo
+interface KemetEchoRequest {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  pharmacyName: string;
+  offerType: string;
+  message?: string | null;
+  createdAt: Date;
+}
+
+export function logKemetEchoNotification(request: KemetEchoRequest): boolean {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const notificationsDir = path.join(process.cwd(), 'notifications', 'kemet-echo');
+    
+    // Créer le répertoire s'il n'existe pas
+    if (!fs.existsSync(notificationsDir)) {
+      fs.mkdirSync(notificationsDir, { recursive: true });
+    }
+    
+    // Créer un nom de fichier unique avec timestamp
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = path.join(notificationsDir, `kemet-echo-${timestamp}.txt`);
+    
+    const offerLabels: Record<string, string> = {
+      'freemium': 'Freemium (Essai gratuit 30 jours)',
+      'premium': 'Premium (Abonnement payant)',
+      'pack': 'Pack clé en main (Tablette + Formation)'
+    };
+    
+    const content = `
+========================================
+NOUVELLE DEMANDE KEMET ECHO
+========================================
+
+ID: ${request.id}
+Date: ${new Date(request.createdAt).toLocaleString('fr-FR')}
+
+INFORMATIONS CLIENT
+-------------------
+Contact: ${request.name}
+Pharmacie/Clinique: ${request.pharmacyName}
+Email: ${request.email}
+Téléphone: ${request.phone}
+Offre souhaitée: ${offerLabels[request.offerType]}
+
+${request.message ? `MESSAGE DU CLIENT
+-------------------
+${request.message}
+
+` : ''}ACTIONS RECOMMANDÉES
+-------------------
+- Contacter le client dans les 24h
+- Planifier une démonstration en ligne ou sur site
+- Préparer le pack de bienvenue adapté à l'offre
+${request.offerType === 'pack' ? '- Prévoir la livraison et formation tablette\n' : ''}
+========================================
+Kemet Echo - Baromètre Client
+infos@kemetservices.com
+========================================
+`;
+    
+    fs.writeFileSync(filename, content, 'utf8');
+    console.log('✅ Notification Kemet Echo enregistrée dans le fichier:', filename);
+    return true;
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'écriture de la notification Kemet Echo:', error);
+    return false;
+  }
+}

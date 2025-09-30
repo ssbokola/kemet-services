@@ -5,6 +5,7 @@ const navigation = [
   { name: 'Accueil', href: '/' },
   { name: 'Formations', href: '/formations' },
   { name: 'Galerie', href: '/galerie' },
+  { name: 'Kemet Echo', href: '/kemet-echo' },
   { name: 'Consulting', href: '/consulting' },
   { name: 'À propos', href: '/a-propos' },
   { name: 'Ressources', href: '/ressources' },

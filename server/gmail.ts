@@ -386,6 +386,189 @@ Formation et Conseil Pharmaceutique
   }
 }
 
+// Interface pour les demandes Kemet Echo
+interface KemetEchoRequest {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  pharmacyName: string;
+  offerType: string;
+  message?: string | null;
+  createdAt: Date;
+}
+
+// Utility function to escape HTML to prevent injection
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, (char) => map[char]);
+}
+
+export async function sendKemetEchoNotification(
+  request: KemetEchoRequest,
+  adminEmail = 'infos@kemetservices.com'
+): Promise<boolean> {
+  
+  // Créer le transporteur si pas encore fait
+  if (!gmailTransporter) {
+    gmailTransporter = createGmailTransporter();
+  }
+
+  if (!gmailTransporter) {
+    console.log('📧 Gmail non configuré - notification non envoyée');
+    return false;
+  }
+
+  const offerLabels: Record<string, string> = {
+    'freemium': 'Freemium (Essai gratuit 30 jours)',
+    'premium': 'Premium (Abonnement payant)',
+    'pack': 'Pack clé en main (Tablette + Formation)'
+  };
+
+  const subject = `Nouvelle demande Kemet Echo - ${escapeHtml(request.pharmacyName)}`;
+  
+  const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #0f766e, #14b8a6); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+        .content { background: #f8fafc; padding: 20px; border-radius: 0 0 8px 8px; }
+        .info-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .info-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+        .info-table td:first-child { font-weight: bold; color: #475569; width: 35%; }
+        .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+        .badge.freemium { background: #dbeafe; color: #1e40af; }
+        .badge.premium { background: #fef3c7; color: #92400e; }
+        .badge.pack { background: #d1fae5; color: #065f46; }
+        .message-box { background: white; padding: 15px; border-left: 4px solid #14b8a6; border-radius: 6px; margin: 15px 0; }
+        .footer { margin-top: 20px; padding: 15px; background: #f1f5f9; border-radius: 6px; font-size: 12px; color: #64748b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0; font-size: 24px;">Nouvelle demande Kemet Echo</h1>
+            <p style="margin: 5px 0 0 0; opacity: 0.9;">Solution de satisfaction client pour pharmacies</p>
+        </div>
+        
+        <div class="content">
+            <h2 style="color: #0f766e; margin-top: 0;">${escapeHtml(request.pharmacyName)}</h2>
+            
+            <table class="info-table">
+                <tr>
+                    <td>Contact</td>
+                    <td><strong>${escapeHtml(request.name)}</strong></td>
+                </tr>
+                <tr>
+                    <td>Pharmacie/Clinique</td>
+                    <td>${escapeHtml(request.pharmacyName)}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><a href="mailto:${escapeHtml(request.email)}" style="color: #0f766e;">${escapeHtml(request.email)}</a></td>
+                </tr>
+                <tr>
+                    <td>Telephone</td>
+                    <td><a href="tel:${escapeHtml(request.phone)}" style="color: #0f766e;">${escapeHtml(request.phone)}</a></td>
+                </tr>
+                <tr>
+                    <td>Offre souhaitee</td>
+                    <td>
+                        <span class="badge ${request.offerType}">
+                            ${offerLabels[request.offerType] || request.offerType}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Date demande</td>
+                    <td>${new Date(request.createdAt).toLocaleDateString('fr-FR', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}</td>
+                </tr>
+            </table>
+            
+            ${request.message ? `
+            <div class="message-box">
+                <strong style="color: #0f766e; display: block; margin-bottom: 8px;">Message du client :</strong>
+                <p style="margin: 0; white-space: pre-wrap;">${escapeHtml(request.message)}</p>
+            </div>
+            ` : ''}
+            
+            <div style="background: #e0f2fe; padding: 15px; border-radius: 6px; margin-top: 20px;">
+                <strong style="color: #0c4a6e;">Actions recommandees :</strong>
+                <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #0c4a6e;">
+                    <li>Contacter le client dans les 24h</li>
+                    <li>Planifier une démonstration en ligne ou sur site</li>
+                    <li>Préparer le pack de bienvenue adapté à l'offre</li>
+                    ${request.offerType === 'pack' ? '<li>Prévoir la livraison et formation tablette</li>' : ''}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <strong style="color: #475569;">Kemet Echo - Baromètre Client</strong><br>
+            Système de gestion de satisfaction client pour pharmacies<br>
+            <a href="mailto:${adminEmail}" style="color: #0f766e;">${adminEmail}</a>
+        </div>
+    </div>
+</body>
+</html>
+  `;
+
+  const textContent = `
+NOUVELLE DEMANDE KEMET ECHO
+
+Contact: ${request.name}
+Pharmacie/Clinique: ${request.pharmacyName}
+Email: ${request.email}
+Telephone: ${request.phone}
+Offre: ${offerLabels[request.offerType]}
+Date: ${new Date(request.createdAt).toLocaleString('fr-FR')}
+
+${request.message ? `Message:\n${request.message}\n` : ''}
+
+Actions recommandees:
+- Contacter le client dans les 24h
+- Planifier une démonstration
+- Préparer le pack de bienvenue
+
+---
+Kemet Echo - Baromètre Client
+${adminEmail}
+  `;
+
+  try {
+    await gmailTransporter.sendMail({
+      from: `"Kemet Echo Notifications" <${process.env.GMAIL_USER}>`,
+      to: adminEmail,
+      subject,
+      text: textContent,
+      html: htmlContent,
+      replyTo: request.email
+    });
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'envoi de notification Kemet Echo:', error);
+    return false;
+  }
+}
+
 // Fonction pour tester la configuration Gmail
 export async function testGmailConnection(): Promise<boolean> {
   if (!gmailTransporter) {
