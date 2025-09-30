@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight, MessageCircle } from 'lucide-react';
+import { ArrowRight, MessageCircle, BarChart3 } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 export default function Hero() {
@@ -11,6 +11,10 @@ export default function Hero() {
 
   const handleFormationsClick = () => {
     setLocation('/formations');
+  };
+
+  const handleKemetEchoClick = () => {
+    setLocation('/kemet-echo');
   };
 
   return (
@@ -58,6 +62,20 @@ export default function Hero() {
             >
               <MessageCircle className="mr-2 h-5 w-5" />
               Découvrir nos formations
+            </Button>
+          </div>
+
+          {/* Kemet Echo Highlight */}
+          <div className="mt-6">
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={handleKemetEchoClick}
+              className="text-lg px-8 py-6 bg-primary/10 backdrop-blur-sm border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              data-testid="button-hero-kemet-echo"
+            >
+              <BarChart3 className="mr-2 h-5 w-5" />
+              Nouveau : Kemet Echo - Satisfaction Client
             </Button>
           </div>
 
