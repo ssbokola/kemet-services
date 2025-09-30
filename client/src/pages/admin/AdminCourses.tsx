@@ -809,7 +809,7 @@ export default function AdminCourses() {
                   min="0"
                   value={formData.price}
                   onChange={(e) => setFormData(prev => ({ ...prev, price: parseInt(e.target.value) || 0 }))}
-                  placeholder="0 pour gratuit, 5000 pour 50€"
+                  placeholder="En centimes : 5000000 pour 50 000 F"
                   data-testid="input-course-price"
                 />
               </div>
