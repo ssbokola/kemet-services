@@ -19,8 +19,9 @@ import { KemetNewsletter } from '@/components/ui/newsletter';
 import SEO from '@/components/SEO';
 
 const categories = [
-  { id: 'tous', name: 'Tous les articles', count: 2 },
+  { id: 'tous', name: 'Tous les articles', count: 3 },
   { id: 'gestion-stock', name: 'Gestion des stocks', count: 2 },
+  { id: 'satisfaction-client', name: 'Satisfaction Client', count: 1 },
   { id: 'performance', name: 'Performance', count: 0 },
   { id: 'finance', name: 'Finance & Trésorerie', count: 0 }
 ];
@@ -119,6 +120,91 @@ Il est illusoire de penser qu'une pharmacie puisse totalement éliminer le risqu
     category: 'gestion-stock',
     tags: ['Ruptures de stock', 'Prévention', 'Gestion proactive', 'Seuils d\'alerte'],
     formationLiee: 'La Gestion des Stocks et Approvisionnements'
+  },
+  {
+    id: 'silence-clients-hemorragie-invisible',
+    title: 'Le silence des clients : l\'hémorragie invisible',
+    excerpt: 'Savez-vous vraiment pourquoi certains de vos clients ne reviennent plus ? Découvrez comment le silence client peut devenir une hémorragie financière invisible pour votre pharmacie.',
+    content: `
+# Le silence des clients : l'hémorragie invisible
+
+## Savez-vous vraiment pourquoi certains de vos clients ne reviennent plus ?
+
+En apparence, tout semble bien se passer : ils sont servis, paient, repartent.
+
+Mais derrière ce silence se cache souvent un malaise.
+
+---
+
+### 🚪 Quand un client sort… et ne revient plus
+
+Dans de nombreuses pharmacies et cliniques en Côte d'Ivoire, le scénario est le même :
+
+- Mme Koné, une cliente fidèle, patiente 25 minutes au comptoir.
+- Personne ne lui demande son avis.
+- Elle ne dit rien… mais la semaine suivante, elle choisit une autre pharmacie.
+
+👉 Ce départ n'apparaît dans aucune statistique. Il devient une **perte invisible**.
+
+---
+
+### 📉 Une perte de chiffre d'affaires que l'on ne voit pas
+
+Un client perdu, ce n'est pas seulement une vente ratée :
+
+- C'est un **panier moyen annuel envolé** (parfois plusieurs centaines de milliers de F CFA).
+- C'est aussi un **bouche-à-oreille négatif discret**, qui fait hésiter d'autres clients.
+- Et c'est surtout une **occasion manquée d'amélioration**, puisque personne n'a capté la cause du mécontentement.
+- La **valeur potentielle à vie** du client est définitivement perdue - une somme qui peut représenter des millions sur plusieurs années.
+
+---
+
+### 🕳️ Le danger du silence
+
+Contrairement à ce qu'on croit, la plupart des clients insatisfaits **ne se plaignent pas**.
+
+Ils préfèrent disparaître plutôt que d'exprimer leur frustration.
+
+Résultat :
+
+- L'officine continue à fonctionner comme si de rien n'était.
+- Le problème persiste, voire s'aggrave.
+- Et la perte s'accumule, **sans que le gérant n'en ait conscience**.
+- Sans système de mesure de satisfaction, il est impossible de **prévenir les problèmes** avant qu'ils ne deviennent critiques.
+
+---
+
+### ⚠️ Conséquence : une hémorragie invisible
+
+Sans feedback structuré, chaque départ est comme une petite hémorragie silencieuse :
+
+- Elle ne se voit pas immédiatement,
+- Mais elle fragilise la performance globale de l'établissement,
+- Jusqu'au jour où la baisse de chiffre d'affaires devient impossible à ignorer.
+- À ce stade, le client est déjà perdu et renouveler sa confiance devient un défi coûteux.
+
+---
+
+### 💡 Et si ce silence pouvait être brisé ?
+
+Le premier pas pour améliorer l'expérience client, c'est **écouter vraiment**.
+
+Car tant que la voix des clients reste silencieuse, la pharmacie/clinique navigue à vue.
+
+Voilà pourquoi capturer le feedback client est devenu vital pour toute organisation de santé qui cherche à grandir durablement. Sans ce mécanisme d'écoute, les problèmes qui font fuir la clientèle restent dans l'ombre, non traités.
+
+---
+
+> **À retenir :** Un client silencieux n'est pas forcément un client satisfait. Mettez en place un système d'écoute structuré pour identifier et résoudre les problèmes avant qu'ils ne deviennent critiques.
+
+**Kemet Echo** vous aide à briser ce silence avec des enquêtes de satisfaction simples et efficaces 💚.
+    `,
+    author: 'Équipe Kemet Services',
+    date: '2024-09-30',
+    readTime: '4 min',
+    category: 'satisfaction-client',
+    tags: ['Satisfaction client', 'Expérience client', 'Fidélisation', 'Feedback'],
+    formationLiee: 'Kemet Echo - Baromètre Client'
   },
   {
     id: '5-erreurs-gestion-stocks-officine',
