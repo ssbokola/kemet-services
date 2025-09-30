@@ -112,17 +112,17 @@ export default function KemetEcho() {
         <Header />
         
         {/* Hero Section */}
-        <section className="relative py-16 px-4 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20">
+        <section className="relative py-16 px-4 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20">
           <div className="container mx-auto max-w-7xl">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <div className="inline-block px-4 py-2 bg-teal-600 text-white rounded-full text-sm font-semibold mb-4">
+                <div className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-semibold mb-4">
                   ✨ Nouveau Produit
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
                   Kemet Echo
                 </h1>
-                <p className="text-2xl text-teal-600 dark:text-teal-400 font-semibold mb-4">
+                <p className="text-2xl text-primary font-semibold mb-4">
                   Baromètre Client pour Pharmacies
                 </p>
                 <p className="text-lg text-muted-foreground mb-6">
@@ -132,7 +132,7 @@ export default function KemetEcho() {
                 <div className="flex flex-wrap gap-4">
                   <Button 
                     size="lg" 
-                    className="bg-teal-600 hover:bg-teal-700 text-white"
+                    variant="default"
                     onClick={() => document.getElementById('demo-form')?.scrollIntoView({ behavior: 'smooth' })}
                     data-testid="button-demo-request"
                   >
@@ -155,8 +155,8 @@ export default function KemetEcho() {
                   <CardContent className="p-6">
                     <div className="space-y-6">
                       <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
-                          <BarChart3 className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <BarChart3 className="h-6 w-6 text-primary" />
                         </div>
                         <div>
                           <div className="font-semibold text-foreground">Tableau de bord en temps réel</div>
@@ -164,8 +164,8 @@ export default function KemetEcho() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
-                          <MessageSquare className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <MessageSquare className="h-6 w-6 text-primary" />
                         </div>
                         <div>
                           <div className="font-semibold text-foreground">Enquêtes personnalisées</div>
@@ -173,8 +173,8 @@ export default function KemetEcho() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                          <TrendingUp className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <TrendingUp className="h-6 w-6 text-primary" />
                         </div>
                         <div>
                           <div className="font-semibold text-foreground">Rapports détaillés</div>
@@ -204,8 +204,8 @@ export default function KemetEcho() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center mb-4">
-                    <Star className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Star className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle>Score CSAT</CardTitle>
                   <CardDescription>
@@ -216,8 +216,8 @@ export default function KemetEcho() {
 
               <Card>
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center mb-4">
-                    <Target className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Target className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle>Net Promoter Score</CardTitle>
                   <CardDescription>
@@ -228,8 +228,8 @@ export default function KemetEcho() {
 
               <Card>
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
-                    <MessageSquare className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <MessageSquare className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle>Enquêtes Anonymes</CardTitle>
                   <CardDescription>
@@ -240,8 +240,8 @@ export default function KemetEcho() {
 
               <Card>
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
-                    <BarChart3 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <BarChart3 className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle>Dashboard Analytics</CardTitle>
                   <CardDescription>
@@ -252,8 +252,8 @@ export default function KemetEcho() {
 
               <Card>
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
-                    <Clock className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Clock className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle>Alertes Instantanées</CardTitle>
                   <CardDescription>
@@ -264,8 +264,8 @@ export default function KemetEcho() {
 
               <Card>
                 <CardHeader>
-                  <div className="h-12 w-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
-                    <Award className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Award className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle>Rapports Mensuels</CardTitle>
                   <CardDescription>
@@ -295,7 +295,7 @@ export default function KemetEcho() {
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <CardTitle>Freemium</CardTitle>
-                    <div className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded-full text-sm font-semibold">
+                    <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold">
                       Gratuit
                     </div>
                   </div>
@@ -308,19 +308,19 @@ export default function KemetEcho() {
                 <CardContent>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Jusqu'à 100 réponses/mois</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Dashboard basique</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">CSAT et NPS</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Support par email</span>
                     </li>
                   </ul>
@@ -328,8 +328,8 @@ export default function KemetEcho() {
               </Card>
 
               {/* Premium */}
-              <Card className="border-2 border-teal-600 relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-teal-600 text-white rounded-full text-sm font-semibold">
+              <Card className="border-2 border-primary relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-primary-foreground rounded-full text-sm font-semibold">
                   Populaire
                 </div>
                 <CardHeader>
@@ -343,27 +343,27 @@ export default function KemetEcho() {
                 <CardContent>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Réponses illimitées</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Dashboard avancé</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Toutes les métriques</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Rapports mensuels</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Alertes en temps réel</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Support prioritaire</span>
                     </li>
                   </ul>
@@ -375,7 +375,7 @@ export default function KemetEcho() {
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <CardTitle>Pack Clé en Main</CardTitle>
-                    <Smartphone className="h-5 w-5 text-teal-600" />
+                    <Smartphone className="h-5 w-5 text-primary" />
                   </div>
                   <CardDescription>Solution complète avec matériel</CardDescription>
                   <div className="mt-4">
@@ -386,27 +386,27 @@ export default function KemetEcho() {
                 <CardContent>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Tablette dédiée fournie</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Installation sur site</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Formation du personnel</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Maintenance incluse</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Garantie matériel 1 an</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                       <span className="text-sm">Support dédié</span>
                     </li>
                   </ul>
@@ -427,8 +427,8 @@ export default function KemetEcho() {
 
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="h-16 w-16 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center mx-auto mb-4">
-                  <Zap className="h-8 w-8 text-teal-600 dark:text-teal-400" />
+                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <Zap className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Facile à Utiliser</h3>
                 <p className="text-muted-foreground">
@@ -437,8 +437,8 @@ export default function KemetEcho() {
               </div>
 
               <div className="text-center">
-                <div className="h-16 w-16 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center mx-auto mb-4">
-                  <Shield className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
+                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <Shield className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Données Sécurisées</h3>
                 <p className="text-muted-foreground">
@@ -447,8 +447,8 @@ export default function KemetEcho() {
               </div>
 
               <div className="text-center">
-                <div className="h-16 w-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-2">Support Local</h3>
                 <p className="text-muted-foreground">
@@ -460,7 +460,7 @@ export default function KemetEcho() {
         </section>
 
         {/* Demo Request Form */}
-        <section id="demo-form" className="py-16 px-4 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20">
+        <section id="demo-form" className="py-16 px-4 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20">
           <div className="container mx-auto max-w-3xl">
             <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -570,7 +570,7 @@ export default function KemetEcho() {
                     />
                     <Label htmlFor="dataConsent" className="text-sm font-normal cursor-pointer">
                       J'accepte le traitement de mes données personnelles conformément à la{' '}
-                      <Link href="/confidentialite" className="text-teal-600 hover:underline">
+                      <Link href="/confidentialite" className="text-primary hover:underline">
                         politique de confidentialité
                       </Link>
                       . *
@@ -580,7 +580,8 @@ export default function KemetEcho() {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                    variant="default"
+                    className="w-full"
                     disabled={isSubmitting}
                     data-testid="button-submit"
                   >
