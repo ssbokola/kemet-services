@@ -201,7 +201,7 @@ Voilà pourquoi capturer le feedback client est devenu vital pour toute organisa
     `,
     author: 'Équipe Kemet Services',
     date: '2024-09-30',
-    readTime: '4 min',
+    readTime: '2 min',
     category: 'satisfaction-client',
     tags: ['Satisfaction client', 'Expérience client', 'Fidélisation', 'Feedback'],
     formationLiee: 'Kemet Echo - Baromètre Client'
