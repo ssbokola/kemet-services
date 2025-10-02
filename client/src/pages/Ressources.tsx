@@ -250,8 +250,7 @@ Car tant que les clients n'ont pas d'espace pour s'exprimer simplement, leur sil
     date: '2024-09-30',
     readTime: '5 min',
     category: 'satisfaction-client',
-    tags: ['Satisfaction client', 'Expérience client', 'Fidélisation', 'Feedback'],
-    formationLiee: 'Kemet Echo - Baromètre Client'
+    tags: ['Satisfaction client', 'Expérience client', 'Fidélisation', 'Feedback']
   },
   {
     id: '5-erreurs-gestion-stocks-officine',
