@@ -19,6 +19,7 @@ import APropos from "@/pages/APropos";
 import Ressources from "@/pages/Ressources";
 import Contact from "@/pages/Contact";
 import KemetEcho from "@/pages/KemetEcho";
+import ChecklistGestion from "@/pages/ChecklistGestion";
 import InscriptionFormation from "@/pages/InscriptionFormation";
 import Inscriptions from "@/pages/Inscriptions";
 import NotFound from "@/pages/not-found";
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/consulting" component={Consulting} />
       <Route path="/a-propos" component={APropos} />
       <Route path="/ressources" component={Ressources} />
+      <Route path="/ressources/checklist-gestion" component={ChecklistGestion} />
       <Route path="/contact" component={Contact} />
       <Route path="/inscription-formation" component={InscriptionFormation} />
       <Route path="/inscriptions" component={Inscriptions} />

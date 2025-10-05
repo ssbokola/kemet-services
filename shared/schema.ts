@@ -303,3 +303,36 @@ export const insertKemetEchoRequestSchema = createInsertSchema(kemetEchoRequests
 
 export type InsertKemetEchoRequest = z.infer<typeof insertKemetEchoRequestSchema>;
 export type KemetEchoRequest = typeof kemetEchoRequests.$inferSelect;
+
+// Table des téléchargements de guides (Lead Magnets)
+export const leadMagnetDownloads = pgTable("lead_magnet_downloads", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  pharmacyName: text("pharmacy_name"),
+  resourceType: text("resource_type").notNull(), // 'checklist-gestion', 'guide-stocks', etc.
+  resourceTitle: text("resource_title").notNull(),
+  dataConsent: boolean("data_consent").notNull().default(false),
+  marketingConsent: boolean("marketing_consent").notNull().default(false),
+  downloadedAt: timestamp("downloaded_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertLeadMagnetDownloadSchema = createInsertSchema(leadMagnetDownloads)
+  .omit({ id: true, createdAt: true, downloadedAt: true })
+  .extend({
+    name: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
+    email: z.string().trim().email('Adresse email invalide'),
+    phone: z.string().trim().optional(),
+    pharmacyName: z.string().trim().optional(),
+    resourceType: z.string().trim().min(1),
+    resourceTitle: z.string().trim().min(1),
+    dataConsent: z.boolean().refine(val => val === true, 
+      'Vous devez accepter le traitement de vos données personnelles pour télécharger cette ressource'
+    ),
+    marketingConsent: z.boolean().default(false),
+  });
+
+export type InsertLeadMagnetDownload = z.infer<typeof insertLeadMagnetDownloadSchema>;
+export type LeadMagnetDownload = typeof leadMagnetDownloads.$inferSelect;

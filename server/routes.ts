@@ -5,7 +5,9 @@ import {
   insertTrainingRegistrationSchema, 
   trainingRegistrations,
   insertKemetEchoRequestSchema,
-  kemetEchoRequests
+  kemetEchoRequests,
+  insertLeadMagnetDownloadSchema,
+  leadMagnetDownloads
 } from "@shared/schema";
 import { z } from "zod";
 // import { sendRegistrationNotification } from "./email"; // Unused - file logging active
@@ -221,6 +223,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
     } catch (error) {
       console.error('Kemet Echo request error:', error instanceof z.ZodError ? 'Validation failed' : 'Server error');
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          error: 'Données invalides',
+          details: error.errors.map(err => ({
+            field: err.path.join('.'),
+            message: err.message
+          }))
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        error: 'Erreur serveur. Veuillez réessayer plus tard.'
+      });
+    }
+  });
+
+  // Lead Magnet download endpoint (PDF Guide)
+  app.post('/api/lead-magnet-downloads', async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validatedData = insertLeadMagnetDownloadSchema.parse(req.body);
+      
+      // Create lead magnet download record in database
+      const downloadResult = await db.insert(leadMagnetDownloads).values(validatedData).returning();
+      const download = downloadResult[0];
+      
+      // Log success
+      console.log('Lead magnet download recorded successfully');
+      
+      // Return success response with download URL
+      res.status(201).json({ 
+        success: true, 
+        id: download.id,
+        downloadUrl: '/pdf/checklist-gestion-pharmacie.pdf',
+        message: 'Merci ! Votre guide est prêt à télécharger.'
+      });
+      
+    } catch (error) {
+      console.error('Lead magnet download error:', error instanceof z.ZodError ? 'Validation failed' : 'Server error');
       
       if (error instanceof z.ZodError) {
         return res.status(400).json({
