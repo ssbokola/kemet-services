@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight, MessageCircle, BarChart3 } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { ArrowRight, Package, TrendingUp, Shield, BarChart3 } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 export default function Hero() {
@@ -17,6 +18,24 @@ export default function Hero() {
     setLocation('/kemet-echo');
   };
 
+  const services = [
+    {
+      icon: Package,
+      title: 'Gestion des stocks',
+      description: 'Réduisez les ruptures et optimisez votre inventaire'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Performance financière',
+      description: 'Améliorez votre trésorerie et votre rentabilité'
+    },
+    {
+      icon: Shield,
+      title: 'Qualité & conformité',
+      description: 'Assurez la conformité et la qualité opérationnelle'
+    }
+  ];
+
   return (
     <section className="relative min-h-[90vh] flex items-center bg-background">
       {/* Background Image with Overlay */}
@@ -26,31 +45,53 @@ export default function Hero() {
           alt="Formation pharmacie en Côte d'Ivoire" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/50"></div>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl">
-          {/* Title */}
-          <h1 className="text-4xl md:text-6xl font-bold font-serif text-foreground leading-tight mb-6">
-            La qualité qui fait grandir votre officine
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-4xl">
+          {/* Surtitre */}
+          <p className="text-primary font-semibold mb-4 text-lg" data-testid="text-hero-subtitle">
+            Cabinet de formation et consulting en qualité pharmaceutique
+          </p>
+
+          {/* Title - Message clair */}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif text-foreground leading-tight mb-6">
+            Nous aidons les pharmacies ivoiriennes à optimiser leurs stocks, leur trésorerie et leur qualité
           </h1>
 
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
-            Formations ciblées et consultance opérationnelle pour pharmacies d'officine en Côte d'Ivoire.
+          <p className="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl">
+            Formations pratiques et accompagnement opérationnel pour transformer votre officine en entreprise performante.
           </p>
 
+          {/* 3 Services phares avec icônes */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+            {services.map((service, index) => (
+              <Card key={index} className="bg-background/80 backdrop-blur-sm border-primary/20" data-testid={`card-service-${index}`}>
+                <CardContent className="p-4">
+                  <service.icon className="w-8 h-8 text-primary mb-3" />
+                  <h3 className="font-semibold text-foreground mb-2 text-base">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-snug">
+                    {service.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8">
             <Button 
               size="lg" 
               onClick={handleDiagnosticClick}
               className="text-lg px-8 py-6"
               data-testid="button-hero-diagnostic"
             >
-              Diagnostic gratuit
+              Demandez un diagnostic gratuit
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button 
@@ -60,8 +101,7 @@ export default function Hero() {
               className="text-lg px-8 py-6 bg-background/80 backdrop-blur-sm border-primary text-primary hover:bg-primary hover:text-primary-foreground"
               data-testid="button-hero-formations"
             >
-              <MessageCircle className="mr-2 h-5 w-5" />
-              Découvrir nos formations
+              Voir nos formations
             </Button>
             <Button 
               size="lg" 
@@ -71,21 +111,21 @@ export default function Hero() {
               data-testid="button-hero-kemet-echo"
             >
               <BarChart3 className="mr-2 h-5 w-5" />
-              Nouveau : Kemet Echo - Satisfaction Client
+              Kemet Echo - Satisfaction Client
             </Button>
           </div>
 
           {/* Trust Badge */}
-          <div className="mt-12 flex items-center space-x-4 text-sm text-muted-foreground">
-            <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-primary rounded-full"></div>
               <span>ISO 9001:2015</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-primary rounded-full"></div>
               <span>Bonnes Pratiques de fabrication</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-primary rounded-full"></div>
               <span>Ancrage terrain Côte d'Ivoire</span>
             </div>
