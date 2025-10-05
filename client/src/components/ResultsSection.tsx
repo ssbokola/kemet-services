@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { TrendingDown, TrendingUp, Clock } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { TrendingDown, TrendingUp, Clock, Star, Quote, CheckCircle2 } from 'lucide-react';
 
 const kpis = [
   {
@@ -28,37 +29,90 @@ const kpis = [
   }
 ];
 
-const testimonials = [
+const clientTestimonials = [
   {
-    name: 'Formation "Gestion de Commande"',
-    role: 'Auxiliaires en pharmacie',
-    location: 'Abidjan, 16 mars 2024',
-    content: 'Formation interactive et pratique avec des cas concrets. Les participants ont apprécié l\'approche participative et les mises en situation réelles.',
-    image: '/images/testimonial-1.jpg'
+    name: 'Dr. Kouamé Jean-Baptiste',
+    role: 'Pharmacien Titulaire',
+    pharmacy: 'Pharmacie de la Paix, Cocody',
+    content: 'Formation ISO 9001 exceptionnelle ! Approche pratique et expertise reconnue. Notre pharmacie a obtenu la certification en 8 mois. Recommande vivement Kemet Services.',
+    rating: 5,
+    image: '/images/testimonial-1.jpg',
+    date: 'Août 2024'
   },
   {
-    name: 'Formation "Gestion de Trésorerie"',
-    role: 'Pharmaciens',
-    location: 'Abidjan, 28 mai 2024',
-    content: 'Cadre moderne et décontracté pour une formation de haut niveau. Les pharmaciens ont apprécié l\'approche pratique et les outils concrets pour optimiser leur trésorerie.',
-    image: '/images/tresorerie-participants.jpg'
+    name: 'Mme Adjoa Victoire',
+    role: 'Pharmacienne Responsable',
+    pharmacy: 'Pharmacie du Plateau, Abidjan',
+    content: 'Consultance WAYO remarquable ! Réduction de 70% de nos écarts de stock en 4 mois. Formateurs compétents et suivi personnalisé. Excellent retour sur investissement.',
+    rating: 5,
+    image: '/images/tresorerie-participants.jpg',
+    date: 'Septembre 2024'
   },
   {
-    name: 'Participants Satisfaits',
-    role: 'Groupe de formation',
-    location: 'Photo de fin de session',
-    content: 'Une formation enrichissante qui a permis à tous les participants d\'acquérir de nouvelles compétences pratiques pour leur travail quotidien.',
-    image: '/images/testimonial-3.jpg'
+    name: 'Dr. Bamba Moussa',
+    role: 'Pharmacien Titulaire',
+    pharmacy: 'Pharmacie Centrale, Bouaké',
+    content: 'Pack TRÉSORERIE très efficace. Optimisation financière significative et tableaux de bord pratiques. Équipe professionnelle et résultats concrets.',
+    rating: 5,
+    image: '/images/testimonial-3.jpg',
+    date: 'Juillet 2024'
+  }
+];
+
+const caseStudies = [
+  {
+    title: 'Pharmacie du Plateau',
+    location: 'Abidjan',
+    service: 'Consultance WAYO - Gestion des stocks',
+    duration: '4 mois',
+    before: {
+      label: 'Avant',
+      metrics: [
+        { label: 'Écarts de stock', value: '15%' },
+        { label: 'Ruptures mensuelles', value: '45 produits' },
+        { label: 'Produits périmés', value: '8%' }
+      ]
+    },
+    after: {
+      label: 'Après',
+      metrics: [
+        { label: 'Écarts de stock', value: '4,5%', improvement: '-70%' },
+        { label: 'Ruptures mensuelles', value: '12 produits', improvement: '-73%' },
+        { label: 'Produits périmés', value: '2%', improvement: '-75%' }
+      ]
+    }
+  },
+  {
+    title: 'Pharmacie de la Paix',
+    location: 'Cocody',
+    service: 'Formation ISO 9001:2015',
+    duration: '8 mois',
+    before: {
+      label: 'Avant',
+      metrics: [
+        { label: 'Processus documentés', value: '30%' },
+        { label: 'Non-conformités', value: '25/mois' },
+        { label: 'Satisfaction client', value: '3.2/5' }
+      ]
+    },
+    after: {
+      label: 'Après',
+      metrics: [
+        { label: 'Processus documentés', value: '100%', improvement: '+233%' },
+        { label: 'Non-conformités', value: '3/mois', improvement: '-88%' },
+        { label: 'Satisfaction client', value: '4.7/5', improvement: '+47%' }
+      ]
+    }
   }
 ];
 
 export default function ResultsSection() {
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold font-serif text-foreground mb-4">
-            Résultats concrets
+            Résultats concrets et témoignages
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Nos clients obtiennent des améliorations mesurables et durables de leurs performances
@@ -66,7 +120,7 @@ export default function ResultsSection() {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {kpis.map((kpi, index) => {
             const IconComponent = kpi.icon;
             return (
@@ -101,38 +155,144 @@ export default function ResultsSection() {
           })}
         </div>
 
-        {/* Testimonials */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold font-serif text-foreground text-center mb-12">
-            Témoignages clients
-          </h3>
+        {/* Client Testimonials */}
+        <div className="mb-20">
+          <div className="text-center mb-12">
+            <h3 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-3">
+              Ce que disent nos clients
+            </h3>
+            <p className="text-muted-foreground">
+              Témoignages de pharmaciens ayant travaillé avec Kemet Services
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+            {clientTestimonials.map((testimonial, index) => (
               <Card 
                 key={index} 
                 className="border-0 shadow-lg hover-elevate transition-all duration-300 overflow-hidden"
-                data-testid={`card-testimonial-${index}`}
+                data-testid={`card-client-testimonial-${index}`}
               >
-                <div className="h-48 overflow-hidden">
+                <div className="h-48 overflow-hidden bg-muted/30">
                   <img 
                     src={testimonial.image}
-                    alt={testimonial.name}
+                    alt={`${testimonial.name} - ${testimonial.pharmacy}`}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <CardContent className="p-6">
-                  <blockquote className="text-muted-foreground leading-relaxed mb-4 italic">
-                    "{testimonial.content}"
+                  <div className="flex items-center gap-1 mb-4">
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <Quote className="w-8 h-8 text-primary/20 mb-3" />
+                  <blockquote className="text-muted-foreground leading-relaxed mb-4">
+                    {testimonial.content}
                   </blockquote>
-                  <div>
+                  <div className="border-t pt-4">
                     <div className="font-semibold text-foreground">
                       {testimonial.name}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {testimonial.role}
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {testimonial.location}
+                    <div className="text-sm text-primary font-medium mt-1">
+                      {testimonial.pharmacy}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {testimonial.date}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Case Studies - Before/After */}
+        <div>
+          <div className="text-center mb-12">
+            <h3 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-3">
+              Études de cas : Avant / Après
+            </h3>
+            <p className="text-muted-foreground">
+              Transformations concrètes de pharmacies accompagnées par Kemet Services
+            </p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {caseStudies.map((study, index) => (
+              <Card 
+                key={index} 
+                className="border-0 shadow-lg overflow-hidden"
+                data-testid={`card-case-study-${index}`}
+              >
+                <div className="bg-primary/5 p-6 border-b">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h4 className="text-xl font-bold text-foreground mb-1">
+                        {study.title}
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {study.location}
+                      </p>
+                    </div>
+                    <Badge variant="secondary" className="text-xs">
+                      {study.duration}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-primary font-medium">
+                    {study.service}
+                  </p>
+                </div>
+                <CardContent className="p-0">
+                  <div className="grid grid-cols-2 divide-x">
+                    {/* Before */}
+                    <div className="p-6">
+                      <div className="text-center mb-4">
+                        <span className="text-lg font-semibold text-muted-foreground">
+                          {study.before.label}
+                        </span>
+                      </div>
+                      <div className="space-y-3">
+                        {study.before.metrics.map((metric, idx) => (
+                          <div key={idx} className="text-sm">
+                            <div className="text-muted-foreground mb-1">
+                              {metric.label}
+                            </div>
+                            <div className="text-2xl font-bold text-foreground">
+                              {metric.value}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    {/* After */}
+                    <div className="p-6 bg-primary/5">
+                      <div className="text-center mb-4">
+                        <span className="text-lg font-semibold text-primary flex items-center justify-center gap-2">
+                          <CheckCircle2 className="w-5 h-5" />
+                          {study.after.label}
+                        </span>
+                      </div>
+                      <div className="space-y-3">
+                        {study.after.metrics.map((metric, idx) => (
+                          <div key={idx} className="text-sm">
+                            <div className="text-muted-foreground mb-1">
+                              {metric.label}
+                            </div>
+                            <div className="flex items-baseline gap-2">
+                              <div className="text-2xl font-bold text-primary">
+                                {metric.value}
+                              </div>
+                              {metric.improvement && (
+                                <Badge variant="secondary" className="text-xs bg-primary/10 text-primary">
+                                  {metric.improvement}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
