@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, Package, TrendingUp, Shield, BarChart3 } from 'lucide-react';
 import { useLocation } from 'wouter';
+import heroImage from '@assets/_D6A2216_1757585998505.jpg';
 
 export default function Hero() {
   const [, setLocation] = useLocation();
@@ -41,9 +42,10 @@ export default function Hero() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/images/hero-formation.jpg" 
-          alt="Formation pharmacie en Côte d'Ivoire" 
+          src={heroImage}
+          alt="Formation pharmacie en Côte d'Ivoire - Atelier pratique gestion stocks et trésorerie" 
           className="w-full h-full object-cover"
+          loading="eager"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/50"></div>
       </div>
@@ -56,14 +58,14 @@ export default function Hero() {
             Cabinet de formation et consulting en qualité pharmaceutique
           </p>
 
-          {/* Title - Message clair */}
+          {/* Title - Accroche orientée bénéfices */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif text-foreground leading-tight mb-6">
-            Nous aidons les pharmacies ivoiriennes à optimiser leurs stocks, leur trésorerie et leur qualité
+            Formations pratiques pour pharmacies : réduire les écarts de stock, améliorer la trésorerie
           </h1>
 
-          {/* Subtitle */}
+          {/* Subtitle avec valeur ajoutée */}
           <p className="text-lg md:text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl">
-            Formations pratiques et accompagnement opérationnel pour transformer votre officine en entreprise performante.
+            Formations métier pour officines ivoiriennes avec résultats mesurables. Expertise ISO 9001, gestion optimisée des stocks et de la trésorerie, développement du potentiel humain.
           </p>
 
           {/* 3 Services phares avec icônes */}

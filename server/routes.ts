@@ -7,7 +7,9 @@ import {
   insertKemetEchoRequestSchema,
   kemetEchoRequests,
   insertLeadMagnetDownloadSchema,
-  leadMagnetDownloads
+  leadMagnetDownloads,
+  insertContactRequestSchema,
+  contactRequests
 } from "@shared/schema";
 import { z } from "zod";
 // import { sendRegistrationNotification } from "./email"; // Unused - file logging active
@@ -265,6 +267,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
     } catch (error) {
       console.error('Lead magnet download error:', error instanceof z.ZodError ? 'Validation failed' : 'Server error');
+      
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({
+          success: false,
+          error: 'Données invalides',
+          details: error.errors.map(err => ({
+            field: err.path.join('.'),
+            message: err.message
+          }))
+        });
+      }
+      
+      res.status(500).json({
+        success: false,
+        error: 'Erreur serveur. Veuillez réessayer plus tard.'
+      });
+    }
+  });
+
+  // Contact requests endpoint
+  app.post('/api/contacts', async (req, res) => {
+    try {
+      // Validate request body using Zod schema
+      const validatedData = insertContactRequestSchema.parse({
+        ...req.body,
+        type: req.body.type || 'contact'
+      });
+      
+      // Create contact request record in database
+      const contactResult = await db.insert(contactRequests).values(validatedData).returning();
+      const contact = contactResult[0];
+      
+      // Log success
+      console.log('Contact request created successfully:', contact.id);
+      
+      // Return success response
+      res.status(201).json({ 
+        success: true, 
+        id: contact.id,
+        message: 'Demande envoyée avec succès. Nous vous recontacterons sous 24h.'
+      });
+      
+    } catch (error) {
+      console.error('Contact request error:', error instanceof z.ZodError ? 'Validation failed' : 'Server error');
       
       if (error instanceof z.ZodError) {
         return res.status(400).json({

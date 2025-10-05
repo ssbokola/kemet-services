@@ -96,10 +96,11 @@ export default function ConsultingSection() {
           <div className="relative">
             <Card className="overflow-hidden border-0 shadow-xl">
               <img 
-                src="/images/consulting.jpg" 
-                alt="Formation Kemet Services en action" 
+                src={consultingImage}
+                alt="Consulting pharmacie Côte d'Ivoire - Accompagnement expert gestion officine" 
                 className="w-full h-96 object-cover"
                 data-testid="img-consulting"
+                loading="lazy"
               />
               <CardContent className="p-6">
                 <div className="text-center">

@@ -177,6 +177,7 @@ export default function ResultsSection() {
                     src={testimonial.image}
                     alt={`${testimonial.name} - ${testimonial.pharmacy}`}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 </div>
                 <CardContent className="p-6">

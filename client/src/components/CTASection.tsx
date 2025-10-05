@@ -1,22 +1,33 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { MessageCircle, Phone, ArrowRight } from 'lucide-react';
+import { MessageCircle, Calendar, ArrowRight, BookOpen } from 'lucide-react';
+import { useLocation } from 'wouter';
 import { trackWhatsAppClick, trackEvent } from '@/components/GoogleAnalytics';
 
 export default function CTASection() {
+  const [, setLocation] = useLocation();
+
   const handleWhatsAppClick = () => {
     trackWhatsAppClick();
     window.open('https://wa.me/225759068744', '_blank');
   };
 
   const handleDiagnosticClick = () => {
-    console.log('Diagnostic CTA triggered');
     trackEvent('diagnostic_button_click', {
       event_category: 'conversion',
       event_label: 'cta_diagnostic',
       value: 1
     });
-    // In a real app, this would open contact form
+    setLocation('/diagnostic');
+  };
+
+  const handleFormationsClick = () => {
+    trackEvent('formations_cta_click', {
+      event_category: 'conversion',
+      event_label: 'cta_formations',
+      value: 1
+    });
+    setLocation('/formations');
   };
 
   const handleEmailClick = () => {
@@ -37,18 +48,28 @@ export default function CTASection() {
               Prêt à transformer votre officine ?
             </h2>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
-              Contactez-nous dès aujourd'hui pour un diagnostic gratuit et découvrez comment optimiser vos performances.
+              Demandez votre diagnostic gratuit ou réservez une session découverte pour découvrir comment optimiser vos performances.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center mb-8">
               <Button 
                 size="lg"
                 onClick={handleDiagnosticClick}
                 className="text-lg px-8 py-6"
                 data-testid="button-cta-diagnostic"
               >
-                Diagnostic gratuit
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <Calendar className="mr-2 h-5 w-5" />
+                Demander un diagnostic gratuit
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                onClick={handleFormationsClick}
+                className="text-lg px-8 py-6 text-primary border-primary"
+                data-testid="button-cta-formations"
+              >
+                <BookOpen className="mr-2 h-5 w-5" />
+                Réserver une session découverte
               </Button>
               <Button 
                 size="lg"
@@ -58,7 +79,7 @@ export default function CTASection() {
                 data-testid="button-cta-whatsapp"
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
-                WhatsApp
+                Discuter sur WhatsApp
               </Button>
             </div>
 
