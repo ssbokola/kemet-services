@@ -17,6 +17,7 @@ import Diagnostic from "@/pages/Diagnostic";
 import Consulting from "@/pages/Consulting";
 import APropos from "@/pages/APropos";
 import Ressources from "@/pages/Ressources";
+import Article from "@/pages/Article";
 import Contact from "@/pages/Contact";
 import KemetEcho from "@/pages/KemetEcho";
 import ChecklistGestion from "@/pages/ChecklistGestion";
@@ -53,6 +54,7 @@ function Router() {
       <Route path="/consulting" component={Consulting} />
       <Route path="/a-propos" component={APropos} />
       <Route path="/ressources" component={Ressources} />
+      <Route path="/article/:id" component={Article} />
       <Route path="/ressources/checklist-gestion" component={ChecklistGestion} />
       <Route path="/contact" component={Contact} />
       <Route path="/inscription-formation" component={InscriptionFormation} />
