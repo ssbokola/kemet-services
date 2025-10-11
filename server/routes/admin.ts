@@ -19,6 +19,7 @@ import {
   courseLessons,
   insertCourseSchema
 } from '@shared/schema';
+import { sendWeeklyProgressEmails } from '../emails/progression';
 
 const router = Router();
 
@@ -861,6 +862,31 @@ router.delete('/lessons/:id', requireAdminAuth(), async (req, res) => {
   } catch (error) {
     console.error('Erreur lors de la suppression de la leçon:', error);
     res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// ==========================================
+// EMAILS DE PROGRESSION HEBDOMADAIRE
+// ==========================================
+
+// POST /api/admin/send-progress-emails - Déclencher manuellement les emails de progression
+router.post('/send-progress-emails', requireAdminAuth(), async (req, res) => {
+  try {
+    console.log("🚀 Déclenchement manuel des emails de progression hebdomadaire...");
+    
+    // Exécuter l'envoi des emails
+    await sendWeeklyProgressEmails();
+    
+    res.json({ 
+      success: true, 
+      message: "Les emails de progression ont été envoyés avec succès" 
+    });
+  } catch (error) {
+    console.error("Erreur lors de l'envoi des emails de progression:", error);
+    res.status(500).json({ 
+      success: false, 
+      error: "Erreur lors de l'envoi des emails de progression" 
+    });
   }
 });
 
