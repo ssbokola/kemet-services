@@ -29,11 +29,17 @@ export interface IStorage {
   createCourse(course: InsertCourse): Promise<Course>;
   updateCourse(id: string, updates: Partial<InsertCourse>): Promise<Course | undefined>;
   deleteCourse(id: string): Promise<boolean>;
+  
+  // Enrollments (Inscriptions)
+  enrollUser(userId: string, courseId: string): Promise<any>;
+  getUserEnrollments(userId: string): Promise<any[]>;
+  getEnrollment(userId: string, courseId: string): Promise<any | undefined>;
+  updateEnrollmentProgress(enrollmentId: string, progressPercent: number): Promise<void>;
 }
 
 import { db } from "./db";
-import { users, trainingRegistrations, courses } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { users, trainingRegistrations, courses, enrollments } from "@shared/schema";
+import { eq, and } from "drizzle-orm";
 
 export class DatabaseStorage implements IStorage {
   // User operations - Required for Replit Auth
@@ -117,6 +123,52 @@ export class DatabaseStorage implements IStorage {
   async deleteCourse(id: string): Promise<boolean> {
     const result = await db.delete(courses).where(eq(courses.id, id));
     return true;
+  }
+
+  // Enrollments (Inscriptions)
+  async enrollUser(userId: string, courseId: string): Promise<any> {
+    const [enrollment] = await db
+      .insert(enrollments)
+      .values({
+        userId,
+        courseId,
+        status: 'active',
+        progressPercent: 0,
+      })
+      .returning();
+    return enrollment;
+  }
+
+  async getUserEnrollments(userId: string): Promise<any[]> {
+    return await db
+      .select({
+        enrollment: enrollments,
+        course: courses,
+      })
+      .from(enrollments)
+      .innerJoin(courses, eq(enrollments.courseId, courses.id))
+      .where(eq(enrollments.userId, userId));
+  }
+
+  async getEnrollment(userId: string, courseId: string): Promise<any | undefined> {
+    const [enrollment] = await db
+      .select()
+      .from(enrollments)
+      .where(and(
+        eq(enrollments.userId, userId),
+        eq(enrollments.courseId, courseId)
+      ));
+    return enrollment;
+  }
+
+  async updateEnrollmentProgress(enrollmentId: string, progressPercent: number): Promise<void> {
+    await db
+      .update(enrollments)
+      .set({ 
+        progressPercent,
+        completedAt: progressPercent >= 100 ? new Date() : null,
+      })
+      .where(eq(enrollments.id, enrollmentId));
   }
 }
 

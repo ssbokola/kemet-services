@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { useParams, Link } from 'wouter';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { useParams, Link, useLocation } from 'wouter';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -11,6 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { Clock, BookOpen, CheckCircle2, AlertCircle, Users } from 'lucide-react';
 import { categoryLabels, levelLabels } from '@/data/formations';
+import { apiRequest, queryClient } from '@/lib/queryClient';
+import { isUnauthorizedError } from '@/lib/authUtils';
 
 interface Lesson {
   id: string;
@@ -42,10 +44,22 @@ interface Formation {
   modules?: Module[];
 }
 
+interface EnrollmentStatus {
+  success: boolean;
+  isEnrolled: boolean;
+  enrollment: {
+    id: string;
+    userId: string;
+    courseId: string;
+    enrolledAt: string;
+  } | null;
+}
+
 export default function FormationDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
 
   const { data, isLoading, error } = useQuery<{ success: boolean; formation: Formation }>({
     queryKey: ['/api/formations/slug', slug],
@@ -53,6 +67,73 @@ export default function FormationDetail() {
   });
 
   const formation = data?.formation;
+
+  // Vérifier le statut d'inscription
+  const { data: enrollmentStatusData, isLoading: isLoadingStatus } = useQuery<EnrollmentStatus>({
+    queryKey: ['/api/formations', formation?.id, 'enrollment-status'],
+    enabled: !!formation?.id && isAuthenticated,
+  });
+
+  // Mutation pour l'inscription
+  const enrollMutation = useMutation({
+    mutationFn: async () => {
+      if (!formation?.id) throw new Error('Formation ID manquant');
+      const response = await apiRequest('POST', `/api/formations/${formation.id}/enroll`);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: 'Inscription réussie !',
+        description: data.message || 'Vous êtes maintenant inscrit à cette formation',
+      });
+      // Invalider le cache pour rafraîchir le statut
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/formations', formation?.id, 'enrollment-status'] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/formations/my-enrollments'] 
+      });
+      // Rediriger vers mon compte après 1 seconde
+      setTimeout(() => {
+        setLocation('/mon-compte');
+      }, 1000);
+    },
+    onError: (error: Error) => {
+      // Gérer les erreurs 401 Unauthorized
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: 'Non authentifié',
+          description: 'Vous devez être connecté pour vous inscrire',
+          variant: 'destructive',
+        });
+        setTimeout(() => {
+          window.location.href = '/api/login';
+        }, 1000);
+        return;
+      }
+
+      // Gérer les erreurs 400 (déjà inscrit)
+      if (error.message.includes('400')) {
+        toast({
+          title: 'Déjà inscrit',
+          description: 'Vous êtes déjà inscrit à cette formation',
+          variant: 'destructive',
+        });
+        // Invalider le cache pour mettre à jour le statut
+        queryClient.invalidateQueries({ 
+          queryKey: ['/api/formations', formation?.id, 'enrollment-status'] 
+        });
+        return;
+      }
+
+      // Autres erreurs
+      toast({
+        title: 'Erreur',
+        description: error.message || 'Une erreur est survenue lors de l\'inscription',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const formatDuration = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
@@ -67,11 +148,10 @@ export default function FormationDetail() {
   };
 
   const handleInscription = () => {
-    toast({
-      title: 'Inscription bientôt disponible',
-      description: 'Les inscriptions aux formations en ligne seront bientôt ouvertes. Restez connecté !',
-    });
+    enrollMutation.mutate();
   };
+
+  const isEnrolled = enrollmentStatusData?.isEnrolled ?? false;
 
   if (isLoading) {
     return (
@@ -269,17 +349,39 @@ export default function FormationDetail() {
                       Prêt à commencer ?
                     </h3>
                     <p className="text-muted-foreground">
-                      Inscrivez-vous maintenant et commencez votre apprentissage
+                      {isEnrolled 
+                        ? 'Accédez à votre espace de formation' 
+                        : 'Inscrivez-vous maintenant et commencez votre apprentissage'}
                     </p>
                   </div>
                   <div className="flex flex-col gap-3 w-full md:w-auto">
-                    {isAuthenticated ? (
-                      <Button size="lg" onClick={handleInscription} className="w-full md:w-auto" data-testid="button-inscription">
-                        S'inscrire à la formation
+                    {!isAuthenticated ? (
+                      <Button 
+                        size="lg" 
+                        asChild 
+                        className="w-full md:w-auto" 
+                        data-testid="button-login"
+                      >
+                        <a href="/api/login">Se connecter pour s'inscrire</a>
+                      </Button>
+                    ) : isEnrolled ? (
+                      <Button 
+                        size="lg" 
+                        asChild 
+                        className="w-full md:w-auto" 
+                        data-testid="button-access-formation"
+                      >
+                        <Link href="/mon-compte">Accéder à ma formation</Link>
                       </Button>
                     ) : (
-                      <Button size="lg" asChild className="w-full md:w-auto" data-testid="button-login">
-                        <Link href="/login">Se connecter pour s'inscrire</Link>
+                      <Button 
+                        size="lg" 
+                        onClick={handleInscription} 
+                        disabled={enrollMutation.isPending || isLoadingStatus}
+                        className="w-full md:w-auto" 
+                        data-testid="button-inscription"
+                      >
+                        {enrollMutation.isPending ? 'Inscription en cours...' : 'S\'inscrire à la formation'}
                       </Button>
                     )}
                     <div className="text-center">
