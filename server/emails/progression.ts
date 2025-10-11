@@ -1,6 +1,6 @@
 // Système d'emails hebdomadaires de progression
 import { db } from "../db";
-import { enrollments, users, courses, lessonProgress, courseLessons, courseModules } from "@shared/schema";
+import { enrollments, users, courses } from "@shared/schema";
 import { eq, and, lt, or, isNull, sql } from "drizzle-orm";
 import { sendGmail } from "../gmail";
 
@@ -11,10 +11,8 @@ interface ProgressionData {
   userName: string;
   userEmail: string;
   progressPercent: number;
-  completedLessons: number;
-  totalLessons: number;
-  timeSpentMinutes: number;
   enrolledDays: number;
+  courseDuration: number;
 }
 
 // Générer le contenu HTML de l'email de progression
@@ -68,16 +66,16 @@ function generateProgressionEmailHTML(data: ProgressionData): string {
           
           <div class="stats">
             <div class="stat">
-              <div class="stat-value">${data.completedLessons}</div>
-              <div class="stat-label">Leçons complétées</div>
+              <div class="stat-value">${data.enrolledDays}</div>
+              <div class="stat-label">Jours d'apprentissage</div>
             </div>
             <div class="stat">
-              <div class="stat-value">${data.totalLessons}</div>
-              <div class="stat-label">Total leçons</div>
+              <div class="stat-value">${Math.floor(data.courseDuration / 60)}h${data.courseDuration % 60 > 0 ? data.courseDuration % 60 + 'min' : ''}</div>
+              <div class="stat-label">Durée totale du cours</div>
             </div>
             <div class="stat">
-              <div class="stat-value">${Math.round(data.timeSpentMinutes)}</div>
-              <div class="stat-label">Minutes étudiées</div>
+              <div class="stat-value">${data.progressPercent}%</div>
+              <div class="stat-label">Avancement</div>
             </div>
           </div>
           
@@ -138,35 +136,14 @@ function getNextStepsMessage(progressPercent: number): string {
   }
 }
 
-// Calculer la progression d'un utilisateur dans une formation
-async function calculateUserProgress(userId: string, courseId: string): Promise<Omit<ProgressionData, 'courseName' | 'userName' | 'userEmail'>> {
-  // Récupérer toutes les leçons du cours
-  const modulesWithLessons = await db
-    .select({
-      lessonId: courseLessons.id,
-    })
-    .from(courseModules)
-    .innerJoin(courseLessons, eq(courseLessons.moduleId, courseModules.id))
-    .where(eq(courseModules.courseId, courseId));
-  
-  const totalLessons = modulesWithLessons.length;
-  
-  // Récupérer la progression de l'utilisateur
-  const userProgress = await db
-    .select({
-      status: lessonProgress.status,
-      timeSpent: lessonProgress.timeSpent,
-    })
-    .from(lessonProgress)
-    .where(eq(lessonProgress.userId, userId));
-  
-  const completedLessons = userProgress.filter(p => p.status === 'completed').length;
-  const totalTimeSpent = userProgress.reduce((sum, p) => sum + (p.timeSpent || 0), 0);
-  const progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
-  
-  // Calculer le nombre de jours depuis l'inscription
+// Calculer la progression d'un utilisateur dans une formation (version simplifiée)
+async function calculateUserProgress(userId: string, courseId: string): Promise<Omit<ProgressionData, 'courseName' | 'userName' | 'userEmail' | 'courseDuration'>> {
+  // Récupérer l'inscription avec la progression
   const [enrollment] = await db
-    .select({ enrolledAt: enrollments.enrolledAt })
+    .select({ 
+      enrolledAt: enrollments.enrolledAt,
+      progressPercent: enrollments.progressPercent,
+    })
     .from(enrollments)
     .where(and(
       eq(enrollments.userId, userId),
@@ -180,10 +157,7 @@ async function calculateUserProgress(userId: string, courseId: string): Promise<
   return {
     userId,
     courseId,
-    progressPercent,
-    completedLessons,
-    totalLessons,
-    timeSpentMinutes: Math.round(totalTimeSpent / 60),
+    progressPercent: enrollment?.progressPercent || 0,
     enrolledDays,
   };
 }
@@ -203,6 +177,7 @@ export async function sendWeeklyProgressEmails(): Promise<void> {
         userId: enrollments.userId,
         courseId: enrollments.courseId,
         courseName: courses.title,
+        courseDuration: courses.duration,
         userName: sql<string>`COALESCE(${users.firstName} || ' ' || ${users.lastName}, ${users.email})`.as('userName'),
         userEmail: users.email,
         lastEmailSent: enrollments.lastProgressEmailSentAt,
@@ -233,13 +208,14 @@ export async function sendWeeklyProgressEmails(): Promise<void> {
         const progressData: ProgressionData = {
           ...progress,
           courseName: enrollment.courseName,
+          courseDuration: enrollment.courseDuration,
           userName: enrollment.userName,
           userEmail: enrollment.userEmail || '',
         };
         
-        // Ne pas envoyer d'email si aucune progression
-        if (progressData.completedLessons === 0 && progressData.enrolledDays < 7) {
-          console.log(`⏭️  Pas d'email pour ${enrollment.userName} - trop tôt`);
+        // Ne pas envoyer d'email si inscription trop récente (moins de 3 jours)
+        if (progressData.enrolledDays < 3) {
+          console.log(`⏭️  Pas d'email pour ${enrollment.userName} - inscription trop récente`);
           continue;
         }
         

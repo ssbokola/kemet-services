@@ -1,19 +1,51 @@
 import { useEffect } from 'react';
 import { useLocation, Link } from 'wouter';
 import { Helmet } from 'react-helmet-async';
+import { useQuery } from '@tanstack/react-query';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
-import { BookOpen, Mail, User as UserIcon } from 'lucide-react';
+import { BookOpen, Mail, User as UserIcon, CheckCircle2, Clock } from 'lucide-react';
 
 interface UserData {
   email?: string;
   firstName?: string;
   lastName?: string;
   profileImageUrl?: string;
+}
+
+interface Course {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  category: string;
+  level: string;
+  duration: number;
+  thumbnailUrl?: string;
+}
+
+interface Enrollment {
+  id: number;
+  userId: string;
+  courseId: number;
+  status: string;
+  enrolledAt: string;
+  completedAt?: string;
+  progressPercent: number;
+}
+
+interface EnrolledFormation {
+  course: Course;
+  enrollment: Enrollment;
 }
 
 export default function MonCompte() {
@@ -26,6 +58,16 @@ export default function MonCompte() {
       setLocation('/login');
     }
   }, [isLoading, isAuthenticated, setLocation]);
+
+  const { data: enrollmentsData, isLoading: enrollmentsLoading } = useQuery<{
+    success: boolean;
+    enrollments: EnrolledFormation[];
+  }>({
+    queryKey: ['/api/formations/my-enrollments'],
+    enabled: isAuthenticated
+  });
+
+  const enrollments = enrollmentsData?.enrollments || [];
 
   if (isLoading) {
     return (
@@ -97,26 +139,132 @@ export default function MonCompte() {
               </Button>
             </div>
 
-            <Card>
-              <CardContent className="py-16">
-                <div className="text-center max-w-md mx-auto">
-                  <div className="bg-muted/50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-                    <BookOpen className="w-12 h-12 text-muted-foreground" />
+            {enrollmentsLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[0, 1, 2].map((i) => (
+                  <Card key={i} className="overflow-hidden">
+                    <Skeleton className="w-full aspect-video" />
+                    <CardContent className="p-6 space-y-4">
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-2 w-full" />
+                      <div className="flex gap-2">
+                        <Skeleton className="h-6 w-20" />
+                        <Skeleton className="h-6 w-24" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : !enrollments || enrollments.length === 0 ? (
+              <Card>
+                <CardContent className="py-16">
+                  <div className="text-center max-w-md mx-auto">
+                    <div className="bg-muted/50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                      <BookOpen className="w-12 h-12 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-foreground mb-3" data-testid="text-no-formations">
+                      Vous n'êtes inscrit à aucune formation
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      Commencez votre parcours d'apprentissage en explorant notre catalogue de formations
+                    </p>
+                    <Button asChild size="lg" data-testid="button-explorer-formations">
+                      <Link href="/formations">
+                        Explorer les formations
+                      </Link>
+                    </Button>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-3" data-testid="text-no-formations">
-                    Vous n'êtes inscrit à aucune formation
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    Commencez votre parcours d'apprentissage en explorant notre catalogue de formations
-                  </p>
-                  <Button asChild size="lg" data-testid="button-explorer-formations">
-                    <Link href="/formations">
-                      Explorer les formations
-                    </Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {enrollments.map(({ course, enrollment }, index) => {
+                  const isCompleted = enrollment.progressPercent >= 100;
+                  const truncatedDescription = course.description?.length > 100 
+                    ? `${course.description.substring(0, 100)}...` 
+                    : course.description;
+
+                  return (
+                    <Card 
+                      key={enrollment.id} 
+                      className="overflow-hidden hover-elevate"
+                      data-testid={`card-enrolled-formation-${index}`}
+                    >
+                      {course.thumbnailUrl && (
+                        <div className="aspect-video w-full overflow-hidden">
+                          <img 
+                            src={course.thumbnailUrl} 
+                            alt={course.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <CardContent className="p-6 space-y-4">
+                        <div>
+                          <h3 className="text-xl font-semibold text-foreground mb-2">{course.title}</h3>
+                          <p className="text-sm text-muted-foreground">{truncatedDescription}</p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">Progression</span>
+                            <span 
+                              className="text-sm font-medium text-foreground"
+                              data-testid={`text-progress-percent-${index}`}
+                            >
+                              {enrollment.progressPercent}% complété
+                            </span>
+                          </div>
+                          <Progress 
+                            value={enrollment.progressPercent} 
+                            className={isCompleted ? "bg-green-100" : ""}
+                            data-testid={`progress-${index}`}
+                          />
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          <Badge 
+                            variant={isCompleted ? "outline" : "default"}
+                            data-testid={`badge-status-${index}`}
+                          >
+                            {isCompleted ? (
+                              <>
+                                <CheckCircle2 className="w-3 h-3 mr-1" />
+                                Complété
+                              </>
+                            ) : (
+                              <>
+                                <Clock className="w-3 h-3 mr-1" />
+                                En cours
+                              </>
+                            )}
+                          </Badge>
+                          <Badge variant="outline">
+                            {course.duration}h
+                          </Badge>
+                        </div>
+
+                        <div className="text-xs text-muted-foreground">
+                          Inscrit le {format(new Date(enrollment.enrolledAt), 'dd MMMM yyyy', { locale: fr })}
+                        </div>
+
+                        <Button 
+                          asChild 
+                          className="w-full"
+                          data-testid={`button-continue-${index}`}
+                        >
+                          <Link href={`/formation/${course.slug}`}>
+                            {isCompleted ? 'Revoir la formation' : 'Continuer la formation'}
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <Card>
