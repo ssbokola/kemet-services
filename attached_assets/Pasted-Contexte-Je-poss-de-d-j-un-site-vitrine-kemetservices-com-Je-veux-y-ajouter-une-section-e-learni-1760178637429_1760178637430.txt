@@ -1,0 +1,594 @@
+Contexte :
+Je possède déjà un site vitrine kemetservices.com. Je veux y ajouter une section e-learning asynchrone pour des formations destinées aux pharmaciens et aux auxiliaires (Côte d’Ivoire). L’objectif : que les apprenants puissent s’inscrire, payer, suivre des leçons vidéo, passer des quiz, télécharger une attestation PDF, et que moi (admin) je puisse créer/éditer les cours et suivre les stats.
+
+Contraintes & préférences :
+
+Langue par défaut : français (i18n prêt pour ajouter l’anglais plus tard).
+
+Fuseau horaire : Africa/Abidjan.
+
+Design simple, propre, mobile-first, couleurs KEMET (or #DAA520, noir, blanc).
+
+Je veux un module indépendant (monorepo) que je pourrai déployer tel quel puis relier à mon domaine existant (sous-chemin /formations ou sous-domaine).
+
+Base de données SQLite en dev, PostgreSQL en prod.
+
+Pas de services externes payants obligatoires (sauf email/PDF/stockage gratuit ou peu coûteux).
+
+Paiements : proposer un connecteur générique (webhook) + intégrer PayTech Mobile Money (Orange Money / MTN MoMo) ou, a minima, Stripe comme fallback.
+
+Stockage vidéo : on intègre par URL (Vimeo/YouTube privé, ou fichier .mp4 hébergé), pas d’upload lourd dans la Vercel free tier.
+
+RGPD basique + mentions légales / CGV.
+
+Branding : logo KEMET toujours visible.
+
+🎯 À construire (fonctionnel complet)
+1) Architecture technique
+
+Next.js 14 (App Router) + TypeScript
+
+UI : TailwindCSS, shadcn/ui
+
+Auth : next-auth (Email + OAuth Google)
+
+DB : Prisma (SQLite dev, Postgres prod)
+
+Paiement : Stripe (immédiat) + interfaces pour webhooks Mobile Money (Orange/MTN) → endpoints prêts, docs & TODO clairs.
+
+E-mail : Resend ou Nodemailer via SMTP (confirmation d’inscription + envoi attestation).
+
+PDF : pdf-lib ou @react-pdf/renderer (génération Attestation KEMET).
+
+Analytics basiques : tables DB (progression, quiz, complétions), page admin de visualisation.
+
+SEO : metas, sitemap.xml, robots.txt, OpenGraph.
+
+2) Modèle pédagogique (asynchrone)
+
+Cours → Modules → Leçons (vidéo/texte) → Quiz (par leçon et final).
+
+Progression verrouillée : pour accéder à la leçon n, l’apprenant doit compléter (visionner + quiz réussi) la leçon n-1.
+
+Attestation PDF auto à 70% minimum de bonnes réponses au quiz final.
+
+Bibliothèque ressources : PDF/checklists téléchargeables (URL).
+
+Notes/avancement visibles côté apprenant (tableau de bord).
+
+3) Rôles & Permissions
+
+Admin : CRUD cours/modules/leçons/quiz/ressources, voir paiements, stats, export CSV.
+
+Formateur (optionnel) : CRUD limité sur ses cours.
+
+Apprenant : accès aux cours achetés/inscrits, progression, attestations.
+
+4) Paiements & accès
+
+Stripe Checkout prêt à l’emploi.
+
+Endpoints Mobile Money (Orange/MTN) pré-créés : /api/payments/mm/checkout, /api/payments/mm/webhook avec pseudo-implémentation et TODO pour brancher un agrégateur local (PayDunya/Flutterwave/PayTech, etc.).
+
+À la réussite du paiement, créer un Enrollment et déverrouiller le cours.
+
+Remise : codes promo gérables côté admin.
+
+5) Génération Attestation KEMET
+
+Modèle PDF avec : Nom apprenant, Intitulé formation, Score final, Date, Signature “Dr Sonhon Bokola”, Logo KEMET.
+
+Téléchargeable + envoyé par email.
+
+Export open-graph d’un badge partageable (image simple).
+
+6) Pages & Navigation (App Router)
+
+/ (accueil e-learning) : accroche, formations mises en avant, CTA “Commencer”.
+
+/formations : catalogue filtrable (catégorie : Pharmaciens / Auxiliaires).
+
+/formations/[slug] : page vente d’un cours (objectifs, plan, formateurs, prix, bouton “S’inscrire”).
+
+/learning (zone apprenant) : tableau de bord “Mes cours”, progression, attestations.
+
+/learning/cours/[courseId]/module/[moduleId]/lecon/[lessonId] : lecteur (vidéo intégrée par URL), résumé, quiz, bouton “Marquer comme terminé”.
+
+/checkout/[courseId] : paiement.
+
+/attestations/[id] : téléchargement attestation (protégé).
+
+/admin : dashboard (cartes : revenus, inscrits, taux de complétion).
+
+/admin/cours (CRUD)
+
+/admin/quiz (éditeur de quiz)
+
+/admin/utilisateurs (liste, rôles)
+
+/admin/commandes (paiements, statuts)
+
+export CSV (inscrits, résultats quiz)
+
+7) Schéma Prisma (indicatif)
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?  @unique
+  image     String?
+  role      Role     @default(STUDENT)
+  enrollments Enrollment[]
+  progresses Progress[]
+  results   QuizResult[]
+  createdAt DateTime @default(now())
+}
+
+enum Role { ADMIN TRAINER STUDENT }
+
+model Course {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  audience    String   // "Pharmaciens" | "Auxiliaires"
+  synopsis    String
+  priceCFA    Int
+  coverUrl    String?
+  published   Boolean  @default(false)
+  modules     Module[]
+  resources   Resource[]
+  createdAt   DateTime @default(now())
+}
+
+model Module {
+  id        String  @id @default(cuid())
+  title     String
+  order     Int
+  courseId  String
+  course    Course  @relation(fields: [courseId], references: [id])
+  lessons   Lesson[]
+}
+
+model Lesson {
+  id        String  @id @default(cuid())
+  title     String
+  order     Int
+  videoUrl  String? // Vimeo/YouTube/private URL
+  contentMd String  // résumé/texte
+  moduleId  String
+  module    Module  @relation(fields: [moduleId], references: [id])
+  quiz      Quiz?
+}
+
+model Quiz {
+  id        String   @id @default(cuid())
+  lessonId  String   @unique
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  questions Question[]
+  passing   Int      @default(70) // % requis
+}
+
+model Question {
+  id       String  @id @default(cuid())
+  quizId   String
+  quiz     Quiz    @relation(fields: [quizId], references: [id])
+  prompt   String
+  options  String  // JSON string array
+  answerIx Int     // index de la bonne réponse
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  paid      Boolean  @default(false)
+  paidAt    DateTime?
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+}
+
+model Progress {
+  id        String   @id @default(cuid())
+  userId    String
+  lessonId  String
+  completed Boolean  @default(false)
+  completedAt DateTime?
+  user      User     @relation(fields: [userId], references: [id])
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+}
+
+model QuizResult {
+  id        String   @id @default(cuid())
+  userId    String
+  quizId    String
+  scorePct  Int
+  takenAt   DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Resource {
+  id        String  @id @default(cuid())
+  courseId  String
+  title     String
+  url       String
+  course    Course  @relation(fields: [courseId], references: [id])
+}
+
+model Order {
+  id         String   @id @default(cuid())
+  userId     String
+  courseId   String
+  amountCFA  Int
+  status     String   // pending | paid | failed
+  provider   String   // stripe | orangemoney | mtnmomo
+  reference  String?
+  createdAt  DateTime @default(now())
+}
+
+8) Quiz & progression
+
+Pour marquer une leçon comme terminée, l’apprenant doit :
+
+cliquer “J’ai terminé cette leçon”, et
+
+obtenir ≥ 70% au quiz de la leçon (configurable).
+
+Leçon suivante non accessible tant que les conditions ne sont pas remplies.
+
+Quiz final au niveau du cours : score final enregistré → attestation.
+
+9) Attestation PDF (gabarit)
+
+En-tête : Logo KEMET SERVICES + “Attestation de formation”
+
+Corps : Nom Prénom, a complété avec succès la formation « {Titre} » le {Date}, Score : {xx}%
+
+Bas de page : Signature Dr Sonhon Bokola, cachet si possible, QR (URL vérif).
+
+Bouton “Télécharger l’attestation” + envoi par email (pièce jointe).
+
+10) Admin UX
+
+Liste des cours (statut pub, prix, inscrits)
+
+Éditeur de cours/modules/leçons (Markdown pour le contenu)
+
+Éditeur de quiz (questions, options, index réponse)
+
+Suivi paiements (provider, montant, statut)
+
+KPI cartes :
+
+Revenus période
+
+Inscriptions
+
+Taux de complétion par cours
+
+Top leçons par abandon
+
+📦 Livrables attendus
+
+Monorepo Next.js prêt à lancer : pnpm dev
+
+README clair (setup local, env, déploiement Vercel, liaison domaine, Postgres)
+
+.env.example avec clés attendues :
+
+DATABASE_URL=
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+RESEND_API_KEY=   # ou SMTP configs
+APP_BASE_URL=https://formations.kemetservices.com
+TZ=Africa/Abidjan
+
+
+Seed de démo :
+
+Cours “Réduire les écarts de stock” (3 modules, 5 leçons, quiz exemples)
+
+1 cours “Bonnes pratiques officinales (KEMET Echo)” (brouillon)
+
+1 cours “Gestion efficace de la commande (Auxiliaires)” (brouillon)
+
+Endpoints Mobile Money fonctionnels mais marqués TODO pour brancher l’agrégateur (avec exemples de payload + validations).
+
+Tests minimaux :
+
+Accès apprenant → progression verrouillée
+
+Paiement Stripe sandbox → enrollment OK
+
+Génération attestation PDF après succès quiz final
+
+Rôles admin vs apprenant
+
+✅ Critères d’acceptation (AC)
+
+ Je peux créer un cours, modules, leçons, quiz depuis /admin.
+
+ Un visiteur peut acheter un cours (Stripe test), être inscrit automatiquement, et voit le cours dans /learning.
+
+ La progression force l’ordre des leçons + quiz ≥ % requis.
+
+ Attestation PDF générée + téléchargeable + envoyée par email.
+
+ Stats visibles dans /admin (inscrits, complétion, revenus).
+
+ SEO et pages légales basiques présents.
+
+ Design propre, responsive, couleurs KEMET.
+
+ Endpoints Mobile Money existent et sont documentés (webhook, signature HMAC, idempotence).
+
+🔗 Intégration à mon site existant
+
+Déploiement Vercel sous formations.kemetservices.com (ou /formations si reverse proxy).
+
+Lien “Formations en ligne” ajouté dans le menu principal du site.
+
+Politique : logo KEMET en en-tête, footer cohérent.
+
+Bonus souhaité (si temps)
+
+Mini-forum/FAQ par cours (Q&A simples).
+
+Badges de progression (25%, 50%, 100%).
+
+Export CSV des résultats quiz par cours.
+
+Webhook Zapier/Make pour pousser les leads vers un CRM Google Sheets.
+
+Merci de générer le projet complet, avec tous les fichiers, les pages, les composants, la config Tailwind/shadcn, l’auth, Prisma, les pages admin et learning, le README et un seed réaliste.
+
+Si tu as besoin d’instructions particulières pour le Mobile Money (Orange/MTN), crée des adapters propres avec une interface TypeScript et une doc dans README pour brancher l’agrégateur local (endpoints, webhooks, secrets, mapping statuts).
+
+Vous avez dit :
+utilise le paiement par WAVE uniquement comme mobile money c'est très répandu et c'est beaucoup plus simple
+ChatGPT a dit :
+Réflexion durant 6s
+
+Parfait — on passe Wave uniquement pour le paiement Mobile Money.
+Voici une version V2 du prompt Replit (à coller telle quelle) qui remplace Stripe & co par Wave comme seul moyen de paiement, avec endpoints, schéma de données, variables d’environnement et critères d’acceptation adaptés.
+
+📋 PROMPT REPLIT — KEMET Formation Online (Wave Mobile Money only)
+
+Contexte :
+Site vitrine kemetservices.com déjà en ligne. Je veux ajouter une section e-learning asynchrone (Next.js 14 + TS) où les apprenants s’inscrivent, paient via Wave, suivent des leçons vidéo, passent des quiz, et reçoivent une attestation PDF.
+Monnaie : FCFA — Fuseau : Africa/Abidjan — Langue : FR.
+
+🎯 Stack & Modules attendus
+
+Next.js 14 (App Router) + TypeScript
+
+TailwindCSS + shadcn/ui (design sobre, mobile-first, couleurs KEMET)
+
+Auth : next-auth (Email + Google)
+
+DB : Prisma (SQLite dev, PostgreSQL prod)
+
+Mail : Resend ou SMTP (confirmation + attestation)
+
+PDF : pdf-lib ou @react-pdf/renderer (Attestation KEMET)
+
+Paiement : Wave Mobile Money – seul provider
+
+SEO : metas, sitemap.xml, robots.txt, OpenGraph
+
+⚠️ Remplacer toute référence à Stripe/MTN/Orange par Wave exclusivement.
+
+🧱 Modèle pédagogique (asynchrone)
+
+Cours → Modules → Leçons → Quiz (quiz par leçon + final, seuil par défaut 70%)
+
+Progression verrouillée (leçon n accessible si leçon n-1 terminée + quiz ok)
+
+Attestation PDF auto si quiz final ≥ seuil
+
+Tableau de bord apprenant (progression, attestations)
+
+Admin (CRUD cours, leçons, quiz, ressources; stats & export CSV)
+
+💳 Paiement Wave — Exigences fonctionnelles
+1) Flow utilisateur
+
+Sur la page d’un cours → bouton “S’inscrire / Payer avec Wave”
+
+Création d’une Order (status=pending) en DB.
+
+Redirection vers Wave Checkout (ou affichage d’un Wave Pay Link intégré).
+
+À la réussite du paiement côté Wave → webhook appelle notre API → on valide et on passe l’Order à paid, on crée/active l’Enrollment.
+
+L’apprenant voit aussitôt le cours dans /learning.
+
+2) Endpoints à implémenter
+
+POST /api/payments/wave/checkout
+
+Entrée : { courseId }
+
+Action : crée une Order pending, appelle l’API Wave pour générer un checkout link (ou un paiement collect), renvoie { paymentUrl } pour redirection.
+
+Stocke dans l’Order : wavePaymentId, reference, amountCFA.
+
+POST /api/payments/wave/webhook
+
+Sécurisé par signature HMAC (voir env ci-dessous).
+
+Payload attendu (exemple générique) :
+
+{
+  "event": "payment.succeeded",
+  "data": {
+    "payment_id": "wave_abc123",
+    "reference": "ORD_20251011_0001",
+    "amount": 35000,
+    "currency": "XOF",
+    "status": "succeeded",
+    "msisdn": "+225XXXXXXXX",
+    "timestamp": 1697030400
+  },
+  "signature": "hex_hmac_sha256_signature"
+}
+
+
+Vérifier la signature → idempotence (ne pas retraiter deux fois).
+
+Si succeeded : Order.status=paid, paidAt=now(), créer/activer Enrollment, envoyer email de confirmation.
+
+GET /api/payments/wave/order-status?reference=...
+
+Optionnel pour polling client side (fallback si le webhook tarde).
+
+Si l’API Wave en CI nécessite un agrégateur (ex : CinetPay/PayTech/Flutterwave avec rail Wave), implémenter l’adapter Wave de façon agnostique (interface WaveGateway) et documenter dans le README où brancher l’agrégateur (URL, clés, signature). L’UX et la DB restent identiques.
+
+3) Variables d’environnement (.env.example)
+APP_BASE_URL=https://formations.kemetservices.com
+TZ=Africa/Abidjan
+
+# Auth
+NEXTAUTH_URL=
+NEXTAUTH_SECRET=
+
+# DB
+DATABASE_URL=
+
+# Emails
+RESEND_API_KEY=         # ou SMTP_*
+
+# Wave
+WAVE_API_BASE_URL=      # ex: https://api.wave.com/checkout  (ou URL agrégateur)
+WAVE_PUBLIC_KEY=
+WAVE_SECRET_KEY=
+WAVE_WEBHOOK_SECRET=    # clé pour vérifier la signature HMAC
+WAVE_MERCHANT_ID=
+WAVE_CALLBACK_URL=${APP_BASE_URL}/api/payments/wave/webhook
+WAVE_RETURN_URL=${APP_BASE_URL}/learning
+
+4) Schéma Prisma — Order adapté Wave
+model Order {
+  id         String   @id @default(cuid())
+  userId     String
+  courseId   String
+  amountCFA  Int
+  status     String   // pending | paid | failed | canceled
+  provider   String   @default("wave")
+  reference  String   @unique
+  wavePaymentId String?
+  createdAt  DateTime @default(now())
+  paidAt     DateTime?
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+}
+
+5) Sécurité & robustesse
+
+Signature HMAC : recalculer côté serveur avec WAVE_WEBHOOK_SECRET; refuser si mismatch.
+
+Idempotence : table/clé de déduplication (ex: wavePaymentId unique) ou middleware.
+
+Amounts : toujours vérifier amount et currency retournés = montant attendu.
+
+Logs : tracer reference, wavePaymentId, event, status.
+
+📄 Pages clés (rappel)
+
+/formations (catalogue)
+
+/formations/[slug] (page de vente du cours + CTA “Payer avec Wave”)
+
+/checkout/[courseId] (création Order + redirection vers Wave)
+
+/learning (dashboard apprenant)
+
+/learning/cours/[courseId]/module/[moduleId]/lecon/[lessonId]
+
+/attestations/[id]
+
+/admin (+ sous-pages CRUD)
+
+🧪 Tests à fournir
+
+Paiement Wave (sandbox ou mock) :
+
+Création d’Order pending → redirection URL Wave (ou mock)
+
+Réception webhook payment.succeeded signé → Order paid, Enrollment actif
+
+L’apprenant voit le cours dans /learning
+
+Idempotence : double envoi du même webhook ne casse rien.
+
+Vérifications : montant, currency, référence.
+
+Attestation PDF : générée après réussite quiz final (≥ 70%) et envoyée par email.
+
+✅ Critères d’acceptation (AC) — Version Wave
+
+ Bouton “Payer avec Wave” opérationnel sur la page cours.
+
+ Order créé en pending, reference unique, amountCFA correct.
+
+ Webhook Wave validé (signature HMAC), met l’Order en paid et active l’Enrollment.
+
+ Aucun autre provider (pas de Stripe/MTN/Orange dans le code ni UI).
+
+ Dashboard admin : voir Orders (Wave), filtrer par status, export CSV.
+
+ Attestation PDF générée / téléchargeable / envoyée.
+
+ UX propre & responsive, branding KEMET.
+
+🔌 Adapter “WaveGateway”
+
+Créer un service lib/payments/wave.ts :
+
+export interface WaveGateway {
+  createCheckout(params: {
+    reference: string;
+    amountCFA: number;
+    currency?: "XOF";
+    returnUrl: string;
+    callbackUrl: string;
+    customer?: { email?: string; phone?: string; name?: string };
+    meta?: Record<string, string>;
+  }): Promise<{ paymentUrl: string; wavePaymentId?: string }>;
+
+  verifySignature(rawBody: string, headerSignature: string): boolean;
+
+  parseWebhook(body: unknown): {
+    ok: boolean;
+    event: "payment.succeeded" | "payment.failed" | string;
+    paymentId?: string;
+    reference?: string;
+    amount?: number;
+    currency?: string;
+    status?: string;
+  };
+}
+
+
+Implémenter createCheckout via API Wave (ou agrégateur Wave) → retourner paymentUrl.
+
+verifySignature : HMAC SHA-256 avec WAVE_WEBHOOK_SECRET.
+
+parseWebhook : retourner un objet normalisé pour la suite du pipeline.
+
+📦 Livrables
+
+Monorepo Next.js + Prisma + Auth + Tailwind (prêt pnpm dev)
+
+UI KEMET (or #DAA520, noir, blanc), logo visible
+
+Pages apprenant + admin
+
+Paiement Wave only (endpoints + adapter + README)
+
+README clair (env, déploiement, liaison domaine, branchement Wave/agrégateur)
+
+Seed avec 1 cours complet (Écarts de stock) + 2 brouillons
+
+Tests clés (paiement, webhook, attestation)
