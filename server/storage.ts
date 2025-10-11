@@ -1,4 +1,11 @@
-import { type User, type UpsertUser, type TrainingRegistration, type InsertTrainingRegistration } from "@shared/schema";
+import { 
+  type User, 
+  type UpsertUser, 
+  type TrainingRegistration, 
+  type InsertTrainingRegistration,
+  type Course,
+  type InsertCourse,
+} from "@shared/schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
@@ -13,83 +20,104 @@ export interface IStorage {
   createTrainingRegistration(registration: InsertTrainingRegistration): Promise<TrainingRegistration>;
   getTrainingRegistrations(): Promise<TrainingRegistration[]>;
   getTrainingRegistrationById(id: string): Promise<TrainingRegistration | undefined>;
+  
+  // Courses (Formations en ligne)
+  getCourses(): Promise<Course[]>;
+  getPublishedCourses(): Promise<Course[]>;
+  getCourseById(id: string): Promise<Course | undefined>;
+  getCourseBySlug(slug: string): Promise<Course | undefined>;
+  createCourse(course: InsertCourse): Promise<Course>;
+  updateCourse(id: string, updates: Partial<InsertCourse>): Promise<Course | undefined>;
+  deleteCourse(id: string): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private trainingRegistrations: Map<string, TrainingRegistration>;
+import { db } from "./db";
+import { users, trainingRegistrations, courses } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
-  constructor() {
-    this.users = new Map();
-    this.trainingRegistrations = new Map();
-  }
-
+export class DatabaseStorage implements IStorage {
+  // User operations - Required for Replit Auth
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
-    const existingUser = this.users.get(userData.id!);
-    const now = new Date();
-    
-    if (existingUser) {
-      // Update existing user
-      const updatedUser: User = {
-        ...existingUser,
-        ...userData,
-        updatedAt: now,
-      };
-      this.users.set(userData.id!, updatedUser);
-      return updatedUser;
-    } else {
-      // Create new user
-      const id = userData.id || randomUUID();
-      const user: User = {
-        id,
-        // Legacy fields for compatibility
-        username: null,
-        password: null,
-        // Replit Auth fields
-        email: userData.email || null,
-        firstName: userData.firstName || null,
-        lastName: userData.lastName || null,
-        profileImageUrl: userData.profileImageUrl || null,
-        role: userData.role || 'participant',
-        createdAt: now,
-        updatedAt: now,
-      };
-      this.users.set(id, user);
-      return user;
-    }
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
   }
 
   // Training registrations methods
   async createTrainingRegistration(insertRegistration: InsertTrainingRegistration): Promise<TrainingRegistration> {
-    const id = randomUUID();
-    const createdAt = new Date();
-    const registration: TrainingRegistration = { 
-      ...insertRegistration,
-      id,
-      createdAt,
-      // Handle optional fields - convert undefined to null for database compatibility
-      preferredDate: insertRegistration.preferredDate ?? null,
-      message: insertRegistration.message ?? null,
-      marketingConsent: insertRegistration.marketingConsent ?? false
-    };
-    this.trainingRegistrations.set(id, registration);
+    const [registration] = await db
+      .insert(trainingRegistrations)
+      .values(insertRegistration)
+      .returning();
     return registration;
   }
 
   async getTrainingRegistrations(): Promise<TrainingRegistration[]> {
-    return Array.from(this.trainingRegistrations.values());
+    return await db.select().from(trainingRegistrations);
   }
 
   async getTrainingRegistrationById(id: string): Promise<TrainingRegistration | undefined> {
-    return this.trainingRegistrations.get(id);
+    const [registration] = await db
+      .select()
+      .from(trainingRegistrations)
+      .where(eq(trainingRegistrations.id, id));
+    return registration;
+  }
+
+  // Courses (Formations en ligne)
+  async getCourses(): Promise<Course[]> {
+    return await db.select().from(courses);
+  }
+
+  async getPublishedCourses(): Promise<Course[]> {
+    return await db.select().from(courses).where(eq(courses.isPublished, true));
+  }
+
+  async getCourseById(id: string): Promise<Course | undefined> {
+    const [course] = await db.select().from(courses).where(eq(courses.id, id));
+    return course;
+  }
+
+  async getCourseBySlug(slug: string): Promise<Course | undefined> {
+    const [course] = await db.select().from(courses).where(eq(courses.slug, slug));
+    return course;
+  }
+
+  async createCourse(courseData: InsertCourse): Promise<Course> {
+    const [course] = await db
+      .insert(courses)
+      .values(courseData)
+      .returning();
+    return course;
+  }
+
+  async updateCourse(id: string, updates: Partial<InsertCourse>): Promise<Course | undefined> {
+    const [course] = await db
+      .update(courses)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(courses.id, id))
+      .returning();
+    return course;
+  }
+
+  async deleteCourse(id: string): Promise<boolean> {
+    const result = await db.delete(courses).where(eq(courses.id, id));
+    return true;
   }
 }
 
-// Ensure storage persists across hot-reloads in development
-const globalForStorage = globalThis as any;
-globalForStorage.__memStorage ||= new MemStorage();
-export const storage = globalForStorage.__memStorage;
+export const storage = new DatabaseStorage();
