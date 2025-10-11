@@ -17,7 +17,9 @@ import {
   courses,
   courseModules,
   courseLessons,
-  insertCourseSchema
+  insertCourseSchema,
+  quizzes,
+  quizQuestions
 } from '@shared/schema';
 import { sendWeeklyProgressEmails } from '../emails/progression';
 
@@ -604,7 +606,7 @@ router.get('/courses/:id', requireAdminAuth(), async (req, res) => {
       .where(eq(courseModules.courseId, id))
       .orderBy(asc(courseModules.order));
     
-    const modulesWithLessons = await Promise.all(
+    const modulesWithLessonsAndQuizzes = await Promise.all(
       modules.map(async (module) => {
         const lessons = await db
           .select()
@@ -612,13 +614,41 @@ router.get('/courses/:id', requireAdminAuth(), async (req, res) => {
           .where(eq(courseLessons.moduleId, module.id))
           .orderBy(asc(courseLessons.order));
         
-        return { ...module, lessons };
+        // Récupérer les quiz pour chaque leçon
+        const lessonsWithQuizzes = await Promise.all(
+          lessons.map(async (lesson) => {
+            const lessonQuizzes = await db
+              .select()
+              .from(quizzes)
+              .where(eq(quizzes.lessonId, lesson.id))
+              .orderBy(asc(quizzes.order));
+            
+            return { ...lesson, quizzes: lessonQuizzes };
+          })
+        );
+        
+        // Récupérer les quiz du module (non liés à une leçon spécifique)
+        const moduleQuizzes = await db
+          .select()
+          .from(quizzes)
+          .where(eq(quizzes.courseId, id))
+          .orderBy(asc(quizzes.order));
+        
+        return { ...module, lessons: lessonsWithQuizzes, quizzes: moduleQuizzes };
       })
     );
     
+    // Récupérer le quiz final du cours (si existant)
+    const finalQuiz = await db
+      .select()
+      .from(quizzes)
+      .where(and(eq(quizzes.courseId, id), eq(quizzes.isFinalQuiz, true)))
+      .limit(1);
+    
     res.json({ 
       ...course, 
-      modules: modulesWithLessons 
+      modules: modulesWithLessonsAndQuizzes,
+      finalQuiz: finalQuiz[0] || null
     });
   } catch (error) {
     console.error('Erreur lors de la récupération du cours:', error);
@@ -861,6 +891,231 @@ router.delete('/lessons/:id', requireAdminAuth(), async (req, res) => {
     res.json({ message: 'Leçon supprimée avec succès' });
   } catch (error) {
     console.error('Erreur lors de la suppression de la leçon:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// ==========================================
+// GESTION DES QUIZ ET QUESTIONS
+// ==========================================
+
+// GET /api/admin/quizzes - Lister les quiz (filtrés par lessonId ou courseId)
+router.get('/quizzes', requireAdminAuth(), async (req, res) => {
+  try {
+    const { lessonId, courseId } = req.query;
+    
+    let result;
+    
+    if (lessonId) {
+      result = await db
+        .select()
+        .from(quizzes)
+        .where(eq(quizzes.lessonId, lessonId as string))
+        .orderBy(asc(quizzes.order));
+    } else if (courseId) {
+      result = await db
+        .select()
+        .from(quizzes)
+        .where(eq(quizzes.courseId, courseId as string))
+        .orderBy(asc(quizzes.order));
+    } else {
+      result = await db
+        .select()
+        .from(quizzes)
+        .orderBy(asc(quizzes.order));
+    }
+    
+    res.json(result);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des quiz:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// GET /api/admin/quiz-questions - Lister les questions (filtrées par quizId)
+router.get('/quiz-questions', requireAdminAuth(), async (req, res) => {
+  try {
+    const { quizId } = req.query;
+    
+    if (!quizId) {
+      return res.status(400).json({ error: 'quizId est requis' });
+    }
+    
+    const questions = await db
+      .select()
+      .from(quizQuestions)
+      .where(eq(quizQuestions.quizId, quizId as string))
+      .orderBy(asc(quizQuestions.order));
+    
+    res.json(questions);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des questions:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// Schéma de validation pour les quiz
+const quizSchema = z.object({
+  lessonId: z.string().optional(),
+  courseId: z.string().optional(),
+  title: z.string().min(1, 'Le titre est requis'),
+  description: z.string().optional(),
+  passingScore: z.number().int().min(0).max(100).default(70),
+  timeLimit: z.number().int().positive().optional(),
+  maxAttempts: z.number().int().positive().optional(),
+  isFinalQuiz: z.boolean().default(false),
+  order: z.number().int().default(0),
+  isPublished: z.boolean().default(false),
+});
+
+// POST /api/admin/quizzes - Créer un quiz
+router.post('/quizzes', requireAdminAuth(), async (req, res) => {
+  try {
+    const quizData = quizSchema.parse(req.body);
+    
+    // Vérifier qu'exactement un de lessonId ou courseId est fourni (pas les deux, pas aucun)
+    if (!quizData.lessonId && !quizData.courseId) {
+      return res.status(400).json({ error: 'Le quiz doit être lié à une leçon OU à un cours' });
+    }
+    
+    if (quizData.lessonId && quizData.courseId) {
+      return res.status(400).json({ error: 'Le quiz ne peut pas être lié à la fois à une leçon ET à un cours' });
+    }
+    
+    const [quiz] = await db
+      .insert(quizzes)
+      .values(quizData)
+      .returning();
+    
+    res.status(201).json(quiz);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la création du quiz:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// PUT /api/admin/quizzes/:id - Mettre à jour un quiz
+router.put('/quizzes/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const quizData = quizSchema.partial().parse(req.body);
+    
+    const [updatedQuiz] = await db
+      .update(quizzes)
+      .set(quizData)
+      .where(eq(quizzes.id, id))
+      .returning();
+    
+    if (!updatedQuiz) {
+      return res.status(404).json({ error: 'Quiz introuvable' });
+    }
+    
+    res.json(updatedQuiz);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la mise à jour du quiz:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// DELETE /api/admin/quizzes/:id - Supprimer un quiz
+router.delete('/quizzes/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    await db.delete(quizzes).where(eq(quizzes.id, id));
+    
+    res.json({ message: 'Quiz supprimé avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la suppression du quiz:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// Schéma de validation pour les questions de quiz
+const quizQuestionSchema = z.object({
+  quizId: z.string().min(1, 'L\'ID du quiz est requis'),
+  questionText: z.string().min(1, 'Le texte de la question est requis'),
+  questionType: z.enum(['multiple_choice', 'true_false', 'short_answer']).default('multiple_choice'),
+  options: z.array(z.string()).optional(),
+  correctAnswer: z.string().min(1, 'La réponse correcte est requise'),
+  explanation: z.string().optional(),
+  points: z.number().int().positive().default(1),
+  order: z.number().int(),
+});
+
+// POST /api/admin/quiz-questions - Créer une question de quiz
+router.post('/quiz-questions', requireAdminAuth(), async (req, res) => {
+  try {
+    const questionData = quizQuestionSchema.parse(req.body);
+    
+    // Vérifier que le quiz existe
+    const quiz = await db
+      .select()
+      .from(quizzes)
+      .where(eq(quizzes.id, questionData.quizId))
+      .limit(1);
+    
+    if (!quiz.length) {
+      return res.status(404).json({ error: 'Quiz introuvable' });
+    }
+    
+    const [question] = await db
+      .insert(quizQuestions)
+      .values(questionData)
+      .returning();
+    
+    res.status(201).json(question);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la création de la question:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// PUT /api/admin/quiz-questions/:id - Mettre à jour une question
+router.put('/quiz-questions/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const questionData = quizQuestionSchema.omit({ quizId: true }).partial().parse(req.body);
+    
+    const [updatedQuestion] = await db
+      .update(quizQuestions)
+      .set(questionData)
+      .where(eq(quizQuestions.id, id))
+      .returning();
+    
+    if (!updatedQuestion) {
+      return res.status(404).json({ error: 'Question introuvable' });
+    }
+    
+    res.json(updatedQuestion);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: error.errors[0].message });
+    }
+    console.error('Erreur lors de la mise à jour de la question:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// DELETE /api/admin/quiz-questions/:id - Supprimer une question
+router.delete('/quiz-questions/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    await db.delete(quizQuestions).where(eq(quizQuestions.id, id));
+    
+    res.json({ message: 'Question supprimée avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la question:', error);
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 });

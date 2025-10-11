@@ -90,19 +90,25 @@ Preferred communication style: Simple, everyday language.
   - Enhanced `users` table with nullable username for OIDC compatibility
   - `courses` table with full course metadata (title, slug, description, category, level, duration, price, objectives, prerequisites)
   - `enrollments` table linking users to courses with progress tracking (status, progressPercent, enrolledAt)
-  - `lessons` and `lesson_progress` tables for granular content tracking
+  - `modules` table organizing lessons into structured learning paths with prerequisites
+  - `lessons` table with video URLs, content, duration, and order tracking
+  - `lesson_progress` table for granular lesson completion tracking
+  - `quizzes` table for assessments with passing scores and certificate generation flags
+  - `quiz_questions` table with multiple-choice questions and correct answers
+  - `quiz_results` table storing user scores, attempts, and completion status
+  - `resources` table for downloadable materials (PDFs, documents) linked to lessons/courses
+  - `orders` table tracking Wave Mobile Money payments with waveCheckoutId and waveTransactionId
 - **Authentication**: Replit Auth integration with OIDC (Google, GitHub, Email/Password)
   - Users can authenticate via /api/login
   - Session management with express-session
   - Protected routes with isAuthenticated middleware
 - **API Endpoints**:
-  - `GET /api/formations` - Public course catalog
-  - `GET /api/formations/my-enrollments` - User's enrolled courses (auth required)
-  - `GET /api/formations/slug/:slug` - Course details by slug
-  - `GET /api/formations/:id` - Course details by ID
-  - `POST /api/formations/:id/enroll` - Enroll in course (auth required)
-  - `GET /api/formations/:id/enrollment-status` - Check enrollment status
-  - `POST /api/admin/send-progress-emails` - Manual trigger for weekly emails
+  - **Courses**: `GET /api/formations` (public catalog), `GET /api/formations/:id`, `POST /api/formations/:id/enroll`
+  - **Modules**: `GET /api/modules/:moduleId` (auth + enrollment required)
+  - **Lessons**: `GET /api/lessons/:lessonId` (auth + enrollment + progression lock)
+  - **Quizzes**: `GET /api/quizzes/:quizId`, `POST /api/quizzes/:quizId/submit` (auth + enrollment required, answers masked)
+  - **Payments**: `POST /api/payments/wave/checkout`, `POST /api/payments/wave/webhook`, `GET /api/payments/wave/status/:orderId`
+  - **Admin**: `POST /api/admin/send-progress-emails` - Manual trigger for weekly emails
 - **Email Workflows**:
   - Enrollment confirmation emails sent automatically on registration
   - Weekly progress tracking emails with personalized metrics
@@ -122,6 +128,20 @@ Preferred communication style: Simple, everyday language.
   - Fixed route ordering in formations.ts (specific routes before generic /:id)
   - Made users.username nullable for OIDC flows
   - Corrected deleteCourse return value for accurate success reporting
+- **Wave Mobile Money Payment System**: Complete FCFA payment integration for Côte d'Ivoire and Senegal
+  - Country-specific Wave API endpoints via WAVE_COUNTRY env var (ci/senegal)
+  - Checkout creation with redirect to Wave payment page
+  - Webhook processing with HMAC signature verification and idempotent enrollment creation
+  - Payment status polling for order verification
+  - Automatic course unlocking on successful payment (creates enrollment)
+  - Order tracking with waveCheckoutId and waveTransactionId
+  - Security: All payment routes require authentication, webhook verifies signature/token, ownership validation on status checks
+  - Environment variables: WAVE_API_KEY, WAVE_SECRET_KEY, WAVE_COUNTRY, PAYDUNYA_WEBHOOK_SECRET, APP_BASE_URL
+- **Security Enhancements**:
+  - All lesson/module/quiz routes enforce authentication AND enrollment verification
+  - Quiz answers masked (correctAnswer field removed from API responses)
+  - Progression locking: lessons require completion of previous lessons via isLessonAccessible()
+  - Webhook signature verification prevents unauthorized payment processing
 - **Testing**: End-to-end Playwright test validates complete enrollment flow from authentication to dashboard display
 
 ### Kemet Echo Integration (September 30, 2025)

@@ -35,6 +35,8 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminInscriptions from "@/pages/admin/AdminInscriptions";
 import AdminContacts from "@/pages/admin/AdminContacts";
 import AdminCourses from "@/pages/admin/AdminCourses";
+import AdminCourseContent from "@/pages/admin/AdminCourseContent";
+import AdminQuizManager from "@/pages/admin/AdminQuizManager";
 import AdminParticipants from "@/pages/admin/AdminParticipants";
 import SPFConfig from "@/pages/admin/SPFConfig";
 import DKIMConfig from "@/pages/admin/DKIMConfig";
@@ -72,6 +74,8 @@ function Router() {
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/admin/registrations" component={AdminInscriptions} />
       <Route path="/admin/contacts" component={AdminContacts} />
+      <Route path="/admin/lessons/:lessonId/quiz" component={AdminQuizManager} />
+      <Route path="/admin/courses/:id/content" component={AdminCourseContent} />
       <Route path="/admin/courses" component={AdminCourses} />
       <Route path="/admin/participants" component={AdminParticipants} />
       <Route path="/admin/spf" component={SPFConfig} />

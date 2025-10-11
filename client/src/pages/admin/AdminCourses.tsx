@@ -619,6 +619,15 @@ export default function AdminCourses() {
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setLocation(`/admin/courses/${course.id}/content`)}
+                            data-testid={`button-manage-content-${course.id}`}
+                          >
+                            <BookOpen className="w-4 h-4 mr-1" />
+                            Contenu
+                          </Button>
+                          <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleEditCourse(course)}
