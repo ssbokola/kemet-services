@@ -21,6 +21,9 @@ import dkimRoutes from "./routes/dkim";
 import trainingRoutes from "./routes/training";
 import participantRoutes from "./routes/participants";
 import formationsRoutes from "./routes/formations";
+import modulesRoutes from "./routes/modules";
+import lessonsRoutes from "./routes/lessons";
+import quizzesRoutes from "./routes/quizzes";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 // Authentification Replit Auth - blueprint:javascript_log_in_with_replit
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -75,6 +78,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Formations (online training) routes
   app.use('/api/formations', formationsRoutes);
+  
+  // E-learning platform routes
+  app.use('/api/modules', modulesRoutes);
+  app.use('/api/lessons', lessonsRoutes);
+  app.use('/api/quizzes', quizzesRoutes);
+  
   // Training registration endpoint
   app.post('/api/training-registrations', async (req, res) => {
     try {

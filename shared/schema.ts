@@ -154,6 +154,16 @@ export const courseModules = pgTable("course_modules", {
   createdAt: timestamp("createdat").defaultNow().notNull(),
 });
 
+export const insertModuleSchema = createInsertSchema(courseModules)
+  .omit({ id: true, createdAt: true })
+  .extend({
+    title: z.string().trim().min(3, 'Le titre doit contenir au moins 3 caractères'),
+    order: z.coerce.number().min(0),
+  });
+
+export type InsertModule = z.infer<typeof insertModuleSchema>;
+export type Module = typeof courseModules.$inferSelect;
+
 export const courseLessons = pgTable("course_lessons", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   moduleId: varchar("moduleid").notNull().references(() => courseModules.id, { onDelete: 'cascade' }),
@@ -166,6 +176,18 @@ export const courseLessons = pgTable("course_lessons", {
   isFree: boolean("isfree").notNull().default(false), // Lesson accessible sans inscription
   createdAt: timestamp("createdat").defaultNow().notNull(),
 });
+
+export const insertLessonSchema = createInsertSchema(courseLessons)
+  .omit({ id: true, createdAt: true })
+  .extend({
+    title: z.string().trim().min(3, 'Le titre doit contenir au moins 3 caractères'),
+    content: z.string().trim().min(10, 'Le contenu doit contenir au moins 10 caractères'),
+    order: z.coerce.number().min(0),
+    duration: z.coerce.number().min(1).optional().nullable(),
+  });
+
+export type InsertLesson = z.infer<typeof insertLessonSchema>;
+export type Lesson = typeof courseLessons.$inferSelect;
 
 // User enrollment and access management
 export const enrollments = pgTable("enrollments", {
@@ -338,3 +360,157 @@ export const insertLeadMagnetDownloadSchema = createInsertSchema(leadMagnetDownl
 
 export type InsertLeadMagnetDownload = z.infer<typeof insertLeadMagnetDownloadSchema>;
 export type LeadMagnetDownload = typeof leadMagnetDownloads.$inferSelect;
+
+// ============================================
+// E-LEARNING PLATFORM - EXTENDED SCHEMA
+// ============================================
+
+// Quizzes - Can be attached to lessons or courses (final quiz)
+export const quizzes = pgTable("quizzes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  lessonId: varchar("lessonid").references(() => courseLessons.id, { onDelete: 'cascade' }),
+  courseId: varchar("courseid").references(() => courses.id, { onDelete: 'cascade' }), // For final quiz
+  title: text("title").notNull(),
+  description: text("description"),
+  passingScore: integer("passingscore").notNull().default(70), // Percentage required to pass
+  timeLimit: integer("timelimit"), // Time limit in minutes (null = no limit)
+  maxAttempts: integer("maxattempts"), // Max attempts allowed (null = unlimited)
+  isFinalQuiz: boolean("isfinalquiz").notNull().default(false), // Is this the course final quiz?
+  order: integer("order").notNull().default(0),
+  isPublished: boolean("ispublished").notNull().default(false),
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+});
+
+export const insertQuizSchema = createInsertSchema(quizzes)
+  .omit({ id: true, createdAt: true })
+  .extend({
+    title: z.string().trim().min(3, 'Le titre doit contenir au moins 3 caractères'),
+    passingScore: z.coerce.number().min(0).max(100),
+    timeLimit: z.coerce.number().min(1).optional().nullable(),
+    maxAttempts: z.coerce.number().min(1).optional().nullable(),
+  });
+
+export type InsertQuiz = z.infer<typeof insertQuizSchema>;
+export type Quiz = typeof quizzes.$inferSelect;
+
+// Quiz Questions
+export const quizQuestions = pgTable("quiz_questions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  quizId: varchar("quizid").notNull().references(() => quizzes.id, { onDelete: 'cascade' }),
+  questionText: text("questiontext").notNull(),
+  questionType: text("questiontype").notNull().default('multiple_choice'), // 'multiple_choice', 'true_false', 'short_answer'
+  options: text("options").array(), // JSON array of options for multiple choice
+  correctAnswer: text("correctanswer").notNull(), // Index for multiple choice, 'true'/'false', or text answer
+  explanation: text("explanation"), // Optional explanation shown after answer
+  points: integer("points").notNull().default(1),
+  order: integer("order").notNull(),
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+});
+
+export const insertQuizQuestionSchema = createInsertSchema(quizQuestions)
+  .omit({ id: true, createdAt: true })
+  .extend({
+    questionText: z.string().trim().min(5, 'La question doit contenir au moins 5 caractères'),
+    questionType: z.enum(['multiple_choice', 'true_false', 'short_answer']),
+    points: z.coerce.number().min(1),
+    order: z.coerce.number().min(0),
+  });
+
+export type InsertQuizQuestion = z.infer<typeof insertQuizQuestionSchema>;
+export type QuizQuestion = typeof quizQuestions.$inferSelect;
+
+// Quiz Results/Attempts
+export const quizResults = pgTable("quiz_results", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("userid").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  quizId: varchar("quizid").notNull().references(() => quizzes.id, { onDelete: 'cascade' }),
+  score: integer("score").notNull(), // Percentage score
+  totalPoints: integer("totalpoints").notNull(),
+  earnedPoints: integer("earnedpoints").notNull(),
+  answers: jsonb("answers").notNull(), // JSON object with question_id: user_answer pairs
+  passed: boolean("passed").notNull(),
+  attemptNumber: integer("attemptnumber").notNull().default(1),
+  timeSpent: integer("timespent"), // Time spent in seconds
+  startedAt: timestamp("startedat").notNull(),
+  completedAt: timestamp("completedat").notNull(),
+});
+
+export const insertQuizResultSchema = createInsertSchema(quizResults)
+  .omit({ id: true });
+
+export type InsertQuizResult = z.infer<typeof insertQuizResultSchema>;
+export type QuizResult = typeof quizResults.$inferSelect;
+
+// Course Resources (downloadable files, PDFs, checklists)
+export const courseResources = pgTable("course_resources", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  courseId: varchar("courseid").notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  title: text("title").notNull(),
+  description: text("description"),
+  type: text("type").notNull(), // 'pdf', 'checklist', 'template', 'link', 'other'
+  url: text("url").notNull(), // URL to the resource
+  fileSize: integer("filesize"), // File size in bytes
+  order: integer("order").notNull().default(0),
+  isPublished: boolean("ispublished").notNull().default(false),
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+});
+
+export const insertCourseResourceSchema = createInsertSchema(courseResources)
+  .omit({ id: true, createdAt: true })
+  .extend({
+    title: z.string().trim().min(3, 'Le titre doit contenir au moins 3 caractères'),
+    type: z.enum(['pdf', 'checklist', 'template', 'link', 'other']),
+    url: z.string().url('URL invalide'),
+  });
+
+export type InsertCourseResource = z.infer<typeof insertCourseResourceSchema>;
+export type CourseResource = typeof courseResources.$inferSelect;
+
+// Orders/Payments (Wave Mobile Money)
+export const orders = pgTable("orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("userid").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  courseId: varchar("courseid").notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  amount: integer("amount").notNull(), // Amount in FCFA
+  currency: text("currency").notNull().default('XOF'), // FCFA
+  status: text("status").notNull().default('pending'), // 'pending', 'processing', 'completed', 'failed', 'cancelled', 'refunded'
+  paymentMethod: text("paymentmethod").notNull().default('wave'), // 'wave'
+  waveTransactionId: text("wavetransactionid"), // Wave transaction reference
+  waveCheckoutId: text("wavecheckoutid"), // Wave checkout session ID
+  wavePaymentUrl: text("wavepaymenturl"), // Wave payment URL for redirect
+  failureReason: text("failurereason"), // Reason for failure
+  metadata: jsonb("metadata"), // Additional metadata
+  paidAt: timestamp("paidat"),
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+  updatedAt: timestamp("updatedat").defaultNow().notNull(),
+});
+
+export const insertOrderSchema = createInsertSchema(orders)
+  .omit({ id: true, createdAt: true, updatedAt: true })
+  .extend({
+    amount: z.coerce.number().min(1, 'Le montant doit être supérieur à 0'),
+    currency: z.string().default('XOF'),
+    paymentMethod: z.enum(['wave']).default('wave'),
+  });
+
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
+export type Order = typeof orders.$inferSelect;
+
+// Certificates/Attestations
+export const certificates = pgTable("certificates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("userid").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  courseId: varchar("courseid").notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  certificateNumber: text("certificatenumber").notNull().unique(), // Unique certificate number
+  finalScore: integer("finalscore").notNull(), // Final quiz score percentage
+  completedAt: timestamp("completedat").notNull(),
+  pdfUrl: text("pdfurl"), // URL to generated PDF
+  verificationCode: text("verificationcode").notNull().unique(), // QR code verification
+  issuedAt: timestamp("issuedat").defaultNow().notNull(),
+});
+
+export const insertCertificateSchema = createInsertSchema(certificates)
+  .omit({ id: true, issuedAt: true });
+
+export type InsertCertificate = z.infer<typeof insertCertificateSchema>;
+export type Certificate = typeof certificates.$inferSelect;
