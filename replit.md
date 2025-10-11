@@ -82,9 +82,49 @@ Preferred communication style: Simple, everyday language.
 - **Replit**: Cloud-based development and deployment platform
 - **Environment Configuration**: Production and development environment separation
 
-## Recent Changes (September 30, 2025)
+## Recent Changes
 
-### Kemet Echo Integration
+### Online Training Platform (October 11, 2025)
+- **Learning Management System**: Complete enrollment system with authentication, course catalog, and user dashboard
+- **Database Schema**: 
+  - Enhanced `users` table with nullable username for OIDC compatibility
+  - `courses` table with full course metadata (title, slug, description, category, level, duration, price, objectives, prerequisites)
+  - `enrollments` table linking users to courses with progress tracking (status, progressPercent, enrolledAt)
+  - `lessons` and `lesson_progress` tables for granular content tracking
+- **Authentication**: Replit Auth integration with OIDC (Google, GitHub, Email/Password)
+  - Users can authenticate via /api/login
+  - Session management with express-session
+  - Protected routes with isAuthenticated middleware
+- **API Endpoints**:
+  - `GET /api/formations` - Public course catalog
+  - `GET /api/formations/my-enrollments` - User's enrolled courses (auth required)
+  - `GET /api/formations/slug/:slug` - Course details by slug
+  - `GET /api/formations/:id` - Course details by ID
+  - `POST /api/formations/:id/enroll` - Enroll in course (auth required)
+  - `GET /api/formations/:id/enrollment-status` - Check enrollment status
+  - `POST /api/admin/send-progress-emails` - Manual trigger for weekly emails
+- **Email Workflows**:
+  - Enrollment confirmation emails sent automatically on registration
+  - Weekly progress tracking emails with personalized metrics
+  - Generic `sendGmail` helper for centralized SMTP dispatch with fallback handling
+  - All emails sent from infos@kemetservices.com
+- **Frontend Pages**:
+  - `/formations` - Course catalog with category filtering
+  - `/formation/:slug` - Course detail page with enrollment functionality
+  - `/mon-compte` - User dashboard displaying enrolled courses with progress bars
+- **Key Features**:
+  - Duplicate enrollment prevention
+  - Real-time enrollment status updates
+  - Progress tracking (0-100%)
+  - Course completion badges
+  - Responsive UI with Tailwind CSS and shadcn/ui components
+- **Bug Fixes**:
+  - Fixed route ordering in formations.ts (specific routes before generic /:id)
+  - Made users.username nullable for OIDC flows
+  - Corrected deleteCourse return value for accurate success reporting
+- **Testing**: End-to-end Playwright test validates complete enrollment flow from authentication to dashboard display
+
+### Kemet Echo Integration (September 30, 2025)
 - **Database Schema**: Created `kemet_echo_requests` table to store demo requests with fields for contact information, pharmacy name, offer type (freemium/premium/pack), and consent tracking
 - **API Endpoint**: Implemented POST `/api/kemet-echo-requests` route with Zod validation and automated email notifications
 - **Email Notifications**: Created `sendKemetEchoNotification()` function in gmail.ts with professional HTML templates matching brand design
