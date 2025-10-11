@@ -137,11 +137,43 @@ Preferred communication style: Simple, everyday language.
   - Order tracking with waveCheckoutId and waveTransactionId
   - Security: All payment routes require authentication, webhook verifies signature/token, ownership validation on status checks
   - Environment variables: WAVE_API_KEY, WAVE_SECRET_KEY, WAVE_COUNTRY, PAYDUNYA_WEBHOOK_SECRET, APP_BASE_URL
+- **Admin CRUD Interface**: Complete admin dashboard for managing all LMS content
+  - **Admin Course Management** (`/admin/courses`):
+    - Full CRUD for courses with validation and slug uniqueness
+    - "Contenu" button navigates to AdminCourseContent for module/lesson management
+  - **Admin Course Content** (`/admin/courses/:id/content`):
+    - CRUD modules with title, description, order, prerequisites, isPublished
+    - CRUD lessons with title, description, videoUrl, content, duration, order, isPublished
+    - Accordion interface showing modules → lessons hierarchy
+    - "Quiz" button on each lesson navigates to AdminQuizManager
+    - Enriched API: GET /api/admin/courses/:id returns full structure with embedded quizzes in lessons and finalQuiz
+  - **Admin Quiz Manager** (`/admin/lessons/:lessonId/quiz`):
+    - CRUD quizzes with title, description, passingScore (0-100), timeLimit, maxAttempts, isFinalQuiz
+    - CRUD quiz questions with questionText, questionType (multiple_choice/true_false/short_answer), options[], correctAnswer, explanation, points
+    - Radio buttons for selecting correct answer in multiple choice questions
+    - Expand/collapse interface for viewing questions per quiz
+    - Automatic order management for quizzes and questions
+  - **API Routes** (all protected with requireAdminAuth()):
+    - Modules: POST/PUT/DELETE `/api/admin/modules`
+    - Lessons: POST/PUT/DELETE `/api/admin/lessons`
+    - Quizzes: GET `/api/admin/quizzes?lessonId=...` OR `?courseId=...`, POST/PUT/DELETE `/api/admin/quizzes`
+    - Quiz Questions: GET `/api/admin/quiz-questions?quizId=...`, POST/PUT/DELETE `/api/admin/quiz-questions`
+  - **Validation & Security**:
+    - Quiz validation enforces exactly ONE association (lessonId XOR courseId, not both or neither)
+    - Auth guard on all admin pages and API routes
+    - AlertDialog confirmations for all delete operations
+    - Cache invalidation on mutations for real-time UI updates
+  - **UX Features**:
+    - Intuitive navigation: Courses → Contenu → Quiz
+    - Visual badges for published/draft status
+    - Toast notifications for all actions
+    - Complete data-testid attributes for testing
 - **Security Enhancements**:
   - All lesson/module/quiz routes enforce authentication AND enrollment verification
   - Quiz answers masked (correctAnswer field removed from API responses)
   - Progression locking: lessons require completion of previous lessons via isLessonAccessible()
   - Webhook signature verification prevents unauthorized payment processing
+  - Admin routes protected with requireAdminAuth() middleware
 - **Testing**: End-to-end Playwright test validates complete enrollment flow from authentication to dashboard display
 
 ### Kemet Echo Integration (September 30, 2025)
