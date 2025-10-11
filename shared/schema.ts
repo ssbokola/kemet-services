@@ -177,6 +177,8 @@ export const enrollments = pgTable("enrollments", {
   expiresAt: timestamp("expiresat"), // null = permanent access
   completedAt: timestamp("completedat"),
   progressPercent: integer("progresspercent").notNull().default(0),
+  lastProgressEmailSentAt: timestamp("lastprogressemailsentat"), // Pour tracker les emails hebdomadaires
+  progressEmailsCount: integer("progressemailscount").notNull().default(0), // Nombre d'emails envoyés
 });
 
 // User lesson progress tracking
