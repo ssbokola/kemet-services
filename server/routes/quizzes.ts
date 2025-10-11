@@ -351,6 +351,20 @@ router.post('/:id/submit', async (req: any, res) => {
       completedAt: new Date(),
     });
     
+    // Include questions with correct answers and explanations for results display
+    const questionsWithAnswers = questions.map(q => ({
+      id: q.id,
+      questionText: q.questionText,
+      questionType: q.questionType,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+      explanation: q.explanation,
+      points: q.points,
+      order: q.order,
+      userAnswer: answers[q.id] || null,
+      isCorrect: answers[q.id] === q.correctAnswer,
+    }));
+    
     res.status(201).json({ 
       success: true, 
       result: {
@@ -358,7 +372,8 @@ router.post('/:id/submit', async (req: any, res) => {
         passed,
         score,
         earnedPoints,
-        totalPoints
+        totalPoints,
+        questions: questionsWithAnswers
       }
     });
   } catch (error) {

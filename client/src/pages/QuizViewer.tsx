@@ -246,6 +246,73 @@ export default function QuizViewer() {
                 </p>
               </div>
             )}
+
+            {/* Detailed Results */}
+            {quizResult.questions && quizResult.questions.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Détails des réponses</h3>
+                {quizResult.questions
+                  .sort((a: any, b: any) => a.order - b.order)
+                  .map((question: any, index: number) => (
+                    <Card key={question.id} className={question.isCorrect ? "border-green-200 dark:border-green-800" : "border-amber-200 dark:border-amber-800"}>
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <CardTitle className="text-base">
+                            Question {index + 1}
+                          </CardTitle>
+                          {question.isCorrect ? (
+                            <Badge variant="default" className="bg-green-600">
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              Correcte
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive">
+                              <XCircle className="h-3 w-3 mr-1" />
+                              Incorrecte
+                            </Badge>
+                          )}
+                        </div>
+                        <CardDescription className="mt-2">{question.questionText}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {/* User Answer */}
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground mb-1">Votre réponse :</p>
+                          <p className="text-sm" data-testid={`text-user-answer-${question.id}`}>
+                            {question.questionType === 'multiple_choice' && question.options 
+                              ? question.options[parseInt(question.userAnswer)] || "Non répondu"
+                              : question.questionType === 'true_false'
+                                ? question.userAnswer === 'true' ? 'Vrai' : question.userAnswer === 'false' ? 'Faux' : "Non répondu"
+                                : question.userAnswer || "Non répondu"}
+                          </p>
+                        </div>
+
+                        {/* Correct Answer (if incorrect) */}
+                        {!question.isCorrect && (
+                          <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+                            <p className="text-sm font-medium text-green-800 dark:text-green-200 mb-1">Bonne réponse :</p>
+                            <p className="text-sm text-green-700 dark:text-green-300" data-testid={`text-correct-answer-${question.id}`}>
+                              {question.questionType === 'multiple_choice' && question.options 
+                                ? question.options[parseInt(question.correctAnswer)]
+                                : question.questionType === 'true_false'
+                                  ? question.correctAnswer === 'true' ? 'Vrai' : 'Faux'
+                                  : question.correctAnswer}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Explanation */}
+                        {question.explanation && (
+                          <div className="p-3 rounded-lg bg-muted">
+                            <p className="text-sm font-medium mb-1">Explication :</p>
+                            <p className="text-sm text-muted-foreground">{question.explanation}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+              </div>
+            )}
           </CardContent>
           <CardFooter className="flex gap-3">
             <Button 
