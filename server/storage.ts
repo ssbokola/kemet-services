@@ -49,18 +49,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
+    // Chercher d'abord un utilisateur existant par email
+    let existingUser: User | null = null;
+    
+    if (userData.email) {
+      const results = await db.select().from(users).where(eq(users.email, userData.email as string)).limit(1);
+      existingUser = results[0] || null;
+    }
+    
+    // Si pas trouvé par email et qu'on a un ID, chercher par ID
+    if (!existingUser && userData.id) {
+      const results = await db.select().from(users).where(eq(users.id, userData.id as string)).limit(1);
+      existingUser = results[0] || null;
+    }
+    
+    if (existingUser) {
+      // Mettre à jour l'utilisateur existant
+      const [updatedUser] = await db
+        .update(users)
+        .set({
           ...userData,
           updatedAt: new Date(),
-        },
-      })
-      .returning();
-    return user;
+        })
+        .where(eq(users.id, existingUser.id))
+        .returning();
+      return updatedUser;
+    } else {
+      // Créer un nouvel utilisateur
+      const [newUser] = await db
+        .insert(users)
+        .values(userData)
+        .returning();
+      return newUser;
+    }
   }
 
   // Training registrations methods
