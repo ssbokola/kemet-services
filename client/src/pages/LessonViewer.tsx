@@ -47,6 +47,7 @@ export default function LessonViewer() {
   });
 
   const lesson = lessonData?.lesson;
+  const isCompleted = lesson?.progress?.status === 'completed';
 
   // Fetch module lessons for navigation
   const { data: moduleLessonsData } = useQuery<{ success: boolean; lessons: Lesson[] }>({
@@ -58,6 +59,13 @@ export default function LessonViewer() {
   const currentIndex = moduleLessons.findIndex(l => l.id === lessonId);
   const previousLesson = currentIndex > 0 ? moduleLessons[currentIndex - 1] : null;
   const nextLesson = currentIndex < moduleLessons.length - 1 ? moduleLessons[currentIndex + 1] : null;
+
+  // Fetch quiz for this lesson if it exists
+  const { data: quizData } = useQuery<{ success: boolean; quiz?: { id: string; title: string } }>({
+    queryKey: ['/api/quizzes/lesson', lessonId],
+    enabled: !!lessonId && isCompleted,
+    retry: false,
+  });
 
   // Mark lesson as completed mutation
   const completeLesson = useMutation({
@@ -150,7 +158,7 @@ export default function LessonViewer() {
     );
   }
 
-  const isCompleted = lesson.progress?.status === 'completed';
+  const lessonQuiz = quizData?.quiz;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -292,16 +300,30 @@ export default function LessonViewer() {
               <CheckCircle2 className="w-4 h-4 mr-2" />
               {completeLesson.isPending ? "Enregistrement..." : "Marquer comme terminée"}
             </Button>
-          ) : nextLesson ? (
-            <Button
-              onClick={() => navigate(`/lecon/${nextLesson.id}`)}
-              disabled={!nextLesson.accessible && !nextLesson.isFree}
-              data-testid="button-next-lesson"
-            >
-              Leçon suivante
-              <ChevronRight className="w-4 h-4 ml-2" />
-            </Button>
-          ) : null}
+          ) : (
+            <>
+              {lessonQuiz && (
+                <Button
+                  onClick={() => navigate(`/quiz/${lessonQuiz.id}`)}
+                  variant="default"
+                  data-testid="button-start-quiz"
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Passer le quiz
+                </Button>
+              )}
+              {nextLesson && (
+                <Button
+                  onClick={() => navigate(`/lecon/${nextLesson.id}`)}
+                  disabled={!nextLesson.accessible && !nextLesson.isFree}
+                  data-testid="button-next-lesson"
+                >
+                  Leçon suivante
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -47,6 +47,7 @@ import ParticipantFormations from "@/pages/ParticipantFormations";
 import ParticipantCatalogue from "@/pages/ParticipantCatalogue";
 import Login from "@/pages/Login";
 import LessonViewer from "@/pages/LessonViewer";
+import QuizViewer from "@/pages/QuizViewer";
 import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
@@ -58,6 +59,7 @@ function Router() {
       <Route path="/formation/:slug" component={FormationDetail} />
       <Route path="/mon-compte" component={MonCompte} />
       <Route path="/lecon/:lessonId" component={LessonViewer} />
+      <Route path="/quiz/:quizId" component={QuizViewer} />
       <Route path="/galerie" component={Galerie} />
       <Route path="/kemet-echo" component={KemetEcho} />
       <Route path="/diagnostic" component={Diagnostic} />
