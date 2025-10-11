@@ -24,6 +24,7 @@ import formationsRoutes from "./routes/formations";
 import modulesRoutes from "./routes/modules";
 import lessonsRoutes from "./routes/lessons";
 import quizzesRoutes from "./routes/quizzes";
+import paymentsRoutes from "./routes/payments";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 // Authentification Replit Auth - blueprint:javascript_log_in_with_replit
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -83,6 +84,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/api/modules', modulesRoutes);
   app.use('/api/lessons', lessonsRoutes);
   app.use('/api/quizzes', quizzesRoutes);
+  
+  // Payment routes (Wave Mobile Money)
+  app.use('/api/payments', paymentsRoutes);
   
   // Training registration endpoint
   app.post('/api/training-registrations', async (req, res) => {

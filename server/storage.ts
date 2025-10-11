@@ -17,6 +17,10 @@ import {
   type InsertQuizResult,
   type CourseResource,
   type InsertCourseResource,
+  type Order,
+  type InsertOrder,
+  type Enrollment,
+  type InsertEnrollment,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -26,6 +30,7 @@ import { randomUUID } from "crypto";
 export interface IStorage {
   // User operations - Required for Replit Auth
   getUser(id: string): Promise<User | undefined>;
+  getUserById(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   
   // Training registrations methods
@@ -43,10 +48,16 @@ export interface IStorage {
   deleteCourse(id: string): Promise<boolean>;
   
   // Enrollments (Inscriptions)
+  createEnrollment(enrollment: InsertEnrollment): Promise<Enrollment>;
   enrollUser(userId: string, courseId: string): Promise<any>;
   getUserEnrollments(userId: string): Promise<any[]>;
   getEnrollment(userId: string, courseId: string): Promise<any | undefined>;
   updateEnrollmentProgress(enrollmentId: string, progressPercent: number): Promise<void>;
+  
+  // Orders (Commandes/Paiements)
+  createOrder(order: InsertOrder): Promise<Order>;
+  getOrderById(id: string): Promise<Order | undefined>;
+  updateOrder(id: string, updates: Partial<InsertOrder>): Promise<Order | undefined>;
   
   // Modules
   createModule(module: InsertModule): Promise<Module>;
@@ -105,12 +116,18 @@ import {
   quizQuestions,
   quizResults,
   courseResources,
+  orders,
 } from "@shared/schema";
 import { eq, and, desc, asc } from "drizzle-orm";
 
 export class DatabaseStorage implements IStorage {
   // User operations - Required for Replit Auth
   async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
@@ -214,6 +231,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Enrollments (Inscriptions)
+  async createEnrollment(enrollmentData: InsertEnrollment): Promise<Enrollment> {
+    const [enrollment] = await db
+      .insert(enrollments)
+      .values(enrollmentData)
+      .returning();
+    return enrollment;
+  }
+
   async enrollUser(userId: string, courseId: string): Promise<any> {
     const [enrollment] = await db
       .insert(enrollments)
@@ -562,6 +587,35 @@ export class DatabaseStorage implements IStorage {
         eq(lessonProgress.lessonId, lessonId)
       ));
     return progress;
+  }
+
+  // Orders (Commandes/Paiements)
+  async createOrder(orderData: InsertOrder): Promise<Order> {
+    const [order] = await db
+      .insert(orders)
+      .values(orderData)
+      .returning();
+    return order;
+  }
+
+  async getOrderById(id: string): Promise<Order | undefined> {
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(eq(orders.id, id));
+    return order;
+  }
+
+  async updateOrder(id: string, updates: Partial<InsertOrder>): Promise<Order | undefined> {
+    const [order] = await db
+      .update(orders)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(orders.id, id))
+      .returning();
+    return order;
   }
 }
 
