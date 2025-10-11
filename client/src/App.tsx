@@ -12,6 +12,9 @@ import { HelmetProvider } from "react-helmet-async";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Home from "@/pages/Home";
 import Formations from "@/pages/Formations";
+import FormationsCatalogue from "@/pages/FormationsCatalogue";
+import FormationDetail from "@/pages/FormationDetail";
+import MonCompte from "@/pages/MonCompte";
 import Galerie from "@/pages/Galerie";
 import Diagnostic from "@/pages/Diagnostic";
 import Consulting from "@/pages/Consulting";
@@ -47,7 +50,10 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/formations" component={Formations} />
+      <Route path="/formations-presentiel" component={Formations} />
+      <Route path="/formations" component={FormationsCatalogue} />
+      <Route path="/formation/:slug" component={FormationDetail} />
+      <Route path="/mon-compte" component={MonCompte} />
       <Route path="/galerie" component={Galerie} />
       <Route path="/kemet-echo" component={KemetEcho} />
       <Route path="/diagnostic" component={Diagnostic} />

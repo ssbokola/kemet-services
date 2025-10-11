@@ -1,0 +1,299 @@
+import { useQuery } from '@tanstack/react-query';
+import { useParams, Link } from 'wouter';
+import { Helmet } from 'react-helmet-async';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { Clock, BookOpen, CheckCircle2, AlertCircle, Users } from 'lucide-react';
+import { categoryLabels, levelLabels } from '@/data/formations';
+
+interface Lesson {
+  id: string;
+  title: string;
+  duration: number;
+  isFree?: boolean;
+}
+
+interface Module {
+  id: string;
+  title: string;
+  description: string;
+  lessons: Lesson[];
+}
+
+interface Formation {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  category: string;
+  level: string;
+  duration: number;
+  price: number;
+  thumbnail?: string;
+  objectives?: string[];
+  prerequisites?: string[];
+  targetAudience?: string[];
+  modules?: Module[];
+}
+
+export default function FormationDetail() {
+  const { slug } = useParams<{ slug: string }>();
+  const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
+
+  const { data, isLoading, error } = useQuery<{ success: boolean; formation: Formation }>({
+    queryKey: ['/api/formations/slug', slug],
+    enabled: !!slug,
+  });
+
+  const formation = data?.formation;
+
+  const formatDuration = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours === 0) return `${mins} min`;
+    if (mins === 0) return `${hours}h`;
+    return `${hours}h ${mins}min`;
+  };
+
+  const formatPrice = (price: number) => {
+    return `${(price / 1000).toFixed(0)} 000 FCFA`;
+  };
+
+  const handleInscription = () => {
+    toast({
+      title: 'Inscription bientôt disponible',
+      description: 'Les inscriptions aux formations en ligne seront bientôt ouvertes. Restez connecté !',
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="py-12">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <Skeleton className="h-12 w-3/4" />
+            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-48 w-full" />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !formation) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="py-12">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-foreground mb-2">Formation non trouvée</h1>
+            <p className="text-muted-foreground mb-6">
+              La formation que vous recherchez n'existe pas ou n'est plus disponible
+            </p>
+            <Button asChild data-testid="button-retour-catalogue">
+              <Link href="/formations">Retour au catalogue</Link>
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>{formation.title} - Kemet Services</title>
+        <meta name="description" content={formation.description} />
+      </Helmet>
+
+      <Header />
+
+      <main>
+        <section className="py-12 bg-muted/30">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-2 mb-4">
+              <Badge variant="outline" data-testid="badge-category">
+                {categoryLabels[formation.category as keyof typeof categoryLabels]}
+              </Badge>
+              <Badge variant="secondary" data-testid="badge-level">
+                {levelLabels[formation.level as keyof typeof levelLabels]}
+              </Badge>
+            </div>
+
+            <h1 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-6" data-testid="text-title">
+              {formation.title}
+            </h1>
+
+            <p className="text-xl text-muted-foreground mb-8">{formation.description}</p>
+
+            <div className="flex flex-wrap items-center gap-6 text-foreground">
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-muted-foreground" />
+                <span className="font-medium">{formatDuration(formation.duration)}</span>
+              </div>
+              <div className="text-2xl font-bold text-primary" data-testid="text-price">
+                {formatPrice(formation.price)}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-12">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            {formation.objectives && formation.objectives.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-semibold font-serif text-foreground flex items-center gap-2">
+                    <CheckCircle2 className="w-6 h-6 text-primary" />
+                    Ce que vous allez apprendre
+                  </h2>
+                </CardHeader>
+                <CardContent>
+                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {formation.objectives.map((objective, index) => (
+                      <li key={index} className="flex items-start gap-2" data-testid={`objective-${index}`}>
+                        <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-foreground">{objective}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+
+            {formation.prerequisites && formation.prerequisites.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-semibold font-serif text-foreground flex items-center gap-2">
+                    <AlertCircle className="w-6 h-6 text-primary" />
+                    Prérequis
+                  </h2>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {formation.prerequisites.map((prerequisite, index) => (
+                      <li key={index} className="flex items-start gap-2" data-testid={`prerequisite-${index}`}>
+                        <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                        <span className="text-muted-foreground">{prerequisite}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+
+            {formation.targetAudience && formation.targetAudience.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <h2 className="text-2xl font-semibold font-serif text-foreground flex items-center gap-2">
+                    <Users className="w-6 h-6 text-primary" />
+                    Public cible
+                  </h2>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {formation.targetAudience.map((audience, index) => (
+                      <li key={index} className="flex items-start gap-2" data-testid={`audience-${index}`}>
+                        <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                        <span className="text-muted-foreground">{audience}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+
+            {formation.modules && formation.modules.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-semibold font-serif text-foreground mb-6 flex items-center gap-2">
+                  <BookOpen className="w-6 h-6 text-primary" />
+                  Contenu de la formation
+                </h2>
+                <div className="space-y-4">
+                  {formation.modules.map((module, moduleIndex) => (
+                    <Card key={module.id} data-testid={`module-${moduleIndex}`}>
+                      <CardHeader>
+                        <h3 className="text-lg font-semibold text-foreground">
+                          Module {moduleIndex + 1}: {module.title}
+                        </h3>
+                        {module.description && (
+                          <p className="text-muted-foreground text-sm">{module.description}</p>
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-3">
+                          {module.lessons.map((lesson, lessonIndex) => (
+                            <li
+                              key={lesson.id}
+                              className="flex items-center justify-between py-2 border-b border-border last:border-0"
+                              data-testid={`lesson-${moduleIndex}-${lessonIndex}`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <BookOpen className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-foreground">{lesson.title}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm text-muted-foreground">{lesson.duration} min</span>
+                                {lesson.isFree && (
+                                  <Badge variant="outline" className="text-xs" data-testid={`badge-free-${moduleIndex}-${lessonIndex}`}>
+                                    Gratuit
+                                  </Badge>
+                                )}
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <Card className="bg-primary/5">
+              <CardContent className="pt-6">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">
+                      Prêt à commencer ?
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Inscrivez-vous maintenant et commencez votre apprentissage
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-3 w-full md:w-auto">
+                    {isAuthenticated ? (
+                      <Button size="lg" onClick={handleInscription} className="w-full md:w-auto" data-testid="button-inscription">
+                        S'inscrire à la formation
+                      </Button>
+                    ) : (
+                      <Button size="lg" asChild className="w-full md:w-auto" data-testid="button-login">
+                        <Link href="/login">Se connecter pour s'inscrire</Link>
+                      </Button>
+                    )}
+                    <div className="text-center">
+                      <span className="text-2xl font-bold text-primary">{formatPrice(formation.price)}</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

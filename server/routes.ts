@@ -20,6 +20,7 @@ import spfRoutes from "./routes/spf";
 import dkimRoutes from "./routes/dkim";
 import trainingRoutes from "./routes/training";
 import participantRoutes from "./routes/participants";
+import formationsRoutes from "./routes/formations";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 // Authentification Replit Auth - blueprint:javascript_log_in_with_replit
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -71,6 +72,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Training routes sécurisées - blueprint:javascript_log_in_with_replit
   app.use('/api/training', trainingRoutes);
+  
+  // Formations (online training) routes
+  app.use('/api/formations', formationsRoutes);
   // Training registration endpoint
   app.post('/api/training-registrations', async (req, res) => {
     try {
