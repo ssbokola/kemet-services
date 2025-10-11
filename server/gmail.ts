@@ -588,3 +588,45 @@ export async function testGmailConnection(): Promise<boolean> {
     return false;
   }
 }
+
+// Fonction générique pour envoyer un email via Gmail
+interface SendGmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+  replyTo?: string;
+}
+
+export async function sendGmail(options: SendGmailOptions): Promise<boolean> {
+  // Créer le transporteur si pas encore fait
+  if (!gmailTransporter) {
+    gmailTransporter = createGmailTransporter();
+  }
+
+  if (!gmailTransporter) {
+    console.log('📧 Gmail non configuré - email non envoyé');
+    return false;
+  }
+
+  const mailOptions = {
+    from: {
+      name: 'Kemet Services',
+      address: process.env.GMAIL_USER || 'noreply@kemetservices.com'
+    },
+    to: options.to,
+    subject: options.subject,
+    html: options.html,
+    text: options.text || options.html.replace(/<[^>]*>/g, ''), // Fallback text version
+    replyTo: options.replyTo || process.env.GMAIL_USER
+  };
+
+  try {
+    await gmailTransporter.sendMail(mailOptions);
+    console.log(`✅ Email envoyé avec succès à ${options.to}`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Erreur lors de l'envoi de l'email à ${options.to}:`, error);
+    return false;
+  }
+}

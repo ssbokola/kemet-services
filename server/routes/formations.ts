@@ -18,19 +18,16 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/formations/:id - Détail d'une formation
-router.get("/:id", async (req, res) => {
+// GET /api/formations/my-enrollments - Mes inscriptions (auth requis)
+// IMPORTANT: Cette route doit être AVANT /:id pour éviter que "my-enrollments" soit traité comme un ID
+router.get("/my-enrollments", isAuthenticated, async (req: any, res) => {
   try {
-    const { id } = req.params;
-    const formation = await storage.getCourseById(id);
+    const userId = req.user?.claims?.sub;
+    const enrollments = await storage.getUserEnrollments(userId);
     
-    if (!formation) {
-      return res.status(404).json({ success: false, error: "Formation non trouvée" });
-    }
-    
-    res.json({ success: true, formation });
+    res.json({ success: true, enrollments });
   } catch (error) {
-    console.error("Error fetching formation:", error);
+    console.error("Error fetching user enrollments:", error);
     res.status(500).json({ success: false, error: "Erreur serveur" });
   }
 });
@@ -48,6 +45,24 @@ router.get("/slug/:slug", async (req, res) => {
     res.json({ success: true, formation });
   } catch (error) {
     console.error("Error fetching formation by slug:", error);
+    res.status(500).json({ success: false, error: "Erreur serveur" });
+  }
+});
+
+// GET /api/formations/:id - Détail d'une formation
+// IMPORTANT: Cette route doit être APRÈS les routes spécifiques (my-enrollments, slug/:slug)
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const formation = await storage.getCourseById(id);
+    
+    if (!formation) {
+      return res.status(404).json({ success: false, error: "Formation non trouvée" });
+    }
+    
+    res.json({ success: true, formation });
+  } catch (error) {
+    console.error("Error fetching formation:", error);
     res.status(500).json({ success: false, error: "Erreur serveur" });
   }
 });
@@ -182,19 +197,6 @@ router.post("/:id/enroll", isAuthenticated, async (req: any, res) => {
     });
   } catch (error) {
     console.error("Error enrolling user:", error);
-    res.status(500).json({ success: false, error: "Erreur serveur" });
-  }
-});
-
-// GET /api/formations/my-enrollments - Mes inscriptions (auth requis)
-router.get("/my-enrollments", isAuthenticated, async (req: any, res) => {
-  try {
-    const userId = req.user?.claims?.sub;
-    const enrollments = await storage.getUserEnrollments(userId);
-    
-    res.json({ success: true, enrollments });
-  } catch (error) {
-    console.error("Error fetching user enrollments:", error);
     res.status(500).json({ success: false, error: "Erreur serveur" });
   }
 });
