@@ -251,8 +251,14 @@ router.put('/:id/progress', async (req: any, res) => {
     
     const progressData = progressSchema.parse(req.body);
     
+    // Convert completedAt string to Date if present
+    const progressWithDate = {
+      ...progressData,
+      completedAt: progressData.completedAt ? new Date(progressData.completedAt) : undefined,
+    };
+    
     // Update lesson progress
-    await storage.updateLessonProgress(userId, id, progressData);
+    await storage.updateLessonProgress(userId, id, progressWithDate);
     
     res.json({ 
       success: true, 

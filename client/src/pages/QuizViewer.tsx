@@ -39,10 +39,11 @@ export default function QuizViewer() {
   const { toast } = useToast();
   
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [startedAt] = useState(new Date().toISOString());
+  const [startedAt, setStartedAt] = useState<string | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [quizResult, setQuizResult] = useState<any>(null);
+  const [hasStarted, setHasStarted] = useState(false);
   const isSubmittingRef = useRef(false);
 
   // Fetch quiz data
@@ -50,13 +51,25 @@ export default function QuizViewer() {
     queryKey: ['/api/quizzes', quizId],
   });
 
+  // Fetch previous attempts
+  const { data: resultsData, isLoading: isLoadingResults, error: resultsError } = useQuery<{ success: boolean; results: any[]; bestResult: any }>({
+    queryKey: ['/api/quizzes', quizId, 'results'],
+    enabled: !!quizId,
+  });
+
   const quiz = quizData?.quiz;
+  const previousAttempts = resultsData?.results || [];
+  const bestResult = resultsData?.bestResult;
+  const hasResultsError = !!resultsError;
 
   // Submit quiz mutation
   const submitMutation = useMutation({
     mutationFn: async () => {
-      const timeSpent = quiz?.timeLimit 
-        ? (quiz.timeLimit * 60 - (timeRemaining || 0))
+      if (!startedAt) throw new Error("Quiz non démarré");
+      
+      // Calculate time spent: use timer if available, otherwise wall-clock delta
+      const timeSpent = (quiz?.timeLimit && timeRemaining !== null)
+        ? (quiz.timeLimit * 60 - timeRemaining)
         : Math.floor((new Date().getTime() - new Date(startedAt).getTime()) / 1000);
 
       // Normalize short answer responses (trim whitespace)
@@ -120,16 +133,16 @@ export default function QuizViewer() {
     submitMutation.mutate();
   }, [quiz?.questions, answers, submitMutation, toast]);
 
-  // Initialize timer
+  // Initialize timer when quiz starts
   useEffect(() => {
-    if (quiz?.timeLimit) {
+    if (quiz?.timeLimit && hasStarted && timeRemaining === null) {
       setTimeRemaining(quiz.timeLimit * 60); // Convert minutes to seconds
     }
-  }, [quiz?.timeLimit]);
+  }, [quiz?.timeLimit, hasStarted, timeRemaining]);
 
   // Timer countdown with auto-submit
   useEffect(() => {
-    if (timeRemaining === null || timeRemaining <= 0 || showResults || isSubmittingRef.current) return;
+    if (!hasStarted || timeRemaining === null || timeRemaining <= 0 || showResults || isSubmittingRef.current) return;
 
     const timer = setInterval(() => {
       setTimeRemaining(prev => {
@@ -329,6 +342,144 @@ export default function QuizViewer() {
                 data-testid="button-retry-quiz"
               >
                 Réessayer le quiz
+              </Button>
+            )}
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show initial screen with history
+  if (!hasStarted) {
+    // Allow starting quiz even if results failed to load
+    const canAttempt = !quiz.maxAttempts || previousAttempts.length < quiz.maxAttempts;
+    const showHistory = !isLoadingResults && !hasResultsError && previousAttempts.length > 0;
+
+    return (
+      <div className="container mx-auto p-6 max-w-4xl space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>{quiz.title}</CardTitle>
+            {quiz.description && (
+              <CardDescription>{quiz.description}</CardDescription>
+            )}
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 rounded-lg border bg-card">
+                <p className="text-sm text-muted-foreground">Note de passage</p>
+                <p className="text-2xl font-bold">{quiz.passingScore}%</p>
+              </div>
+              {quiz.timeLimit && (
+                <div className="p-4 rounded-lg border bg-card">
+                  <p className="text-sm text-muted-foreground">Temps limité</p>
+                  <p className="text-2xl font-bold">{quiz.timeLimit} min</p>
+                </div>
+              )}
+            </div>
+
+            {/* Show error message if history failed to load but allow quiz start */}
+            {hasResultsError && (
+              <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  Impossible de charger l'historique des tentatives. Vous pouvez quand même commencer le quiz.
+                </p>
+              </div>
+            )}
+
+            {/* Show loading state for history */}
+            {isLoadingResults && (
+              <div className="space-y-3">
+                <Skeleton className="h-8 w-48" />
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-20 w-full" />
+              </div>
+            )}
+
+            {showHistory && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Tentatives précédentes</h3>
+                  {bestResult && (
+                    <Badge variant={bestResult.passed ? "default" : "secondary"}>
+                      Meilleur score: {bestResult.score}%
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  {previousAttempts
+                    .sort((a: any, b: any) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime())
+                    .slice(0, 5)
+                    .map((attempt: any, index: number) => (
+                      <div 
+                        key={attempt.id} 
+                        className="p-4 rounded-lg border bg-card flex items-center justify-between"
+                        data-testid={`attempt-${attempt.id}`}
+                      >
+                        <div>
+                          <p className="font-medium">
+                            Tentative {attempt.attemptNumber}
+                            {index === 0 && <span className="text-muted-foreground text-sm ml-2">(plus récente)</span>}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(attempt.completedAt).toLocaleDateString('fr-FR', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="text-right">
+                            <p className="text-2xl font-bold">{attempt.score}%</p>
+                            <p className="text-sm text-muted-foreground">{attempt.earnedPoints}/{attempt.totalPoints} pts</p>
+                          </div>
+                          <Badge variant={attempt.passed ? "default" : "destructive"}>
+                            {attempt.passed ? "Réussi" : "Échoué"}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+
+                {quiz.maxAttempts && (
+                  <p className="text-sm text-muted-foreground">
+                    Tentatives utilisées : {previousAttempts.length} / {quiz.maxAttempts}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {!canAttempt && (
+              <div className="p-4 rounded-lg bg-destructive/10 border border-destructive">
+                <p className="text-destructive font-medium">
+                  Nombre maximum de tentatives atteint ({quiz.maxAttempts})
+                </p>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter className="flex gap-3">
+            <Button 
+              onClick={() => navigate('/mon-compte')} 
+              variant="outline"
+              data-testid="button-back-dashboard"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Retour au tableau de bord
+            </Button>
+            {canAttempt && (
+              <Button 
+                onClick={() => {
+                  setHasStarted(true);
+                  setStartedAt(new Date().toISOString());
+                }}
+                data-testid="button-start-quiz"
+              >
+                {previousAttempts.length > 0 ? 'Nouvelle tentative' : 'Commencer le quiz'}
               </Button>
             )}
           </CardFooter>
