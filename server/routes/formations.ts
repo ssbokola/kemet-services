@@ -245,10 +245,21 @@ router.get("/:id/enrollment-status", isAuthenticated, async (req: any, res) => {
   }
 });
 
-// GET /api/formations/:id/resources - Récupérer les ressources publiées d'un cours (public)
-router.get("/:id/resources", async (req, res) => {
+// GET /api/formations/:id/resources - Récupérer les ressources d'un cours (réservé aux inscrits)
+router.get("/:id/resources", isAuthenticated, async (req: any, res) => {
   try {
+    const userId = req.user?.claims?.sub;
     const { id: courseId } = req.params;
+    
+    // Vérifier que l'utilisateur est inscrit au cours
+    const enrollment = await storage.getEnrollment(userId, courseId);
+    
+    if (!enrollment) {
+      return res.status(403).json({ 
+        success: false, 
+        error: "Vous devez être inscrit à ce cours pour accéder aux ressources" 
+      });
+    }
     
     const resources = await db
       .select()
@@ -256,7 +267,7 @@ router.get("/:id/resources", async (req, res) => {
       .where(eq(courseResources.courseId, courseId))
       .orderBy(asc(courseResources.order));
     
-    // Filter only published resources for public access
+    // Filter only published resources
     const publishedResources = resources.filter(r => r.isPublished);
     
     res.json({ 
