@@ -92,6 +92,7 @@ export interface IStorage {
   createQuizResult(result: InsertQuizResult): Promise<QuizResult>;
   getQuizResultsByUserId(userId: string, quizId: string): Promise<QuizResult[]>;
   getBestQuizResult(userId: string, quizId: string): Promise<QuizResult | undefined>;
+  getUserQuizResults(userId: string): Promise<any[]>;
   
   // Course Resources
   createResource(resource: InsertCourseResource): Promise<CourseResource>;
@@ -516,6 +517,25 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(quizResults.score))
       .limit(1);
     return result;
+  }
+
+  async getUserQuizResults(userId: string): Promise<any[]> {
+    // Get all quiz results for a user with quiz and course info
+    const results = await db
+      .select({
+        result: quizResults,
+        quiz: quizzes,
+        lesson: courseLessons,
+        module: courseModules,
+      })
+      .from(quizResults)
+      .innerJoin(quizzes, eq(quizResults.quizId, quizzes.id))
+      .leftJoin(courseLessons, eq(quizzes.lessonId, courseLessons.id))
+      .leftJoin(courseModules, eq(courseLessons.moduleId, courseModules.id))
+      .where(eq(quizResults.userId, userId))
+      .orderBy(desc(quizResults.completedAt));
+    
+    return results;
   }
 
   // Course Resources

@@ -43,9 +43,34 @@ interface Enrollment {
   progressPercent: number;
 }
 
+interface QuizResultWithDetails {
+  result: {
+    id: string;
+    userId: string;
+    quizId: string;
+    score: number;
+    totalPoints: number;
+    earnedPoints: number;
+    passed: boolean;
+    attemptNumber: number;
+    timeSpent: number | null;
+    startedAt: Date;
+    completedAt: Date;
+  };
+  quiz: {
+    id: string;
+    title: string;
+    lessonId: string | null;
+    courseId: string | null;
+  };
+  lesson: any;
+  module: any;
+}
+
 interface EnrolledFormation {
   course: Course;
   enrollment: Enrollment;
+  quizResults?: QuizResultWithDetails[];
 }
 
 export default function MonCompte() {
@@ -180,11 +205,18 @@ export default function MonCompte() {
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {enrollments.map(({ course, enrollment }, index) => {
+                {enrollments.map(({ course, enrollment, quizResults }, index) => {
                   const isCompleted = enrollment.progressPercent >= 100;
                   const truncatedDescription = course.description?.length > 100 
                     ? `${course.description.substring(0, 100)}...` 
                     : course.description;
+
+                  // Calculate quiz stats
+                  const quizCount = quizResults?.length || 0;
+                  const bestScore = quizCount > 0 
+                    ? Math.max(...quizResults!.map(qr => qr.result.score)) 
+                    : null;
+                  const hasPassedQuiz = quizResults?.some(qr => qr.result.passed) || false;
 
                   return (
                     <Card 
@@ -245,6 +277,30 @@ export default function MonCompte() {
                             {course.duration}h
                           </Badge>
                         </div>
+
+                        {quizCount > 0 && (
+                          <div className="bg-muted/50 rounded-lg p-3 space-y-2" data-testid={`quiz-results-${index}`}>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium text-foreground">Résultats Quiz</span>
+                              <Badge 
+                                variant={hasPassedQuiz ? "default" : "outline"}
+                                className={hasPassedQuiz ? "bg-green-600" : ""}
+                              >
+                                {hasPassedQuiz ? "Réussi" : "À améliorer"}
+                              </Badge>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-muted-foreground">
+                                {quizCount} tentative{quizCount > 1 ? 's' : ''}
+                              </span>
+                              {bestScore !== null && (
+                                <span className="font-medium text-foreground" data-testid={`text-best-score-${index}`}>
+                                  Meilleur score: {bestScore}%
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
 
                         <div className="text-xs text-muted-foreground">
                           Inscrit le {format(new Date(enrollment.enrolledAt), 'dd MMMM yyyy', { locale: fr })}

@@ -203,6 +203,12 @@ export const enrollments = pgTable("enrollments", {
   progressEmailsCount: integer("progressemailscount").notNull().default(0), // Nombre d'emails envoyés
 });
 
+export const insertEnrollmentSchema = createInsertSchema(enrollments)
+  .omit({ id: true, enrolledAt: true });
+
+export type InsertEnrollment = z.infer<typeof insertEnrollmentSchema>;
+export type Enrollment = typeof enrollments.$inferSelect;
+
 // User lesson progress tracking
 export const lessonProgress = pgTable("lesson_progress", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

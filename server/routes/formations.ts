@@ -25,7 +25,30 @@ router.get("/my-enrollments", isAuthenticated, async (req: any, res) => {
     const userId = req.user?.claims?.sub;
     const enrollments = await storage.getUserEnrollments(userId);
     
-    res.json({ success: true, enrollments });
+    // Get all quiz results for this user
+    const allQuizResults = await storage.getUserQuizResults(userId);
+    
+    // Group quiz results by courseId
+    const quizResultsByCourse: Record<string, any[]> = {};
+    for (const qr of allQuizResults) {
+      // Get courseId from quiz (either directly or via lesson->module)
+      const courseId = qr.quiz.courseId || qr.module?.courseId;
+      if (courseId) {
+        if (!quizResultsByCourse[courseId]) {
+          quizResultsByCourse[courseId] = [];
+        }
+        quizResultsByCourse[courseId].push(qr);
+      }
+    }
+    
+    // Enrich enrollments with quiz results
+    const enrichedEnrollments = enrollments.map(({ enrollment, course }) => ({
+      enrollment,
+      course,
+      quizResults: quizResultsByCourse[course.id] || [],
+    }));
+    
+    res.json({ success: true, enrollments: enrichedEnrollments });
   } catch (error) {
     console.error("Error fetching user enrollments:", error);
     res.status(500).json({ success: false, error: "Erreur serveur" });
