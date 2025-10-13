@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { Clock, BookOpen, CheckCircle2, AlertCircle, Users } from 'lucide-react';
+import { Clock, BookOpen, CheckCircle2, AlertCircle, Users, Download, FileText, Link as LinkIcon } from 'lucide-react';
 import { categoryLabels, levelLabels } from '@/data/formations';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
@@ -26,6 +26,19 @@ interface Module {
   title: string;
   description: string;
   lessons: Lesson[];
+}
+
+interface CourseResource {
+  id: string;
+  courseId: string;
+  title: string;
+  description: string | null;
+  type: 'pdf' | 'checklist' | 'template' | 'link' | 'other';
+  url: string;
+  fileSize: number | null;
+  order: number;
+  isPublished: boolean;
+  createdAt: string;
 }
 
 interface Formation {
@@ -73,6 +86,14 @@ export default function FormationDetail() {
     queryKey: ['/api/formations', formation?.id, 'enrollment-status'],
     enabled: !!formation?.id && isAuthenticated,
   });
+
+  // Récupérer les ressources du cours
+  const { data: resourcesData } = useQuery<{ success: boolean; resources: CourseResource[] }>({
+    queryKey: ['/api/formations', formation?.id, 'resources'],
+    enabled: !!formation?.id,
+  });
+
+  const resources = resourcesData?.resources || [];
 
   // Mutation pour l'inscription
   const enrollMutation = useMutation({
@@ -334,6 +355,63 @@ export default function FormationDetail() {
                             </li>
                           ))}
                         </ul>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Resources Section */}
+            {resources && resources.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-semibold font-serif text-foreground mb-6 flex items-center gap-2">
+                  <Download className="w-6 h-6 text-primary" />
+                  Supports de cours
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {resources.map((resource) => (
+                    <Card 
+                      key={resource.id} 
+                      className="hover-elevate"
+                      data-testid={`resource-${resource.id}`}
+                    >
+                      <CardContent className="pt-6">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            {resource.type === 'pdf' && <FileText className="w-6 h-6 text-primary" />}
+                            {resource.type === 'checklist' && <CheckCircle2 className="w-6 h-6 text-primary" />}
+                            {resource.type === 'template' && <FileText className="w-6 h-6 text-primary" />}
+                            {resource.type === 'link' && <LinkIcon className="w-6 h-6 text-primary" />}
+                            {resource.type === 'other' && <Download className="w-6 h-6 text-primary" />}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-foreground mb-1">
+                              {resource.title}
+                            </h3>
+                            {resource.description && (
+                              <p className="text-sm text-muted-foreground mb-3">
+                                {resource.description}
+                              </p>
+                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              data-testid={`button-download-${resource.id}`}
+                            >
+                              <a 
+                                href={resource.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2"
+                              >
+                                <Download className="w-4 h-4" />
+                                {resource.type === 'link' ? 'Voir le lien' : 'Télécharger'}
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}

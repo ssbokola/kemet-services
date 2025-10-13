@@ -1,9 +1,11 @@
 import express from "express";
 import { storage } from "../storage";
 import { isAuthenticated } from "../replitAuth";
-import { insertCourseSchema, type Course } from "@shared/schema";
+import { insertCourseSchema, type Course, courseResources } from "@shared/schema";
 import { z } from "zod";
 import { sendEnrollmentConfirmation } from "../emails/enrollment";
+import { db } from "../db";
+import { eq, asc } from "drizzle-orm";
 
 const router = express.Router();
 
@@ -239,6 +241,30 @@ router.get("/:id/enrollment-status", isAuthenticated, async (req: any, res) => {
     });
   } catch (error) {
     console.error("Error checking enrollment status:", error);
+    res.status(500).json({ success: false, error: "Erreur serveur" });
+  }
+});
+
+// GET /api/formations/:id/resources - Récupérer les ressources publiées d'un cours (public)
+router.get("/:id/resources", async (req, res) => {
+  try {
+    const { id: courseId } = req.params;
+    
+    const resources = await db
+      .select()
+      .from(courseResources)
+      .where(eq(courseResources.courseId, courseId))
+      .orderBy(asc(courseResources.order));
+    
+    // Filter only published resources for public access
+    const publishedResources = resources.filter(r => r.isPublished);
+    
+    res.json({ 
+      success: true, 
+      resources: publishedResources 
+    });
+  } catch (error) {
+    console.error("Error fetching course resources:", error);
     res.status(500).json({ success: false, error: "Erreur serveur" });
   }
 });

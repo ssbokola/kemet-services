@@ -52,6 +52,8 @@ import {
   Clock,
   HelpCircle,
   List,
+  Link as LinkIcon,
+  Download,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -102,6 +104,19 @@ interface Question {
   order: number;
 }
 
+interface CourseResource {
+  id: string;
+  courseId: string;
+  title: string;
+  description: string | null;
+  type: 'pdf' | 'checklist' | 'template' | 'link' | 'other';
+  url: string;
+  fileSize: number | null;
+  order: number;
+  isPublished: boolean;
+  createdAt: string;
+}
+
 interface CourseWithContent {
   id: string;
   title: string;
@@ -121,12 +136,14 @@ export default function AdminCourseContent() {
   const [lessonDialog, setLessonDialog] = useState(false);
   const [quizDialog, setQuizDialog] = useState(false);
   const [questionDialog, setQuestionDialog] = useState(false);
+  const [resourceDialog, setResourceDialog] = useState(false);
 
   // States for editing
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(null);
+  const [selectedResource, setSelectedResource] = useState<CourseResource | null>(null);
 
   // States for forms
   const [moduleForm, setModuleForm] = useState({
@@ -168,6 +185,15 @@ export default function AdminCourseContent() {
     explanation: '',
     points: 1,
     order: 0,
+  });
+
+  const [resourceForm, setResourceForm] = useState({
+    title: '',
+    description: '',
+    type: 'link' as 'pdf' | 'checklist' | 'template' | 'link' | 'other',
+    url: '',
+    order: 0,
+    isPublished: true,
   });
 
   // Auth guard
@@ -468,6 +494,72 @@ export default function AdminCourseContent() {
     },
   });
 
+  // Fetch resources
+  const { data: resourcesData } = useQuery<{ success: boolean; resources: CourseResource[] }>({
+    queryKey: ['/api/admin/resources/course', courseId],
+    queryFn: async () => {
+      const token = localStorage.getItem('admin_token');
+      const response = await fetch(`/api/admin/resources/course/${courseId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Erreur de chargement');
+      return response.json();
+    },
+    enabled: !!courseId,
+  });
+
+  const resources = resourcesData?.resources || [];
+
+  // Create Resource mutation
+  const createResourceMutation = useMutation({
+    mutationFn: async (data: typeof resourceForm) => {
+      const token = localStorage.getItem('admin_token');
+      const response = await fetch('/api/admin/resources', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ ...data, courseId }),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erreur de création');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/resources/course', courseId] });
+      setResourceDialog(false);
+      setResourceForm({ title: '', description: '', type: 'link', url: '', order: 0, isPublished: true });
+      toast({ title: 'Ressource créée avec succès' });
+    },
+    onError: (error: Error) => {
+      toast({ 
+        title: 'Erreur', 
+        description: error.message,
+        variant: 'destructive' 
+      });
+    },
+  });
+
+  // Delete Resource mutation
+  const deleteResourceMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const token = localStorage.getItem('admin_token');
+      const response = await fetch(`/api/admin/resources/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Erreur de suppression');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/resources/course', courseId] });
+      toast({ title: 'Ressource supprimée avec succès' });
+    },
+  });
+
   const handleEditModule = (module: Module) => {
     setSelectedModule(module);
     setModuleForm({
@@ -736,6 +828,112 @@ export default function AdminCourseContent() {
         </CardContent>
       </Card>
 
+      {/* Resources Section */}
+      <Card data-testid="card-resources">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Supports de cours</CardTitle>
+              <CardDescription>
+                Ajoutez des liens vers des ressources (PDF, checklists, etc.)
+              </CardDescription>
+            </div>
+            <Button 
+              onClick={() => {
+                setSelectedResource(null);
+                setResourceForm({ 
+                  title: '', 
+                  description: '', 
+                  type: 'link', 
+                  url: '', 
+                  order: resources.length, 
+                  isPublished: true 
+                });
+                setResourceDialog(true);
+              }}
+              data-testid="button-add-resource"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Ajouter une ressource
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {resources && resources.length > 0 ? (
+            <div className="space-y-3">
+              {resources.map((resource) => (
+                <div 
+                  key={resource.id} 
+                  className="flex items-center justify-between p-3 rounded-lg border hover-elevate"
+                  data-testid={`resource-${resource.id}`}
+                >
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center">
+                      {resource.type === 'pdf' && <FileText className="w-5 h-5" />}
+                      {resource.type === 'checklist' && <CheckCircle className="w-5 h-5" />}
+                      {resource.type === 'template' && <FileText className="w-5 h-5" />}
+                      {resource.type === 'link' && <LinkIcon className="w-5 h-5" />}
+                      {resource.type === 'other' && <Download className="w-5 h-5" />}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium">{resource.title}</p>
+                        <Badge variant={resource.isPublished ? 'default' : 'outline'}>
+                          {resource.isPublished ? 'Publié' : 'Brouillon'}
+                        </Badge>
+                      </div>
+                      {resource.description && (
+                        <p className="text-sm text-muted-foreground">{resource.description}</p>
+                      )}
+                      <a 
+                        href={resource.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline"
+                      >
+                        {resource.url}
+                      </a>
+                    </div>
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        data-testid={`button-delete-resource-${resource.id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Êtes-vous sûr de vouloir supprimer cette ressource ?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteResourceMutation.mutate(resource.id)}
+                          data-testid="button-confirm-delete-resource"
+                        >
+                          Supprimer
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-center py-8">
+              Aucune ressource. Ajoutez des supports de cours.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Module Dialog */}
       <Dialog open={moduleDialog} onOpenChange={setModuleDialog}>
         <DialogContent>
@@ -885,6 +1083,87 @@ export default function AdminCourseContent() {
               data-testid="button-save-lesson"
             >
               {selectedLesson ? 'Mettre à jour' : 'Créer'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Resource Dialog */}
+      <Dialog open={resourceDialog} onOpenChange={setResourceDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Nouvelle ressource</DialogTitle>
+            <DialogDescription>
+              Ajoutez un lien vers un support de cours (PDF, checklist, etc.)
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="resource-title">Titre *</Label>
+              <Input
+                id="resource-title"
+                value={resourceForm.title}
+                onChange={(e) => setResourceForm({ ...resourceForm, title: e.target.value })}
+                placeholder="Guide de gestion des stocks"
+                data-testid="input-resource-title"
+              />
+            </div>
+            <div>
+              <Label htmlFor="resource-type">Type *</Label>
+              <Select
+                value={resourceForm.type}
+                onValueChange={(value: any) => setResourceForm({ ...resourceForm, type: value })}
+              >
+                <SelectTrigger id="resource-type" data-testid="select-resource-type">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pdf">PDF</SelectItem>
+                  <SelectItem value="checklist">Checklist</SelectItem>
+                  <SelectItem value="template">Modèle/Template</SelectItem>
+                  <SelectItem value="link">Lien</SelectItem>
+                  <SelectItem value="other">Autre</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="resource-url">URL *</Label>
+              <Input
+                id="resource-url"
+                value={resourceForm.url}
+                onChange={(e) => setResourceForm({ ...resourceForm, url: e.target.value })}
+                placeholder="https://drive.google.com/..."
+                data-testid="input-resource-url"
+              />
+            </div>
+            <div>
+              <Label htmlFor="resource-description">Description</Label>
+              <Textarea
+                id="resource-description"
+                value={resourceForm.description}
+                onChange={(e) => setResourceForm({ ...resourceForm, description: e.target.value })}
+                placeholder="Description facultative"
+                data-testid="input-resource-description"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="resource-published"
+                checked={resourceForm.isPublished}
+                onChange={(e) => setResourceForm({ ...resourceForm, isPublished: e.target.checked })}
+                data-testid="input-resource-published"
+              />
+              <Label htmlFor="resource-published">Publier la ressource</Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => createResourceMutation.mutate(resourceForm)}
+              disabled={createResourceMutation.isPending || !resourceForm.title || !resourceForm.url}
+              data-testid="button-save-resource"
+            >
+              Créer
             </Button>
           </DialogFooter>
         </DialogContent>

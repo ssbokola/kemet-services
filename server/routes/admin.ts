@@ -19,7 +19,9 @@ import {
   courseLessons,
   insertCourseSchema,
   quizzes,
-  quizQuestions
+  quizQuestions,
+  courseResources,
+  insertCourseResourceSchema
 } from '@shared/schema';
 import { sendWeeklyProgressEmails } from '../emails/progression';
 
@@ -1141,6 +1143,94 @@ router.post('/send-progress-emails', requireAdminAuth(), async (req, res) => {
     res.status(500).json({ 
       success: false, 
       error: "Erreur lors de l'envoi des emails de progression" 
+    });
+  }
+});
+
+// ==========================================
+// GESTION DES RESSOURCES DE COURS
+// ==========================================
+
+// POST /api/admin/resources - Créer une nouvelle ressource
+router.post('/resources', requireAdminAuth(), async (req, res) => {
+  try {
+    const resourceData = insertCourseResourceSchema.parse(req.body);
+    
+    const [resource] = await db
+      .insert(courseResources)
+      .values(resourceData)
+      .returning();
+    
+    res.json({ 
+      success: true, 
+      message: 'Ressource créée avec succès',
+      resource 
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ 
+        success: false, 
+        error: error.errors[0].message 
+      });
+    }
+    console.error('Erreur lors de la création de la ressource:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erreur interne du serveur' 
+    });
+  }
+});
+
+// GET /api/admin/resources/course/:courseId - Récupérer les ressources d'un cours
+router.get('/resources/course/:courseId', requireAdminAuth(), async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    
+    const resources = await db
+      .select()
+      .from(courseResources)
+      .where(eq(courseResources.courseId, courseId))
+      .orderBy(asc(courseResources.order));
+    
+    res.json({ 
+      success: true, 
+      resources 
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des ressources:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erreur interne du serveur' 
+    });
+  }
+});
+
+// DELETE /api/admin/resources/:id - Supprimer une ressource
+router.delete('/resources/:id', requireAdminAuth(), async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await db
+      .delete(courseResources)
+      .where(eq(courseResources.id, id))
+      .returning();
+    
+    if (result.length === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Ressource non trouvée' 
+      });
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Ressource supprimée avec succès' 
+    });
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la ressource:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Erreur interne du serveur' 
     });
   }
 });
