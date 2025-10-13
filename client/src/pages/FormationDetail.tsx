@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, Link, useLocation } from 'wouter';
 import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -87,13 +88,27 @@ export default function FormationDetail() {
     enabled: !!formation?.id && isAuthenticated,
   });
 
-  // Récupérer les ressources du cours
+  const isEnrolled = enrollmentStatusData?.isEnrolled ?? false;
+
+  // Récupérer les ressources du cours (uniquement si inscrit)
   const { data: resourcesData } = useQuery<{ success: boolean; resources: CourseResource[] }>({
     queryKey: ['/api/formations', formation?.id, 'resources'],
-    enabled: !!formation?.id,
+    enabled: !!formation?.id && isAuthenticated && isEnrolled,
   });
 
   const resources = resourcesData?.resources || [];
+
+  // Réinitialiser les caches d'inscription et de ressources quand l'utilisateur n'est plus authentifié
+  useEffect(() => {
+    if (!isAuthenticated && formation?.id) {
+      queryClient.removeQueries({ 
+        queryKey: ['/api/formations', formation.id, 'enrollment-status'] 
+      });
+      queryClient.removeQueries({ 
+        queryKey: ['/api/formations', formation.id, 'resources'] 
+      });
+    }
+  }, [isAuthenticated, formation?.id]);
 
   // Mutation pour l'inscription
   const enrollMutation = useMutation({
@@ -107,9 +122,12 @@ export default function FormationDetail() {
         title: 'Inscription réussie !',
         description: data.message || 'Vous êtes maintenant inscrit à cette formation',
       });
-      // Invalider le cache pour rafraîchir le statut
+      // Invalider le cache pour rafraîchir le statut et les ressources
       queryClient.invalidateQueries({ 
         queryKey: ['/api/formations', formation?.id, 'enrollment-status'] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/formations', formation?.id, 'resources'] 
       });
       queryClient.invalidateQueries({ 
         queryKey: ['/api/formations/my-enrollments'] 
@@ -171,8 +189,6 @@ export default function FormationDetail() {
   const handleInscription = () => {
     enrollMutation.mutate();
   };
-
-  const isEnrolled = enrollmentStatusData?.isEnrolled ?? false;
 
   if (isLoading) {
     return (
@@ -362,8 +378,8 @@ export default function FormationDetail() {
               </div>
             )}
 
-            {/* Resources Section */}
-            {resources && resources.length > 0 && (
+            {/* Resources Section - Uniquement pour les utilisateurs authentifiés et inscrits */}
+            {isAuthenticated && isEnrolled && resources && resources.length > 0 && (
               <div>
                 <h2 className="text-2xl font-semibold font-serif text-foreground mb-6 flex items-center gap-2">
                   <Download className="w-6 h-6 text-primary" />
