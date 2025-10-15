@@ -273,10 +273,10 @@ export default function FormationPresentielDetails() {
                                   })}
                                 </span>
                               </div>
-                              {session.location && (
+                              {session.venue && (
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                   <MapPin className="h-3 w-3" />
-                                  <span>{session.location}</span>
+                                  <span>{session.venue}{session.address ? `, ${session.address}` : ''}</span>
                                 </div>
                               )}
                               <div className="flex items-center gap-2 text-sm">
