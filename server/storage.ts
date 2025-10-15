@@ -196,7 +196,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPublishedCourses(): Promise<Course[]> {
-    return await db.select().from(courses).where(eq(courses.isPublished, true));
+    // Retourne uniquement les formations EN LIGNE publiées (pas les formations en présentiel)
+    return await db.select().from(courses).where(
+      and(
+        eq(courses.isPublished, true),
+        eq(courses.deliveryMode, 'online')
+      )
+    );
   }
 
   async getCourseById(id: string): Promise<Course | undefined> {
