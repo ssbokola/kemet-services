@@ -593,12 +593,12 @@ export type SessionRegistration = typeof sessionRegistrations.$inferSelect;
 // Orders/Payments (Wave Mobile Money) - Extended for both online courses and onsite sessions
 export const orders = pgTable("orders", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("userid").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: varchar("userid").references(() => users.id, { onDelete: 'cascade' }),
   
   // Order type and reference
   orderType: text("ordertype").notNull(), // 'online_course', 'onsite_session'
-  courseId: varchar("courseid").references(() => courses.id, { onDelete: 'set null' }), // For online courses
-  sessionId: varchar("sessionid").references(() => trainingSessions.id, { onDelete: 'set null' }), // For onsite sessions
+  courseId: varchar("courseid").references(() => courses.id, { onDelete: 'set null' }), // For online courses (nullable)
+  sessionId: varchar("sessionid").references(() => trainingSessions.id, { onDelete: 'set null' }), // For onsite sessions (nullable)
   referenceId: text("referenceid").notNull(), // Stores either courseId or sessionId for quick lookup
   
   amount: integer("amount").notNull(), // Amount in FCFA

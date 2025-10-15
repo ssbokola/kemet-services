@@ -86,15 +86,11 @@ router.post('/', async (req, res) => {
 
     const courseData = course[0];
 
-    // Create a temporary user ID for anonymous registration
-    // Use the email as a temporary user identifier
-    const tempUserId = `temp_${email.replace('@', '_at_')}`;
-    
-    // Create order first
+    // Create order first (userId is null for anonymous registration)
     const orderId = `SES-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     const [order] = await db.insert(orders).values({
-      userId: tempUserId,
+      userId: null, // Anonymous registration (no user account required)
       orderType: 'onsite_session',
       sessionId: sessionId,
       referenceId: orderId,
@@ -134,8 +130,13 @@ router.post('/', async (req, res) => {
       await db.delete(sessionRegistrations).where(eq(sessionRegistrations.id, registration.id));
       await db.delete(orders).where(eq(orders.id, order.id));
       
-      return res.status(500).json({ 
-        message: waveCheckout.error || 'Erreur lors de la création du paiement' 
+      // Provide user-friendly error messages
+      const errorMessage = waveCheckout.error?.includes('Invalid Masterkey') || waveCheckout.error?.includes('Masterkey')
+        ? 'Le système de paiement Wave Mobile Money n\'est pas encore configuré. Veuillez contacter l\'administrateur.'
+        : waveCheckout.error || 'Erreur lors de la création du paiement Wave Mobile Money';
+      
+      return res.status(503).json({ 
+        message: errorMessage
       });
     }
 
