@@ -113,8 +113,20 @@ export const courses = pgTable("courses", {
   slug: text("slug").notNull().unique(),
   description: text("description").notNull(),
   category: text("category").notNull(), // 'quality', 'finance', 'stock', 'hr', 'auxiliaires'
-  duration: integer("duration").notNull(), // en minutes
-  price: integer("price").notNull(), // en centimes
+  
+  // Delivery mode configuration
+  deliveryMode: text("deliverymode").notNull().default('onsite'), // 'onsite', 'online', 'hybrid'
+  isSessionBased: boolean("issessionbased").notNull().default(true), // true = présentiel avec sessions, false = en ligne
+  
+  // Default values (can be overridden per session)
+  defaultDuration: integer("defaultduration").notNull(), // en heures (6h par défaut)
+  defaultPrice: integer("defaultprice").notNull(), // en FCFA
+  defaultLocation: text("defaultlocation"), // Lieu par défaut (ex: "Yopougon CHU")
+  
+  // Legacy fields (kept for backwards compatibility with online courses)
+  duration: integer("duration"), // en minutes (pour cours en ligne)
+  price: integer("price"), // en centimes (pour cours en ligne)
+  
   isPublished: boolean("ispublished").notNull().default(false),
   thumbnail: text("thumbnail"),
   objectives: text("objectives").array(),
@@ -131,8 +143,13 @@ export const insertCourseSchema = createInsertSchema(courses)
     slug: z.string().trim().min(3, 'Le slug doit contenir au moins 3 caractères'),
     description: z.string().trim().min(20, 'La description doit contenir au moins 20 caractères'),
     category: z.enum(['quality', 'finance', 'stock', 'hr', 'auxiliaires']),
-    duration: z.coerce.number().min(15, 'La durée doit être d\'au moins 15 minutes'),
-    price: z.coerce.number().min(0, 'Le prix ne peut pas être négatif'),
+    deliveryMode: z.enum(['onsite', 'online', 'hybrid']).default('onsite'),
+    isSessionBased: z.boolean().default(true),
+    defaultDuration: z.coerce.number().min(1, 'La durée doit être d\'au moins 1 heure'),
+    defaultPrice: z.coerce.number().min(0, 'Le prix ne peut pas être négatif'),
+    defaultLocation: z.string().trim().optional(),
+    duration: z.coerce.number().min(15, 'La durée doit être d\'au moins 15 minutes').optional(),
+    price: z.coerce.number().min(0, 'Le prix ne peut pas être négatif').optional(),
     objectives: z.string().array().optional(),
     prerequisites: z.string().array().optional(),
     targetAudience: z.string().array().optional(),
@@ -470,11 +487,120 @@ export const insertCourseResourceSchema = createInsertSchema(courseResources)
 export type InsertCourseResource = z.infer<typeof insertCourseResourceSchema>;
 export type CourseResource = typeof courseResources.$inferSelect;
 
-// Orders/Payments (Wave Mobile Money)
+// Training Sessions (for onsite/in-person training)
+export const trainingSessions = pgTable("training_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  courseId: varchar("courseid").notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  sessionCode: text("sessioncode").notNull().unique(), // ex: "AUX-01-2025-01"
+  title: text("title").notNull(), // Peut être différent du titre du cours
+  description: text("description"),
+  
+  // Scheduling
+  startDate: timestamp("startdate").notNull(),
+  endDate: timestamp("enddate").notNull(),
+  registrationDeadline: timestamp("registrationdeadline").notNull(),
+  
+  // Location
+  venue: text("venue").notNull(), // ex: "Salle de formation Kemet Services"
+  address: text("address").notNull(), // ex: "Yopougon CHU, Abidjan"
+  city: text("city").notNull().default('Abidjan'),
+  
+  // Capacity
+  maxCapacity: integer("maxcapacity").notNull(),
+  currentRegistrations: integer("currentregistrations").notNull().default(0),
+  
+  // Pricing
+  pricePerPerson: integer("priceperperson").notNull(), // Prix en FCFA
+  
+  // Status
+  status: text("status").notNull().default('draft'), // 'draft', 'published', 'open', 'full', 'cancelled', 'completed'
+  
+  // Optional metadata
+  isOnlineLink: text("isonlinelink"), // URL Zoom/Meet si hybride
+  waveProductId: text("waveproductid"), // ID produit Wave si configuré
+  metadata: jsonb("metadata"), // Données additionnelles
+  
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+  updatedAt: timestamp("updatedat").defaultNow().notNull(),
+});
+
+export const insertTrainingSessionSchema = createInsertSchema(trainingSessions)
+  .omit({ id: true, createdAt: true, updatedAt: true, currentRegistrations: true })
+  .extend({
+    sessionCode: z.string().trim().min(3, 'Le code de session doit contenir au moins 3 caractères'),
+    title: z.string().trim().min(5, 'Le titre doit contenir au moins 5 caractères'),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date(),
+    registrationDeadline: z.coerce.date(),
+    venue: z.string().trim().min(3, 'Le lieu doit contenir au moins 3 caractères'),
+    address: z.string().trim().min(5, 'L\'adresse doit contenir au moins 5 caractères'),
+    maxCapacity: z.coerce.number().min(1, 'La capacité doit être d\'au moins 1 personne'),
+    pricePerPerson: z.coerce.number().min(0, 'Le prix ne peut pas être négatif'),
+    status: z.enum(['draft', 'published', 'open', 'full', 'cancelled', 'completed']).default('draft'),
+  });
+
+export type InsertTrainingSession = z.infer<typeof insertTrainingSessionSchema>;
+export type TrainingSession = typeof trainingSessions.$inferSelect;
+
+// Session Registrations (for onsite training)
+export const sessionRegistrations = pgTable("session_registrations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sessionId: varchar("sessionid").notNull().references(() => trainingSessions.id, { onDelete: 'cascade' }),
+  userId: varchar("userid").references(() => users.id, { onDelete: 'set null' }), // Optional - peut être null pour participants externes
+  
+  // Participant info (always stored, even if userId exists)
+  participantName: text("participantname").notNull(),
+  participantEmail: text("participantemail").notNull(),
+  participantPhone: text("participantphone").notNull(),
+  participantRole: text("participantrole").notNull(), // 'pharmacien-titulaire', 'auxiliaire', etc.
+  organization: text("organization").notNull(), // Nom de l'officine/organisation
+  
+  // Payment tracking
+  orderId: varchar("orderid").references(() => orders.id, { onDelete: 'set null' }),
+  paymentStatus: text("paymentstatus").notNull().default('pending'), // 'pending', 'completed', 'failed', 'refunded'
+  amountPaid: integer("amountpaid").notNull(),
+  
+  // Attendance tracking
+  attended: boolean("attended").default(false),
+  attendanceMarkedAt: timestamp("attendancemarkedat"),
+  
+  // Cancellation
+  isCancelled: boolean("iscancelled").notNull().default(false),
+  cancellationReason: text("cancellationreason"),
+  cancelledAt: timestamp("cancelledat"),
+  
+  // Notes
+  notes: text("notes"),
+  
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+  updatedAt: timestamp("updatedat").defaultNow().notNull(),
+});
+
+export const insertSessionRegistrationSchema = createInsertSchema(sessionRegistrations)
+  .omit({ id: true, createdAt: true, updatedAt: true, attended: true, attendanceMarkedAt: true, isCancelled: true, cancelledAt: true })
+  .extend({
+    participantName: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
+    participantEmail: z.string().trim().email('Adresse email invalide'),
+    participantPhone: z.string().trim().min(8, 'Numéro de téléphone invalide'),
+    participantRole: z.string().trim().min(2, 'Le rôle est requis'),
+    organization: z.string().trim().min(2, 'L\'organisation est requise'),
+    amountPaid: z.coerce.number().min(0, 'Le montant ne peut pas être négatif'),
+  });
+
+export type InsertSessionRegistration = z.infer<typeof insertSessionRegistrationSchema>;
+export type SessionRegistration = typeof sessionRegistrations.$inferSelect;
+
+// Orders/Payments (Wave Mobile Money) - Extended for both online courses and onsite sessions
 export const orders = pgTable("orders", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("userid").notNull().references(() => users.id, { onDelete: 'cascade' }),
-  courseId: varchar("courseid").notNull().references(() => courses.id, { onDelete: 'cascade' }),
+  
+  // Order type and reference
+  orderType: text("ordertype").notNull(), // 'online_course', 'onsite_session'
+  courseId: varchar("courseid").references(() => courses.id, { onDelete: 'set null' }), // For online courses
+  sessionId: varchar("sessionid").references(() => trainingSessions.id, { onDelete: 'set null' }), // For onsite sessions
+  referenceId: text("referenceid").notNull(), // Stores either courseId or sessionId for quick lookup
+  
   amount: integer("amount").notNull(), // Amount in FCFA
   currency: text("currency").notNull().default('XOF'), // FCFA
   status: text("status").notNull().default('pending'), // 'pending', 'processing', 'completed', 'failed', 'cancelled', 'refunded'
@@ -483,6 +609,7 @@ export const orders = pgTable("orders", {
   waveCheckoutId: text("wavecheckoutid"), // Wave checkout session ID
   wavePaymentUrl: text("wavepaymenturl"), // Wave payment URL for redirect
   failureReason: text("failurereason"), // Reason for failure
+  notes: text("notes"), // Additional notes
   metadata: jsonb("metadata"), // Additional metadata
   paidAt: timestamp("paidat"),
   createdAt: timestamp("createdat").defaultNow().notNull(),
@@ -492,6 +619,8 @@ export const orders = pgTable("orders", {
 export const insertOrderSchema = createInsertSchema(orders)
   .omit({ id: true, createdAt: true, updatedAt: true })
   .extend({
+    orderType: z.enum(['online_course', 'onsite_session']),
+    referenceId: z.string().trim().min(1, 'L\'ID de référence est requis'),
     amount: z.coerce.number().min(1, 'Le montant doit être supérieur à 0'),
     currency: z.string().default('XOF'),
     paymentMethod: z.enum(['wave']).default('wave'),
