@@ -39,7 +39,7 @@ Preferred communication style: Simple, everyday language.
 - **Migrations**: Drizzle Kit for database migrations
 
 ### Content Architecture
-- **Training Courses**: Categorized course system (Quality, Finance, Stock, HR, Auxiliaries)
+- **Training Courses**: Categorized course system (Quality, Finance, Stock, HR, Auxiliaries) - Course level stratification removed as of October 2025
 - **Consulting Services**: Multi-step consulting process
 - **Results Showcase**: KPI tracking and testimonial management
 - **Asset Management**: Professional image gallery and brand assets
