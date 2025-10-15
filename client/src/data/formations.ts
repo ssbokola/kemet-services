@@ -281,6 +281,7 @@ export const categoryLabels: Record<string, string> = {
   finance: "Finance",
   stock: "Stock",
   hr: "Ressources Humaines",
-  auxiliaires: "Auxiliaires"
+  auxiliaires: "Auxiliaires",
+  pharmaciens: "Pharmaciens"
 };
 
