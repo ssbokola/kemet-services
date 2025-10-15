@@ -66,8 +66,57 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * GET /api/onsite-trainings/sessions/:sessionId
+ * Récupère les détails d'une session spécifique
+ * NOTE: This route MUST be defined BEFORE the /:slug route to avoid conflict
+ */
+router.get('/sessions/:sessionId', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+
+    // Récupérer la session
+    const session = await db
+      .select()
+      .from(trainingSessions)
+      .where(eq(trainingSessions.id, sessionId))
+      .limit(1);
+
+    if (!session || session.length === 0) {
+      return res.status(404).json({ message: 'Session non trouvée' });
+    }
+
+    // Récupérer la formation associée
+    const training = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.id, session[0].courseId))
+      .limit(1);
+
+    // Récupérer le nombre d'inscriptions pour cette session
+    const registrations = await db
+      .select()
+      .from(sessionRegistrations)
+      .where(and(
+        eq(sessionRegistrations.sessionId, sessionId),
+        eq(sessionRegistrations.isCancelled, false)
+      ));
+
+    res.json({
+      session: session[0],
+      training: training[0],
+      registrationsCount: registrations.length,
+      availableSeats: session[0].maxCapacity - registrations.length
+    });
+  } catch (error) {
+    console.error('Error fetching session details:', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération de la session' });
+  }
+});
+
+/**
  * GET /api/onsite-trainings/:slug
  * Récupère une formation en présentiel par son slug avec ses sessions
+ * NOTE: This route is defined AFTER /sessions/:sessionId to avoid route conflict
  */
 router.get('/:slug', async (req, res) => {
   try {
@@ -123,53 +172,6 @@ router.get('/:slug', async (req, res) => {
   } catch (error) {
     console.error('Error fetching onsite training:', error);
     res.status(500).json({ message: 'Erreur lors de la récupération de la formation' });
-  }
-});
-
-/**
- * GET /api/onsite-trainings/sessions/:sessionId
- * Récupère les détails d'une session spécifique
- */
-router.get('/sessions/:sessionId', async (req, res) => {
-  try {
-    const { sessionId } = req.params;
-
-    // Récupérer la session
-    const session = await db
-      .select()
-      .from(trainingSessions)
-      .where(eq(trainingSessions.id, sessionId))
-      .limit(1);
-
-    if (!session || session.length === 0) {
-      return res.status(404).json({ message: 'Session non trouvée' });
-    }
-
-    // Récupérer la formation associée
-    const training = await db
-      .select()
-      .from(courses)
-      .where(eq(courses.id, session[0].courseId))
-      .limit(1);
-
-    // Récupérer le nombre d'inscriptions pour cette session
-    const registrations = await db
-      .select()
-      .from(sessionRegistrations)
-      .where(and(
-        eq(sessionRegistrations.sessionId, sessionId),
-        eq(sessionRegistrations.isCancelled, false)
-      ));
-
-    res.json({
-      session: session[0],
-      training: training[0],
-      registrationsCount: registrations.length,
-      availableSeats: session[0].maxCapacity - registrations.length
-    });
-  } catch (error) {
-    console.error('Error fetching session details:', error);
-    res.status(500).json({ message: 'Erreur lors de la récupération de la session' });
   }
 });
 

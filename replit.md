@@ -40,18 +40,37 @@ Preferred communication style: Simple, everyday language.
 
 ### Content Architecture
 - **Training Courses**: Categorized course system (Quality, Finance, Stock, HR, Auxiliaries) - Course level stratification removed as of October 2025
+  - **Delivery Modes**: Online (LMS), Onsite (présentiel avec sessions programmées), Hybrid
+  - **Onsite Training System**: 22 formations en présentiel (12 auxiliaires + 10 pharmaciens) with scheduled sessions, registration forms, and Wave Mobile Money payment integration
 - **Consulting Services**: Multi-step consulting process
 - **Results Showcase**: KPI tracking and testimonial management
 - **Asset Management**: Professional image gallery and brand assets
 - **Kemet Echo Product Page**: Dedicated page with features, pricing, and demo request form.
 
-### Online Training Platform
+### Online Training Platform (LMS)
 - **Learning Management System**: Enrollment system with authentication, course catalog, user dashboard, course completion badges.
 - **Authentication**: Replit Auth integration with OIDC (Google, GitHub, Email/Password), session management.
 - **Email Workflows**: Enrollment confirmations, weekly progress tracking, automated notifications.
-- **Wave Mobile Money Payment System**: FCFA payment integration for Côte d'Ivoire and Senegal, with checkout, webhook processing, and payment status polling.
+- **Wave Mobile Money Payment System**: FCFA payment integration for Côte d'Ivoire and Senegal via PayDunya SOFTPAY, with checkout, webhook processing, and payment status polling.
 - **Admin CRUD Interface**: Dashboard for managing courses, modules, lessons, quizzes, and quiz questions with full CRUD operations, validation, and authorization.
 - **Lesson Viewer**: Video integration (YouTube), content rendering with ReactMarkdown, progression tracking, and navigation (TOC, next/previous buttons).
+
+### Onsite Training Platform (Présentiel)
+- **Session Management**: Scheduled in-person training sessions with date, venue, address, capacity, and pricing (FCFA).
+- **Registration System**: Anonymous registration forms (no user account required) with participant details (name, email, phone, role, organization).
+- **Training Catalog**: 
+  - Route: `/formations-presentiel` - Displays all onsite trainings with upcoming sessions
+  - Route: `/formation-presentiel/:slug` - Detailed training page with objectives, sessions list, and registration form
+  - Route: `/calendrier-formations` - Calendar of all upcoming sessions with PDF export functionality
+- **Payment Integration**: Wave Mobile Money via PayDunya SOFTPAY for session payments
+  - Server-side price validation (prevents client tampering)
+  - Anonymous orders (userId and courseId nullable in orders table)
+  - Graceful error handling for missing Wave API configuration
+- **Database Schema**:
+  - `courses` table with `deliverymode='onsite'` for présentiel trainings
+  - `training_sessions` table for scheduled sessions (sessionCode, venue, address, city, startDate, endDate, maxCapacity, pricePerPerson, status)
+  - `session_registrations` table for participant registrations (nullable userId for anonymous signups)
+  - `orders` table with nullable userId and courseId for anonymous transactions
 
 ### Security
 - All lesson/module/quiz routes enforce authentication and enrollment verification.
