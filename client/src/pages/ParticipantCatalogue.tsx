@@ -18,7 +18,6 @@ export default function ParticipantCatalogue() {
   const { user, isLoading, isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [levelFilter, setLevelFilter] = useState("all");
   
   // All hooks must be called at the top level
   const queryClient = useQueryClient();
@@ -101,15 +100,6 @@ export default function ParticipantCatalogue() {
     return labels[category] || category;
   };
 
-  const getLevelLabel = (level: string) => {
-    const labels: Record<string, string> = {
-      debutant: "Débutant",
-      intermediaire: "Intermédiaire", 
-      avance: "Avancé"
-    };
-    return labels[level] || level;
-  };
-
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
       quality: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
@@ -154,9 +144,8 @@ export default function ParticipantCatalogue() {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          course.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = categoryFilter === "all" || course.category === categoryFilter;
-    const matchesLevel = levelFilter === "all" || course.level === levelFilter;
     
-    return matchesSearch && matchesCategory && matchesLevel;
+    return matchesSearch && matchesCategory;
   });
 
   return (
@@ -232,19 +221,6 @@ export default function ParticipantCatalogue() {
                 <SelectItem value="auxiliaires">Auxiliaires</SelectItem>
               </SelectContent>
             </Select>
-            
-            {/* Level Filter */}
-            <Select value={levelFilter} onValueChange={setLevelFilter}>
-              <SelectTrigger className="w-full md:w-[180px]" data-testid="select-level">
-                <SelectValue placeholder="Niveau" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous niveaux</SelectItem>
-                <SelectItem value="debutant">Débutant</SelectItem>
-                <SelectItem value="intermediaire">Intermédiaire</SelectItem>
-                <SelectItem value="avance">Avancé</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
           
           <p className="text-sm text-muted-foreground">
@@ -269,7 +245,6 @@ export default function ParticipantCatalogue() {
                           Populaire
                         </Badge>
                       )}
-                      <Badge variant="outline">{getLevelLabel(course.level)}</Badge>
                     </div>
                   </div>
                   <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
@@ -354,7 +329,6 @@ export default function ParticipantCatalogue() {
                 onClick={() => {
                   setSearchQuery("");
                   setCategoryFilter("all");
-                  setLevelFilter("all");
                 }}
                 data-testid="button-clear-filters"
               >

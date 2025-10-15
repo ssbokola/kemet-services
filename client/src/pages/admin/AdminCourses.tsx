@@ -67,7 +67,6 @@ interface Course {
   slug: string;
   description: string;
   category: string;
-  level: string;
   duration: number;
   price: number;
   isPublished: boolean;
@@ -109,7 +108,6 @@ export default function AdminCourses() {
     slug: '',
     description: '',
     category: 'quality',
-    level: 'debutant',
     duration: 60,
     price: 0,
     isPublished: false,
@@ -276,7 +274,6 @@ export default function AdminCourses() {
       slug: '',
       description: '',
       category: 'quality',
-      level: 'debutant',
       duration: 60,
       price: 0,
       isPublished: false,
@@ -301,7 +298,6 @@ export default function AdminCourses() {
       slug: course.slug,
       description: course.description,
       category: course.category,
-      level: course.level,
       duration: course.duration,
       price: course.price,
       isPublished: course.isPublished,
@@ -398,15 +394,6 @@ export default function AdminCourses() {
       auxiliaires: "Auxiliaires"
     };
     return labels[category] || category;
-  };
-
-  const getLevelLabel = (level: string) => {
-    const labels: Record<string, string> = {
-      debutant: "Débutant",
-      intermediaire: "Intermédiaire", 
-      avance: "Avancé"
-    };
-    return labels[level] || level;
   };
 
   // Utiliser la fonction centralisée de formatage CFA
@@ -553,7 +540,6 @@ export default function AdminCourses() {
                   <TableRow>
                     <TableHead>Titre</TableHead>
                     <TableHead>Catégorie</TableHead>
-                    <TableHead>Niveau</TableHead>
                     <TableHead>Durée</TableHead>
                     <TableHead>Prix</TableHead>
                     <TableHead>Statut</TableHead>
@@ -578,11 +564,6 @@ export default function AdminCourses() {
                         <Badge variant="secondary">
                           {getCategoryLabel(course.category)}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm">
-                          {getLevelLabel(course.level)}
-                        </span>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
@@ -780,20 +761,6 @@ export default function AdminCourses() {
                     <SelectItem value="stock">Stock</SelectItem>
                     <SelectItem value="hr">Management</SelectItem>
                     <SelectItem value="auxiliaires">Auxiliaires</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="level">Niveau *</Label>
-                <Select value={formData.level} onValueChange={(value) => setFormData(prev => ({ ...prev, level: value }))}>
-                  <SelectTrigger data-testid="select-course-level">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="debutant">Débutant</SelectItem>
-                    <SelectItem value="intermediaire">Intermédiaire</SelectItem>
-                    <SelectItem value="avance">Avancé</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

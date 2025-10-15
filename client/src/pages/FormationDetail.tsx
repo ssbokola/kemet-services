@@ -48,7 +48,6 @@ interface Formation {
   slug: string;
   description: string;
   category: string;
-  level: string;
   duration: number;
   price: number;
   thumbnail?: string;

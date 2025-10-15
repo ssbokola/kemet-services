@@ -28,7 +28,6 @@ interface Course {
   slug: string;
   description: string;
   category: string;
-  level: string;
   duration: number;
   thumbnailUrl?: string;
 }

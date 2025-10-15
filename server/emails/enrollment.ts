@@ -66,10 +66,6 @@ export function generateEnrollmentConfirmationHTML(data: EnrollmentConfirmationD
               <span class="info-label">Durée totale</span>
               <span class="info-value">${Math.round(data.course.duration / 60)}h ${data.course.duration % 60}min</span>
             </div>
-            <div class="info-row">
-              <span class="info-label">Niveau</span>
-              <span class="info-value">${data.course.level.charAt(0).toUpperCase() + data.course.level.slice(1)}</span>
-            </div>
             <div class="info-row" style="border-bottom: none;">
               <span class="info-label">Catégorie</span>
               <span class="info-value">${getCategoryLabel(data.course.category)}</span>

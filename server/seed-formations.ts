@@ -26,7 +26,6 @@ async function seedFormations() {
         slug: courseData.slug,
         description: courseData.description,
         category: courseData.category,
-        level: courseData.level,
         duration: courseData.duration,
         price: courseData.price,
         isPublished: courseData.isPublished,
