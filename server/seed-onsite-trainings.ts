@@ -12,7 +12,7 @@ import { courses } from '@shared/schema';
 interface TrainingData {
   code: string;
   title: string;
-  category: 'auxiliaires' | 'quality' | 'finance' | 'stock' | 'hr';
+  category: 'auxiliaires' | 'pharmaciens' | 'quality' | 'finance' | 'stock' | 'hr';
   description: string;
   objectives: string[];
   targetAudience: string[];
@@ -196,7 +196,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-01',
     title: 'La Finance pour le Pharmacien',
-    category: 'finance',
+    category: 'pharmaciens',
     description: 'Formation financière complète pour pharmaciens : lecture des états financiers, analyse de rentabilité et pilotage financier de l\'officine.',
     objectives: [
       'Comprendre les états financiers',
@@ -210,7 +210,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-02',
     title: 'La Gestion de Clientèle pour le Pharmacien',
-    category: 'quality',
+    category: 'pharmaciens',
     description: 'Stratégies de fidélisation, segmentation client et développement de la relation client pour pharmaciens d\'officine.',
     objectives: [
       'Segmenter sa clientèle',
@@ -224,7 +224,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-03',
     title: 'La Gestion de Stock pour le Pharmacien',
-    category: 'stock',
+    category: 'pharmaciens',
     description: 'Maîtrise complète de la gestion des stocks pharmaceutiques : méthodes d\'optimisation, valorisation et pilotage des stocks.',
     objectives: [
       'Optimiser les niveaux de stock',
@@ -238,7 +238,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-04',
     title: 'La Gestion des Compétences pour le Pharmacien',
-    category: 'hr',
+    category: 'pharmaciens',
     description: 'Développement et gestion des compétences de l\'équipe officinale : évaluation, formation et plan de développement.',
     objectives: [
       'Évaluer les compétences de l\'équipe',
@@ -252,7 +252,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-05',
     title: 'La Gestion des Risques en Officine ISO 31000 v2018',
-    category: 'quality',
+    category: 'pharmaciens',
     description: 'Mise en œuvre de la norme ISO 31000:2018 pour identifier, évaluer et gérer les risques en officine de manière structurée.',
     objectives: [
       'Comprendre la norme ISO 31000:2018',
@@ -266,7 +266,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-06',
     title: 'La Qualité en Officine',
-    category: 'quality',
+    category: 'pharmaciens',
     description: 'Démarche qualité complète pour l\'officine : système documentaire, processus, audits internes et amélioration continue.',
     objectives: [
       'Mettre en place un système qualité',
@@ -280,7 +280,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-07',
     title: 'Leadership Managérial',
-    category: 'hr',
+    category: 'pharmaciens',
     description: 'Développement des compétences de leadership pour mobiliser, motiver et diriger efficacement l\'équipe officinale.',
     objectives: [
       'Développer son leadership',
@@ -294,7 +294,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-08',
     title: 'Les Tableaux de Bord en Officine FDX 50-171',
-    category: 'finance',
+    category: 'pharmaciens',
     description: 'Construction et utilisation de tableaux de bord selon la norme FDX 50-171 pour piloter la performance de l\'officine.',
     objectives: [
       'Comprendre la norme FDX 50-171',
@@ -308,7 +308,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-09',
     title: 'Management Opérationnel en Officine',
-    category: 'hr',
+    category: 'pharmaciens',
     description: 'Techniques de management opérationnel quotidien : organisation du travail, planification et coordination des activités.',
     objectives: [
       'Organiser le travail quotidien',
@@ -322,7 +322,7 @@ const pharmaciensModules: TrainingData[] = [
   {
     code: 'PHAR-10',
     title: 'Management Stratégique en Officine',
-    category: 'hr',
+    category: 'pharmaciens',
     description: 'Vision stratégique et planification à long terme pour développer et pérenniser l\'officine dans un environnement en évolution.',
     objectives: [
       'Élaborer une vision stratégique',
