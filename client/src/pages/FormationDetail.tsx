@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { Clock, BookOpen, CheckCircle2, AlertCircle, Users, Download, FileText, Link as LinkIcon } from 'lucide-react';
-import { categoryLabels, levelLabels } from '@/data/formations';
+import { categoryLabels } from '@/data/formations';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
 
@@ -242,9 +242,6 @@ export default function FormationDetail() {
             <div className="flex items-center gap-2 mb-4">
               <Badge variant="outline" data-testid="badge-category">
                 {categoryLabels[formation.category as keyof typeof categoryLabels]}
-              </Badge>
-              <Badge variant="secondary" data-testid="badge-level">
-                {levelLabels[formation.level as keyof typeof levelLabels]}
               </Badge>
             </div>
 

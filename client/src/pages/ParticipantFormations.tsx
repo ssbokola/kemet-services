@@ -124,15 +124,6 @@ export default function ParticipantFormations() {
     return labels[category] || category;
   };
 
-  const getLevelLabel = (level: string) => {
-    const labels: Record<string, string> = {
-      debutant: "Débutant",
-      intermediaire: "Intermédiaire", 
-      avance: "Avancé"
-    };
-    return labels[level] || level;
-  };
-
   const getStatusLabel = (status: string) => {
     const labels: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
       in_progress: { label: "En cours", variant: "default" },
@@ -260,7 +251,6 @@ export default function ParticipantFormations() {
                 <CardHeader>
                   <div className="flex items-start justify-between mb-2">
                     <Badge variant="secondary">{getCategoryLabel(course.category)}</Badge>
-                    <Badge variant="outline">{getLevelLabel(course.level)}</Badge>
                   </div>
                   <CardTitle className="text-lg leading-tight">{course.title}</CardTitle>
                   <CardDescription className="line-clamp-2">

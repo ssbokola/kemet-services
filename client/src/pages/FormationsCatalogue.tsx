@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Clock, BookOpen, Filter } from 'lucide-react';
-import { categoryLabels, levelLabels } from '@/data/formations';
+import { categoryLabels } from '@/data/formations';
 
 interface Formation {
   id: string;
@@ -17,7 +17,6 @@ interface Formation {
   slug: string;
   description: string;
   category: string;
-  level: string;
   duration: number;
   price: number;
   isPublished: boolean;
@@ -26,7 +25,6 @@ interface Formation {
 
 export default function FormationsCatalogue() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedLevel, setSelectedLevel] = useState<string>('all');
 
   const { data, isLoading, error } = useQuery<{ success: boolean; formations: Formation[] }>({
     queryKey: ['/api/formations'],
@@ -36,8 +34,7 @@ export default function FormationsCatalogue() {
 
   const filteredFormations = formations.filter((formation) => {
     const categoryMatch = selectedCategory === 'all' || formation.category === selectedCategory;
-    const levelMatch = selectedLevel === 'all' || formation.level === selectedLevel;
-    return categoryMatch && levelMatch && formation.isPublished;
+    return categoryMatch && formation.isPublished;
   });
 
   const formatDuration = (minutes: number) => {
@@ -101,31 +98,6 @@ export default function FormationsCatalogue() {
                       size="sm"
                       onClick={() => setSelectedCategory(key)}
                       data-testid={`filter-category-${key}`}
-                    >
-                      {label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-3">Niveau</h4>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant={selectedLevel === 'all' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setSelectedLevel('all')}
-                    data-testid="filter-level-all"
-                  >
-                    Tous niveaux
-                  </Button>
-                  {Object.entries(levelLabels).map(([key, label]) => (
-                    <Button
-                      key={key}
-                      variant={selectedLevel === key ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setSelectedLevel(key)}
-                      data-testid={`filter-level-${key}`}
                     >
                       {label}
                     </Button>
@@ -197,9 +169,6 @@ export default function FormationsCatalogue() {
                         <div className="flex items-center gap-2 flex-wrap">
                           <Badge variant="outline" data-testid={`badge-category-${formation.slug}`}>
                             {categoryLabels[formation.category as keyof typeof categoryLabels]}
-                          </Badge>
-                          <Badge variant="secondary" data-testid={`badge-level-${formation.slug}`}>
-                            {levelLabels[formation.level as keyof typeof levelLabels]}
                           </Badge>
                         </div>
 

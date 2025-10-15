@@ -6,7 +6,6 @@ export const demoFormations = [
     slug: "gestion-stocks-pharmacie",
     description: "Maîtrisez les techniques modernes de gestion de stock pour réduire les pertes et optimiser vos approvisionnements. Formation complète avec cas pratiques et outils concrets.",
     category: "stock",
-    level: "intermediaire",
     duration: 360, // 6 heures
     price: 45000, // 45 000 FCFA
     isPublished: true,
@@ -64,7 +63,6 @@ export const demoFormations = [
     slug: "service-client-pharmacie",
     description: "Développez vos compétences relationnelles et transformez chaque interaction en opportunité de fidélisation. Formation pratique avec jeux de rôle.",
     category: "quality",
-    level: "debutant",
     duration: 240, // 4 heures
     price: 35000,
     isPublished: true,
@@ -112,7 +110,6 @@ export const demoFormations = [
     slug: "finance-rentabilite-pharmacie",
     description: "Comprenez les chiffres de votre officine et prenez des décisions éclairées pour améliorer votre rentabilité. Formation avec tableaux de bord Excel.",
     category: "finance",
-    level: "intermediaire",
     duration: 480, // 8 heures
     price: 55000,
     isPublished: true,
@@ -171,7 +168,6 @@ export const demoFormations = [
     slug: "management-equipe-pharmacie",
     description: "Devenez un leader inspirant et constituez une équipe performante et motivée. Formation interactive avec mises en situation.",
     category: "hr",
-    level: "avance",
     duration: 420, // 7 heures
     price: 50000,
     isPublished: true,
@@ -230,7 +226,6 @@ export const demoFormations = [
     slug: "conseil-pharmaceutique-avance",
     description: "Perfectionnez votre pratique du conseil pharmaceutique avec des cas cliniques complexes et des protocoles de dispensation structurés.",
     category: "auxiliaires",
-    level: "avance",
     duration: 300, // 5 heures
     price: 40000,
     isPublished: true,
@@ -289,8 +284,3 @@ export const categoryLabels: Record<string, string> = {
   auxiliaires: "Auxiliaires"
 };
 
-export const levelLabels: Record<string, string> = {
-  debutant: "Débutant",
-  intermediaire: "Intermédiaire",
-  avance: "Avancé"
-};

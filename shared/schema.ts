@@ -113,7 +113,6 @@ export const courses = pgTable("courses", {
   slug: text("slug").notNull().unique(),
   description: text("description").notNull(),
   category: text("category").notNull(), // 'quality', 'finance', 'stock', 'hr', 'auxiliaires'
-  level: text("level").notNull(), // 'debutant', 'intermediaire', 'avance'
   duration: integer("duration").notNull(), // en minutes
   price: integer("price").notNull(), // en centimes
   isPublished: boolean("ispublished").notNull().default(false),
@@ -132,7 +131,6 @@ export const insertCourseSchema = createInsertSchema(courses)
     slug: z.string().trim().min(3, 'Le slug doit contenir au moins 3 caractères'),
     description: z.string().trim().min(20, 'La description doit contenir au moins 20 caractères'),
     category: z.enum(['quality', 'finance', 'stock', 'hr', 'auxiliaires']),
-    level: z.enum(['debutant', 'intermediaire', 'avance']),
     duration: z.coerce.number().min(15, 'La durée doit être d\'au moins 15 minutes'),
     price: z.coerce.number().min(0, 'Le prix ne peut pas être négatif'),
     objectives: z.string().array().optional(),
