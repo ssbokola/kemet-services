@@ -39,7 +39,7 @@ Preferred communication style: Simple, everyday language.
 - **Migrations**: Drizzle Kit for database migrations
 
 ### Content Architecture
-- **Training Courses**: Categorized course system (Quality, Finance, Stock, HR, Auxiliaries) - Course level stratification removed as of October 2025
+- **Training Courses**: Categorized course system (Quality, Finance, Stock, HR, Auxiliaries, Pharmaciens) - Course level stratification removed as of October 2025
   - **Delivery Modes**: Online (LMS), Onsite (présentiel avec sessions programmées), Hybrid
   - **Onsite Training System**: 22 formations en présentiel (12 auxiliaires + 10 pharmaciens) with scheduled sessions, registration forms, and Wave Mobile Money payment integration
 - **Consulting Services**: Multi-step consulting process

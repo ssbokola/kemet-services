@@ -24,7 +24,8 @@ export default function FormationsPresentiel() {
       finance: "Finance",
       stock: "Stock",
       hr: "Management",
-      auxiliaires: "Auxiliaires"
+      auxiliaires: "Auxiliaires",
+      pharmaciens: "Pharmaciens"
     };
     return labels[category] || category;
   };
@@ -34,6 +35,7 @@ export default function FormationsPresentiel() {
       quality: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
       finance: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
       stock: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+      pharmaciens: "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300",
       hr: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
       auxiliaires: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300"
     };
@@ -117,6 +119,7 @@ export default function FormationsPresentiel() {
                 <SelectItem value="stock">Stock</SelectItem>
                 <SelectItem value="hr">Management</SelectItem>
                 <SelectItem value="auxiliaires">Auxiliaires</SelectItem>
+                <SelectItem value="pharmaciens">Pharmaciens</SelectItem>
               </SelectContent>
             </Select>
           </div>
