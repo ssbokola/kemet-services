@@ -15,6 +15,8 @@ import Formations from "@/pages/Formations";
 import FormationsCatalogue from "@/pages/FormationsCatalogue";
 import FormationDetail from "@/pages/FormationDetail";
 import FormationsPresentiel from "@/pages/FormationsPresentiel";
+import FormationPresentielDetails from "@/pages/FormationPresentielDetails";
+import InscriptionConfirmee from "@/pages/InscriptionConfirmee";
 import MonCompte from "@/pages/MonCompte";
 import Galerie from "@/pages/Galerie";
 import Diagnostic from "@/pages/Diagnostic";
@@ -56,6 +58,8 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/formations-presentiel" component={FormationsPresentiel} />
+      <Route path="/formation-presentiel/:slug" component={FormationPresentielDetails} />
+      <Route path="/inscription-confirmee" component={InscriptionConfirmee} />
       <Route path="/formations" component={FormationsCatalogue} />
       <Route path="/formation/:slug" component={FormationDetail} />
       <Route path="/mon-compte" component={MonCompte} />
