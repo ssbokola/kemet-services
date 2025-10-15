@@ -6,6 +6,15 @@ Kemet Services is a professional training and consulting platform for pharmacy o
 
 The platform also includes "Kemet Echo," a customer satisfaction survey web application for pharmacies and clinics, offering CSAT and NPS metrics, anonymous surveys, real-time analytics, and automated reporting across freemium, premium, and turnkey tiers.
 
+## Recent Changes
+
+### October 15, 2025
+- **Category System Update**: Extended category enum to include "pharmaciens" as the 6th category
+- **Database Migration**: Updated all 10 PHAR-* onsite trainings to use category="pharmaciens" (previously using finance, quality, stock, hr)
+- **UI Enhancement**: Added "Pharmaciens" filter button with teal badge styling (bg-teal-100/text-teal-800) on /formations-presentiel
+- **Data Separation Fix**: Fixed critical bug where onsite trainings appeared in online catalog - `storage.getPublishedCourses()` now filters by `deliveryMode='online'`
+- **Training Count**: Total of 20+ formations with category="pharmaciens" (includes PHAR-01 through PHAR-10 and others)
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
