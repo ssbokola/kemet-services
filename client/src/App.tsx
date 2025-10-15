@@ -14,6 +14,7 @@ import Home from "@/pages/Home";
 import Formations from "@/pages/Formations";
 import FormationsCatalogue from "@/pages/FormationsCatalogue";
 import FormationDetail from "@/pages/FormationDetail";
+import FormationsPresentiel from "@/pages/FormationsPresentiel";
 import MonCompte from "@/pages/MonCompte";
 import Galerie from "@/pages/Galerie";
 import Diagnostic from "@/pages/Diagnostic";
@@ -54,7 +55,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/formations-presentiel" component={Formations} />
+      <Route path="/formations-presentiel" component={FormationsPresentiel} />
       <Route path="/formations" component={FormationsCatalogue} />
       <Route path="/formation/:slug" component={FormationDetail} />
       <Route path="/mon-compte" component={MonCompte} />
