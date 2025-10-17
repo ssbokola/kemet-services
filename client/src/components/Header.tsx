@@ -23,6 +23,17 @@ const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
     const [, setLocation] = useLocation();
     
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      // Allow default browser navigation for:
+      // - Middle click (button !== 0)
+      // - Modifier keys (Ctrl/Cmd/Shift/Alt for new tab/window)
+      // - Links with target attribute
+      const isModifiedEvent = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;
+      const isNonLeftClick = e.button !== 0;
+      
+      if (isModifiedEvent || isNonLeftClick) {
+        return; // Let browser handle it
+      }
+      
       e.preventDefault();
       setLocation(href);
     };
