@@ -357,7 +357,7 @@ async function seedOnsiteTrainings() {
         deliveryMode: 'onsite',
         isSessionBased: true,
         defaultDuration: 6, // 6 heures
-        defaultPrice: 75000, // 75 000 FCFA par défaut
+        defaultPrice: 50000, // 50 000 FCFA
         defaultLocation: 'Yopougon CHU, Abidjan',
         isPublished: true,
         objectives: training.objectives,
@@ -386,7 +386,7 @@ async function seedOnsiteTrainings() {
         deliveryMode: 'onsite',
         isSessionBased: true,
         defaultDuration: 6, // 6 heures
-        defaultPrice: 95000, // 95 000 FCFA par défaut (pharmaciens)
+        defaultPrice: 50000, // 50 000 FCFA
         defaultLocation: 'Yopougon CHU, Abidjan',
         isPublished: true,
         objectives: training.objectives,
