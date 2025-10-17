@@ -7,7 +7,7 @@ export const demoFormations = [
     description: "Maîtrisez les techniques modernes de gestion de stock pour réduire les pertes et optimiser vos approvisionnements. Formation complète avec cas pratiques et outils concrets.",
     category: "stock",
     duration: 360, // 6 heures
-    price: 45000, // 45 000 FCFA
+    price: 40000, // 40 000 FCFA
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
     objectives: [
@@ -64,7 +64,7 @@ export const demoFormations = [
     description: "Développez vos compétences relationnelles et transformez chaque interaction en opportunité de fidélisation. Formation pratique avec jeux de rôle.",
     category: "quality",
     duration: 240, // 4 heures
-    price: 35000,
+    price: 40000, // 40 000 FCFA
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
     objectives: [
@@ -111,7 +111,7 @@ export const demoFormations = [
     description: "Comprenez les chiffres de votre officine et prenez des décisions éclairées pour améliorer votre rentabilité. Formation avec tableaux de bord Excel.",
     category: "finance",
     duration: 480, // 8 heures
-    price: 55000,
+    price: 40000, // 40 000 FCFA
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
     objectives: [
@@ -169,7 +169,7 @@ export const demoFormations = [
     description: "Devenez un leader inspirant et constituez une équipe performante et motivée. Formation interactive avec mises en situation.",
     category: "hr",
     duration: 420, // 7 heures
-    price: 50000,
+    price: 40000, // 40 000 FCFA
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
     objectives: [
