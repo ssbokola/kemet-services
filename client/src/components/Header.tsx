@@ -1,9 +1,16 @@
 import { Link, useLocation } from 'wouter';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 const navigation = [
   { name: 'Accueil', href: '/' },
-  { name: 'Formations', href: '/formations' },
   { name: 'Galerie', href: '/galerie' },
   { name: 'Kemet Echo', href: '/kemet-echo' },
   { name: 'Consulting', href: '/consulting' },
@@ -45,6 +52,56 @@ export default function Header() {
                 {item.name}
               </Link>
             ))}
+            
+            {/* Formations Dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger 
+                    className={`text-sm font-medium ${
+                      location === '/formations' || location === '/formations-presentiel'
+                        ? 'text-primary' 
+                        : 'text-muted-foreground'
+                    }`}
+                    data-testid="dropdown-formations"
+                  >
+                    Formations
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[200px] gap-1 p-2">
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/formations"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            data-testid="link-formations-en-ligne"
+                          >
+                            <div className="text-sm font-medium leading-none">Formations en Ligne</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Catalogue LMS
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/formations-presentiel"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            data-testid="link-formations-presentiel"
+                          >
+                            <div className="text-sm font-medium leading-none">Formations en Présentiel</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Sessions programmées
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </nav>
 
         </div>
