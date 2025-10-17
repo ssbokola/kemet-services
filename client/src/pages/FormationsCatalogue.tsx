@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Clock, BookOpen, Filter } from 'lucide-react';
 import { categoryLabels } from '@/data/formations';
+import { formatPriceCFA } from '@/lib/utils';
 
 interface Formation {
   id: string;
@@ -43,10 +44,6 @@ export default function FormationsCatalogue() {
     if (hours === 0) return `${mins}min`;
     if (mins === 0) return `${hours}h`;
     return `${hours}h${mins}`;
-  };
-
-  const formatPrice = (price: number) => {
-    return `${(price / 1000).toFixed(0)} 000 FCFA`;
   };
 
   return (
@@ -186,7 +183,7 @@ export default function FormationsCatalogue() {
                             <span>{formatDuration(formation.duration)}</span>
                           </div>
                           <div className="font-semibold text-primary">
-                            {formatPrice(formation.price)}
+                            {formatPriceCFA(formation.price)}
                           </div>
                         </div>
                       </CardContent>
