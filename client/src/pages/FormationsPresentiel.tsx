@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, Clock, MapPin, Users, Search, BookOpen } from "lucide-react";
 import { Link } from "wouter";
-import { formatPriceCFA } from "@/lib/utils";
+import { formatCFA } from "@/lib/utils";
 
 export default function FormationsPresentiel() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -217,7 +217,7 @@ export default function FormationsPresentiel() {
                     {/* Price and Action */}
                     <div className="flex items-center justify-between pt-2 border-t">
                       <div className="text-lg font-bold text-primary">
-                        {formatPriceCFA(training.defaultPrice)}
+                        {formatCFA(training.defaultPrice)}
                       </div>
                       <Link href={`/formation-presentiel/${training.slug}`}>
                         <Button size="sm" data-testid={`button-details-${training.id}`}>

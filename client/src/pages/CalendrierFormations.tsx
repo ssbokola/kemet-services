@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Download, MapPin, Users, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
-import { formatPriceCFA } from "@/lib/utils";
+import { formatCFA } from "@/lib/utils";
 import jsPDF from "jspdf";
 
 export default function CalendrierFormations() {
@@ -90,7 +90,7 @@ export default function CalendrierFormations() {
       doc.text(`Places disponibles: ${remainingPlaces}/${session.maxCapacity}`, 15, yPosition);
       yPosition += 6;
       
-      doc.text(`Prix: ${formatPriceCFA(session.pricePerPerson)}`, 15, yPosition);
+      doc.text(`Prix: ${formatCFA(session.pricePerPerson)}`, 15, yPosition);
       yPosition += 12;
 
       // Separator line
@@ -266,7 +266,7 @@ export default function CalendrierFormations() {
 
                             <div className="text-right flex flex-col items-end gap-2">
                               <div className="text-lg font-bold text-primary">
-                                {formatPriceCFA(session.pricePerPerson)}
+                                {formatCFA(session.pricePerPerson)}
                               </div>
                               {isAvailable ? (
                                 <Link href={`/formation-presentiel/${training.slug}`}>

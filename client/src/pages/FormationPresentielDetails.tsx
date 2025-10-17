@@ -22,7 +22,7 @@ import {
   User
 } from "lucide-react";
 import { Link } from "wouter";
-import { formatPriceCFA } from "@/lib/utils";
+import { formatCFA } from "@/lib/utils";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -288,7 +288,7 @@ export default function FormationPresentielDetails() {
                             </div>
                             <div className="text-right">
                               <div className="text-lg font-bold text-primary">
-                                {formatPriceCFA(session.price || formation.defaultPrice)}
+                                {formatCFA(session.pricePerPerson || formation.defaultPrice)}
                               </div>
                               {!isAvailable && (
                                 <Badge variant="secondary" className="mt-1">Complet</Badge>
@@ -415,7 +415,7 @@ export default function FormationPresentielDetails() {
                       <div className="flex items-center justify-between pt-2 border-t border-primary/20">
                         <span className="text-sm font-medium">Total à payer</span>
                         <span className="text-xl font-bold text-primary">
-                          {formatPriceCFA(selectedSession.price || formation.defaultPrice)}
+                          {formatCFA(selectedSession.pricePerPerson || formation.defaultPrice)}
                         </span>
                       </div>
                     </div>
