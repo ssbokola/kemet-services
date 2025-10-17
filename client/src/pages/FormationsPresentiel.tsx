@@ -14,7 +14,7 @@ export default function FormationsPresentiel() {
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   // Fetch onsite trainings
-  const { data: trainingsData = [], isLoading } = useQuery({
+  const { data: trainingsData = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/onsite-trainings']
   });
 
