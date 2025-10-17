@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'wouter';
+import { forwardRef } from 'react';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 import {
   NavigationMenu,
@@ -8,6 +9,17 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+
+const RouterLink = forwardRef<HTMLAnchorElement, { href: string; children: React.ReactNode; className?: string; 'data-testid'?: string }>(
+  ({ href, children, className, ...props }, ref) => (
+    <Link href={href}>
+      <a ref={ref} className={className} {...props}>
+        {children}
+      </a>
+    </Link>
+  )
+);
+RouterLink.displayName = 'RouterLink';
 
 const navigation = [
   { name: 'Accueil', href: '/' },
@@ -71,7 +83,7 @@ export default function Header() {
                     <ul className="grid w-[200px] gap-1 p-2">
                       <li>
                         <NavigationMenuLink asChild>
-                          <a
+                          <RouterLink
                             href="/formations"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             data-testid="link-formations-en-ligne"
@@ -80,12 +92,12 @@ export default function Header() {
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               Catalogue LMS
                             </p>
-                          </a>
+                          </RouterLink>
                         </NavigationMenuLink>
                       </li>
                       <li>
                         <NavigationMenuLink asChild>
-                          <a
+                          <RouterLink
                             href="/formations-presentiel"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             data-testid="link-formations-presentiel"
@@ -94,7 +106,7 @@ export default function Header() {
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               Sessions programmées
                             </p>
-                          </a>
+                          </RouterLink>
                         </NavigationMenuLink>
                       </li>
                     </ul>
