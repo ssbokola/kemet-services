@@ -8,6 +8,21 @@ The platform also includes "Kemet Echo," a customer satisfaction survey web appl
 
 ## Recent Changes
 
+### October 17, 2025
+- **Pricing Update**: Standardized pricing across platform
+  - Formations en ligne (online): **40.000 F CFA** (stored as 4.000.000 centimes in `price` field)
+  - Formations en présentiel (onsite): **50.000 F CFA** (stored as 50.000 in `defaultPrice` field)
+  - Sessions en présentiel: **50.000 F CFA** (stored as 50.000 in `pricePerPerson` field)
+- **Price Formatting Functions**: Created two formatting utilities in `client/src/lib/utils.ts`
+  - `formatPriceCFA(centimes)`: Converts centimes to FCFA (divides by 100) - used for online courses
+  - `formatCFA(fcfa)`: Formats FCFA directly (no division) - used for onsite trainings and sessions
+- **Navigation Enhancement**: Added dropdown menu "Formations" in header with two options
+  - "Formations en Ligne" → /formations (1 formation LMS, 40.000 F CFA)
+  - "Formations en Présentiel" → /formations-presentiel (32 formations, 50.000 F CFA)
+- **RouterLink Component**: Created custom forwardRef component for SPA navigation with Radix NavigationMenu
+  - Supports modifier keys (Ctrl/Cmd/Shift/Alt) for opening links in new tabs/windows
+  - Preserves browser affordances while maintaining SPA routing
+
 ### October 15, 2025
 - **Category System Update**: Extended category enum to include "pharmaciens" as the 6th category
 - **Database Migration**: Updated all 10 PHAR-* onsite trainings to use category="pharmaciens" (previously using finance, quality, stock, hr)
