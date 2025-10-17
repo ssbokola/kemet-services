@@ -1,63 +1,119 @@
 import { Router } from 'express';
 import { db } from '../db';
 import { courses, trainingSessions, sessionRegistrations } from '@shared/schema';
-import { eq, and, gte, desc } from 'drizzle-orm';
+import { eq, and, gte, desc, sql } from 'drizzle-orm';
 
 const router = Router();
 
 /**
  * GET /api/onsite-trainings
  * Récupère toutes les formations en présentiel avec leurs sessions à venir
+ * OPTIMISÉ : Utilise un LEFT JOIN au lieu de boucles de requêtes (réduit de 130+ requêtes à 1 seule)
  */
 router.get('/', async (req, res) => {
   try {
-    // Récupérer toutes les formations en présentiel publiées
-    const onsiteTrainings = await db
-      .select()
+    // UNE SEULE requête avec LEFT JOINs pour tout récupérer
+    const results = await db
+      .select({
+        // Cours
+        courseId: courses.id,
+        courseTitle: courses.title,
+        courseSlug: courses.slug,
+        courseDescription: courses.description,
+        courseCategory: courses.category,
+        courseDeliveryMode: courses.deliveryMode,
+        courseDefaultDuration: courses.defaultDuration,
+        courseDefaultPrice: courses.defaultPrice,
+        courseDefaultLocation: courses.defaultLocation,
+        courseObjectives: courses.objectives,
+        coursePrerequisites: courses.prerequisites,
+        courseTargetAudience: courses.targetAudience,
+        courseIsPublished: courses.isPublished,
+        courseIsSessionBased: courses.isSessionBased,
+        // Session
+        sessionId: trainingSessions.id,
+        sessionCode: trainingSessions.sessionCode,
+        sessionVenue: trainingSessions.venue,
+        sessionAddress: trainingSessions.address,
+        sessionCity: trainingSessions.city,
+        sessionStartDate: trainingSessions.startDate,
+        sessionEndDate: trainingSessions.endDate,
+        sessionMaxCapacity: trainingSessions.maxCapacity,
+        sessionPricePerPerson: trainingSessions.pricePerPerson,
+        sessionStatus: trainingSessions.status,
+        // Comptage des inscriptions (agrégé)
+        registrationCount: sql<number>`COUNT(CASE WHEN ${sessionRegistrations.isCancelled} = false THEN 1 END)`.as('registration_count')
+      })
       .from(courses)
+      .leftJoin(
+        trainingSessions,
+        and(
+          eq(trainingSessions.courseId, courses.id),
+          gte(trainingSessions.startDate, new Date()),
+          eq(trainingSessions.status, 'open')
+        )
+      )
+      .leftJoin(
+        sessionRegistrations,
+        eq(sessionRegistrations.sessionId, trainingSessions.id)
+      )
       .where(and(
         eq(courses.deliveryMode, 'onsite'),
         eq(courses.isPublished, true)
-      ));
+      ))
+      .groupBy(
+        courses.id,
+        trainingSessions.id
+      )
+      .orderBy(courses.title, trainingSessions.startDate);
 
-    // Pour chaque formation, récupérer les sessions à venir avec le nombre d'inscriptions
-    const trainingsWithSessions = await Promise.all(
-      onsiteTrainings.map(async (training) => {
-        const upcomingSessions = await db
-          .select()
-          .from(trainingSessions)
-          .where(and(
-            eq(trainingSessions.courseId, training.id),
-            gte(trainingSessions.startDate, new Date()),
-            eq(trainingSessions.status, 'open')
-          ))
-          .orderBy(trainingSessions.startDate);
+    // Grouper les résultats par formation
+    const trainingsMap = new Map();
+    
+    for (const row of results) {
+      if (!trainingsMap.has(row.courseId)) {
+        trainingsMap.set(row.courseId, {
+          id: row.courseId,
+          title: row.courseTitle,
+          slug: row.courseSlug,
+          description: row.courseDescription,
+          category: row.courseCategory,
+          deliveryMode: row.courseDeliveryMode,
+          defaultDuration: row.courseDefaultDuration,
+          defaultPrice: row.courseDefaultPrice,
+          defaultLocation: row.courseDefaultLocation,
+          objectives: row.courseObjectives,
+          prerequisites: row.coursePrerequisites,
+          targetAudience: row.courseTargetAudience,
+          isPublished: row.courseIsPublished,
+          isSessionBased: row.courseIsSessionBased,
+          sessions: []
+        });
+      }
 
-        // Pour chaque session, compter les inscriptions
-        const sessionsWithCounts = await Promise.all(
-          upcomingSessions.map(async (session) => {
-            const registrations = await db
-              .select()
-              .from(sessionRegistrations)
-              .where(and(
-                eq(sessionRegistrations.sessionId, session.id),
-                eq(sessionRegistrations.isCancelled, false)
-              ));
-            
-            return {
-              ...session,
-              currentRegistrations: registrations.length
-            };
-          })
-        );
+      // Ajouter la session si elle existe
+      if (row.sessionId) {
+        const training = trainingsMap.get(row.courseId);
+        // Vérifier si cette session n'est pas déjà ajoutée
+        if (!training.sessions.find((s: any) => s.id === row.sessionId)) {
+          training.sessions.push({
+            id: row.sessionId,
+            sessionCode: row.sessionCode,
+            venue: row.sessionVenue,
+            address: row.sessionAddress,
+            city: row.sessionCity,
+            startDate: row.sessionStartDate,
+            endDate: row.sessionEndDate,
+            maxCapacity: row.sessionMaxCapacity,
+            pricePerPerson: row.sessionPricePerPerson,
+            status: row.sessionStatus,
+            currentRegistrations: Number(row.registrationCount) || 0
+          });
+        }
+      }
+    }
 
-        return {
-          ...training,
-          sessions: sessionsWithCounts
-        };
-      })
-    );
-
+    const trainingsWithSessions = Array.from(trainingsMap.values());
     res.json(trainingsWithSessions);
   } catch (error) {
     console.error('Error fetching onsite trainings:', error);
