@@ -10,8 +10,16 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 
-const RouterLink = forwardRef<HTMLAnchorElement, { href: string; children: React.ReactNode; className?: string; 'data-testid'?: string }>(
-  ({ href, children, className, ...props }, ref) => {
+interface RouterLinkProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  'data-testid'?: string;
+}
+
+const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
+  (props, ref) => {
+    const { href, children, className, ...rest } = props;
     const [, setLocation] = useLocation();
     
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -25,7 +33,7 @@ const RouterLink = forwardRef<HTMLAnchorElement, { href: string; children: React
         ref={ref} 
         className={className} 
         onClick={handleClick}
-        {...props}
+        {...rest}
       >
         {children}
       </a>
