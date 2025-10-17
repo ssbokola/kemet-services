@@ -11,13 +11,26 @@ import {
 } from "@/components/ui/navigation-menu";
 
 const RouterLink = forwardRef<HTMLAnchorElement, { href: string; children: React.ReactNode; className?: string; 'data-testid'?: string }>(
-  ({ href, children, className, ...props }, ref) => (
-    <Link href={href}>
-      <a ref={ref} className={className} {...props}>
+  ({ href, children, className, ...props }, ref) => {
+    const [, setLocation] = useLocation();
+    
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      setLocation(href);
+    };
+    
+    return (
+      <a 
+        href={href} 
+        ref={ref} 
+        className={className} 
+        onClick={handleClick}
+        {...props}
+      >
         {children}
       </a>
-    </Link>
-  )
+    );
+  }
 );
 RouterLink.displayName = 'RouterLink';
 
