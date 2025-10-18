@@ -6,7 +6,7 @@ export const demoFormations = [
     slug: "gestion-stocks-pharmacie",
     description: "Maîtrisez les techniques modernes de gestion de stock pour réduire les pertes et optimiser vos approvisionnements. Formation complète avec cas pratiques et outils concrets.",
     category: "stock",
-    duration: 360, // 6 heures
+    duration: 180, // 3 heures
     price: 40000, // 40 000 FCFA
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
@@ -63,7 +63,7 @@ export const demoFormations = [
     slug: "service-client-pharmacie",
     description: "Développez vos compétences relationnelles et transformez chaque interaction en opportunité de fidélisation. Formation pratique avec jeux de rôle.",
     category: "quality",
-    duration: 240, // 4 heures
+    duration: 180, // 3 heures
     price: 40000, // 40 000 FCFA
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
@@ -110,7 +110,7 @@ export const demoFormations = [
     slug: "finance-rentabilite-pharmacie",
     description: "Comprenez les chiffres de votre officine et prenez des décisions éclairées pour améliorer votre rentabilité. Formation avec tableaux de bord Excel.",
     category: "finance",
-    duration: 480, // 8 heures
+    duration: 180, // 3 heures
     price: 40000, // 40 000 FCFA
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
@@ -168,7 +168,7 @@ export const demoFormations = [
     slug: "management-equipe-pharmacie",
     description: "Devenez un leader inspirant et constituez une équipe performante et motivée. Formation interactive avec mises en situation.",
     category: "hr",
-    duration: 420, // 7 heures
+    duration: 180, // 3 heures
     price: 40000, // 40 000 FCFA
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
@@ -226,7 +226,7 @@ export const demoFormations = [
     slug: "conseil-pharmaceutique-avance",
     description: "Perfectionnez votre pratique du conseil pharmaceutique avec des cas cliniques complexes et des protocoles de dispensation structurés.",
     category: "auxiliaires",
-    duration: 300, // 5 heures
+    duration: 180, // 3 heures
     price: 40000,
     isPublished: true,
     thumbnail: "/api/placeholder/400/250",
