@@ -14,6 +14,7 @@ import { Clock, BookOpen, CheckCircle2, AlertCircle, Users, Download, FileText, 
 import { categoryLabels } from '@/data/formations';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
+import { formatPriceCFA } from '@/lib/utils';
 
 interface Lesson {
   id: string;
@@ -181,10 +182,6 @@ export default function FormationDetail() {
     return `${hours}h ${mins}min`;
   };
 
-  const formatPrice = (price: number) => {
-    return `${(price / 1000).toFixed(0)} 000 FCFA`;
-  };
-
   const handleInscription = () => {
     enrollMutation.mutate();
   };
@@ -256,7 +253,7 @@ export default function FormationDetail() {
                 <span className="font-medium">{formatDuration(formation.duration)}</span>
               </div>
               <div className="text-2xl font-bold text-primary" data-testid="text-price">
-                {formatPrice(formation.price)}
+                {formatPriceCFA(formation.price)}
               </div>
             </div>
           </div>
@@ -475,7 +472,7 @@ export default function FormationDetail() {
                       </Button>
                     )}
                     <div className="text-center">
-                      <span className="text-2xl font-bold text-primary">{formatPrice(formation.price)}</span>
+                      <span className="text-2xl font-bold text-primary">{formatPriceCFA(formation.price)}</span>
                     </div>
                   </div>
                 </div>
