@@ -92,6 +92,31 @@ export default function FormationsPresentiel() {
           </p>
         </div>
 
+        {/* Bannière CTA Calendrier */}
+        <Card className="mb-8 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 bg-primary/10 rounded-full p-3">
+                  <Calendar className="h-8 w-8 text-primary" />
+                </div>
+                <div className="text-center md:text-left">
+                  <h3 className="text-lg font-semibold mb-1">Consultez nos prochaines sessions</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Découvrez toutes les dates disponibles et inscrivez-vous en quelques clics
+                  </p>
+                </div>
+              </div>
+              <Link href="/calendrier-formations">
+                <Button size="lg" data-testid="button-cta-calendar">
+                  Voir le calendrier
+                  <Calendar className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Filters */}
         <div className="mb-8">
           <div className="flex flex-col md:flex-row gap-4 mb-4">
