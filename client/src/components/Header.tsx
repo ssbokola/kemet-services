@@ -103,7 +103,7 @@ export default function Header() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger 
                     className={`text-sm font-medium ${
-                      location === '/formations' || location === '/formations-presentiel'
+                      location === '/formations' || location === '/formations-presentiel' || location === '/calendrier-formations'
                         ? 'text-primary' 
                         : 'text-muted-foreground'
                     }`}
@@ -137,6 +137,20 @@ export default function Header() {
                             <div className="text-sm font-medium leading-none">Formations en Présentiel</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               Sessions programmées
+                            </p>
+                          </RouterLink>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <RouterLink
+                            href="/calendrier-formations"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            data-testid="link-calendrier-formations"
+                          >
+                            <div className="text-sm font-medium leading-none">Calendrier</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Prochaines sessions
                             </p>
                           </RouterLink>
                         </NavigationMenuLink>
