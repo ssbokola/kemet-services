@@ -4,6 +4,7 @@ import WhyKemet from '@/components/WhyKemet';
 import ServiceCards from '@/components/ServiceCards';
 import FormationDetails from '@/components/FormationDetails';
 import FocusFormations from '@/components/FocusFormations';
+import UpcomingSessions from '@/components/UpcomingSessions';
 import ConsultingSection from '@/components/ConsultingSection';
 import ResultsSection from '@/components/ResultsSection';
 import CTASection from '@/components/CTASection';
@@ -52,6 +53,9 @@ export default function Home() {
         
         {/* Formations phares */}
         <FocusFormations />
+        
+        {/* Prochaines sessions de formation */}
+        <UpcomingSessions />
         
         {/* Consulting */}
         <ConsultingSection />
