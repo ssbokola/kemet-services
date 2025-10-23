@@ -273,6 +273,18 @@ export default function FormationPresentielDetails() {
                                   })}
                                 </span>
                               </div>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Clock className="h-3 w-3" />
+                                <span>
+                                  {new Date(session.startDate).toLocaleTimeString('fr-FR', { 
+                                    hour: '2-digit', 
+                                    minute: '2-digit' 
+                                  })} - {new Date(session.endDate).toLocaleTimeString('fr-FR', { 
+                                    hour: '2-digit', 
+                                    minute: '2-digit' 
+                                  })}
+                                </span>
+                              </div>
                               {session.venue && (
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                   <MapPin className="h-3 w-3" />
