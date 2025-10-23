@@ -25,7 +25,8 @@ export default function FormationsPresentiel() {
       stock: "Stock",
       hr: "Management",
       auxiliaires: "Auxiliaires",
-      pharmaciens: "Pharmaciens"
+      pharmaciens: "Pharmaciens",
+      client: "Client"
     };
     return labels[category] || category;
   };
@@ -37,7 +38,8 @@ export default function FormationsPresentiel() {
       stock: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
       pharmaciens: "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300",
       hr: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
-      auxiliaires: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300"
+      auxiliaires: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300",
+      client: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300"
     };
     return colors[category] || "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
   };
@@ -46,7 +48,8 @@ export default function FormationsPresentiel() {
   const filteredTrainings = trainingsData.filter((training: any) => {
     const matchesSearch = training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          training.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || training.category === categoryFilter;
+    const matchesCategory = categoryFilter === "all" || 
+                           (training.categories && training.categories.includes(categoryFilter));
     
     return matchesSearch && matchesCategory;
   });
@@ -145,6 +148,7 @@ export default function FormationsPresentiel() {
                 <SelectItem value="hr">Management</SelectItem>
                 <SelectItem value="auxiliaires">Auxiliaires</SelectItem>
                 <SelectItem value="pharmaciens">Pharmaciens</SelectItem>
+                <SelectItem value="client">Client</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -168,12 +172,16 @@ export default function FormationsPresentiel() {
             {filteredTrainings.map((training: any) => (
               <Card key={training.id} className="hover-elevate group" data-testid={`card-training-${training.id}`}>
                 <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge className={getCategoryColor(training.category)}>
-                      {getCategoryLabel(training.category)}
-                    </Badge>
+                  <div className="flex items-start justify-between mb-2 gap-2">
+                    <div className="flex flex-wrap gap-1">
+                      {training.categories && training.categories.map((cat: string) => (
+                        <Badge key={cat} className={getCategoryColor(cat)}>
+                          {getCategoryLabel(cat)}
+                        </Badge>
+                      ))}
+                    </div>
                     {training.sessions && training.sessions.length > 0 && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs flex-shrink-0">
                         <Calendar className="h-3 w-3 mr-1" />
                         {training.sessions.length} session{training.sessions.length > 1 ? 's' : ''}
                       </Badge>

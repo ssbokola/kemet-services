@@ -517,7 +517,7 @@ router.get('/courses', requireAdminAuth(), async (req, res) => {
       conditions.push(sql`${courses.title} ILIKE ${`%${search}%`} OR ${courses.description} ILIKE ${`%${search}%`}`);
     }
     if (category !== 'all') {
-      conditions.push(eq(courses.category, category));
+      conditions.push(sql`${category} = ANY(${courses.categories})`);
     }
     if (published !== 'all') {
       conditions.push(eq(courses.isPublished, published === 'true'));
