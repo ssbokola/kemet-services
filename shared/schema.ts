@@ -112,7 +112,7 @@ export const courses = pgTable("courses", {
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
   description: text("description").notNull(),
-  category: text("category").notNull(), // 'quality', 'finance', 'stock', 'hr', 'auxiliaires', 'pharmaciens'
+  categories: text("categories").array().notNull(), // 'quality', 'finance', 'stock', 'hr', 'auxiliaires', 'pharmaciens', 'client'
   
   // Delivery mode configuration
   deliveryMode: text("deliverymode").notNull().default('onsite'), // 'onsite', 'online', 'hybrid'
@@ -142,7 +142,7 @@ export const insertCourseSchema = createInsertSchema(courses)
     title: z.string().trim().min(5, 'Le titre doit contenir au moins 5 caractères'),
     slug: z.string().trim().min(3, 'Le slug doit contenir au moins 3 caractères'),
     description: z.string().trim().min(20, 'La description doit contenir au moins 20 caractères'),
-    category: z.enum(['quality', 'finance', 'stock', 'hr', 'auxiliaires', 'pharmaciens']),
+    categories: z.array(z.enum(['quality', 'finance', 'stock', 'hr', 'auxiliaires', 'pharmaciens', 'client'])).min(1, 'Au moins une catégorie est requise'),
     deliveryMode: z.enum(['onsite', 'online', 'hybrid']).default('onsite'),
     isSessionBased: z.boolean().default(true),
     defaultDuration: z.coerce.number().min(1, 'La durée doit être d\'au moins 1 heure'),
