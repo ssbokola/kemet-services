@@ -88,7 +88,7 @@ export default function FormationsPresentiel() {
           <h2 className="text-3xl font-bold mb-3">Catalogue des Formations Professionnelles</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Formations en présentiel pour auxiliaires et pharmaciens d'officine. 
-            Toutes nos formations durent 6 heures et sont animées par des experts du secteur.
+            Toutes nos formations durent 3 heures et sont animées par des experts du secteur.
           </p>
         </div>
 
