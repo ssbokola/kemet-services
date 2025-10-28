@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +32,16 @@ export default function FormationPresentielDetails() {
   const { toast } = useToast();
 
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  
+  // Fetch formation details
+  const { data: formation, isLoading } = useQuery<any>({
+    queryKey: ['/api/onsite-trainings', slug],
+    enabled: !!slug
+  });
+
+  // Check if this is an auxiliaires-only training
+  const isAuxiliairesTraining = formation?.categories?.includes('auxiliaires');
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -40,11 +50,12 @@ export default function FormationPresentielDetails() {
     organization: ""
   });
 
-  // Fetch formation details
-  const { data: formation, isLoading } = useQuery<any>({
-    queryKey: ['/api/onsite-trainings', slug],
-    enabled: !!slug
-  });
+  // Auto-fill role for auxiliaires trainings
+  useEffect(() => {
+    if (isAuxiliairesTraining && !formData.role) {
+      setFormData(prev => ({ ...prev, role: "auxiliaire" }));
+    }
+  }, [isAuxiliairesTraining]);
 
   // Create registration mutation
   const registrationMutation = useMutation({
@@ -372,21 +383,23 @@ export default function FormationPresentielDetails() {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Fonction *</Label>
-                    <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
-                      <SelectTrigger id="role" data-testid="select-role">
-                        <SelectValue placeholder="Sélectionnez votre fonction" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pharmacien-titulaire">Pharmacien Titulaire</SelectItem>
-                        <SelectItem value="pharmacien-assistant">Pharmacien Assistant</SelectItem>
-                        <SelectItem value="auxiliaire">Auxiliaire en Pharmacie</SelectItem>
-                        <SelectItem value="etudiant">Étudiant en Pharmacie</SelectItem>
-                        <SelectItem value="autre">Autre</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {!isAuxiliairesTraining && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role">Fonction *</Label>
+                      <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+                        <SelectTrigger id="role" data-testid="select-role">
+                          <SelectValue placeholder="Sélectionnez votre fonction" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pharmacien-titulaire">Pharmacien Titulaire</SelectItem>
+                          <SelectItem value="pharmacien-assistant">Pharmacien Assistant</SelectItem>
+                          <SelectItem value="auxiliaire">Auxiliaire en Pharmacie</SelectItem>
+                          <SelectItem value="etudiant">Étudiant en Pharmacie</SelectItem>
+                          <SelectItem value="autre">Autre</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
 
                   <div className="space-y-2">
                     <Label htmlFor="organization">Pharmacie / Organisation *</Label>
