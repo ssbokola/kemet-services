@@ -35,7 +35,7 @@ export default function BootcampStock() {
     phone: "",
     organization: "",
     pricingTier: "smart_pay" as 'classic' | 'smart_pay' | 'team_pack' | 'max_boost',
-    numberOfParticipants: 1
+    numberOfParticipants: 2
   });
 
   // Pricing calculation based on tier
@@ -403,7 +403,11 @@ export default function BootcampStock() {
                       <Label>Formule tarifaire *</Label>
                       <RadioGroup
                         value={formData.pricingTier}
-                        onValueChange={(value: any) => setFormData({ ...formData, pricingTier: value })}
+                        onValueChange={(value: any) => {
+                          // Reset participants to 2 when switching to team_pack or max_boost
+                          const newParticipants = (value === 'team_pack' || value === 'max_boost') ? 2 : 1;
+                          setFormData({ ...formData, pricingTier: value, numberOfParticipants: newParticipants });
+                        }}
                       >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="classic" id="classic" data-testid="radio-classic" />
@@ -443,7 +447,12 @@ export default function BootcampStock() {
                             min="2"
                             max="10"
                             value={formData.numberOfParticipants}
-                            onChange={(e) => setFormData({ ...formData, numberOfParticipants: parseInt(e.target.value) || 2 })}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              // Enforce minimum 2 participants for group tiers
+                              const validValue = isNaN(value) || value < 2 ? 2 : (value > 10 ? 10 : value);
+                              setFormData({ ...formData, numberOfParticipants: validValue });
+                            }}
                             className="pl-10"
                             data-testid="input-participants"
                           />

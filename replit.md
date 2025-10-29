@@ -8,6 +8,21 @@ The platform also includes "Kemet Echo," a customer satisfaction survey web appl
 
 ## Recent Changes
 
+### October 29, 2025
+- **Bootcamp Stock+ Special Event System**: Created dedicated landing page and registration system for intensive 4-Saturday training program
+  - **Landing Page** (`/bootcamp-stock`): Promotional page with hero section, program details, 4 pricing tiers, registration form
+  - **Database Schema**: New `bootcamp_registrations` table with attendance tracking, extended `orders.orderType` to include 'bootcamp'
+  - **Pricing Tiers**:
+    - Classic: 200,000 FCFA (1 person, pay-per-session)
+    - Smart Pay: 160,000 FCFA (1 person, -20% upfront payment)
+    - Team Pack: 170,000 FCFA/person (2+ people, -15%)
+    - Max Boost: 136,000 FCFA/person (2+ people, -35% upfront payment)
+  - **Security**: Server-side Zod validation, server-calculated pricing (client totalAmount ignored), participant count enforcement (1-10)
+  - **Form UX**: Auto-reset participants to 2 when selecting Team Pack/Max Boost, conditional participants field visibility
+  - **Payment Integration**: Wave Mobile Money via PayDunya SOFTPAY with graceful error handling
+  - **Navigation**: Added "🔥 Bootcamp Stock+" link in Formations menu with visual highlight (bg-primary/5)
+  - **API Route**: `/api/bootcamp-registrations` with full validation, order creation, Wave checkout initiation
+
 ### October 17, 2025
 - **Pricing Update**: Standardized pricing across platform
   - Formations en ligne (online): **40.000 F CFA** (stored as 4.000.000 centimes in `price` field)
