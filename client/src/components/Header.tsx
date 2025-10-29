@@ -103,7 +103,7 @@ export default function Header() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger 
                     className={`text-sm font-medium ${
-                      location === '/formations' || location === '/formations-presentiel' || location === '/calendrier-formations'
+                      location === '/formations' || location === '/formations-presentiel' || location === '/calendrier-formations' || location === '/bootcamp-stock'
                         ? 'text-primary' 
                         : 'text-muted-foreground'
                     }`}
@@ -112,7 +112,7 @@ export default function Header() {
                     Formations
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[200px] gap-1 p-2">
+                    <ul className="grid w-[240px] gap-1 p-2">
                       <li>
                         <NavigationMenuLink asChild>
                           <RouterLink
@@ -151,6 +151,20 @@ export default function Header() {
                             <div className="text-sm font-medium leading-none">Calendrier</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               Prochaines sessions
+                            </p>
+                          </RouterLink>
+                        </NavigationMenuLink>
+                      </li>
+                      <li className="border-t pt-1">
+                        <NavigationMenuLink asChild>
+                          <RouterLink
+                            href="/bootcamp-stock"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground bg-primary/5"
+                            data-testid="link-bootcamp-stock"
+                          >
+                            <div className="text-sm font-medium leading-none text-primary">🔥 Bootcamp Stock+</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Événement spécial - Nov-Déc 2025
                             </p>
                           </RouterLink>
                         </NavigationMenuLink>

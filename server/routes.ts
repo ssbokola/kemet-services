@@ -27,6 +27,7 @@ import quizzesRoutes from "./routes/quizzes";
 import paymentsRoutes from "./routes/payments";
 import onsiteTrainingsRoutes from "./routes/onsite-trainings";
 import sessionRegistrationsRoutes from "./routes/session-registrations";
+import bootcampRegistrationsRoutes from "./routes/bootcamp-registrations";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 // Authentification Replit Auth - blueprint:javascript_log_in_with_replit
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -95,6 +96,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Session registrations (public routes for in-person training registration)
   app.use('/api/session-registrations', sessionRegistrationsRoutes);
+  
+  // Bootcamp registrations (public routes for bootcamp events)
+  app.use('/api/bootcamp-registrations', bootcampRegistrationsRoutes);
   
   // Training registration endpoint
   app.post('/api/training-registrations', async (req, res) => {

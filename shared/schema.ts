@@ -619,7 +619,7 @@ export const orders = pgTable("orders", {
 export const insertOrderSchema = createInsertSchema(orders)
   .omit({ id: true, createdAt: true, updatedAt: true })
   .extend({
-    orderType: z.enum(['online_course', 'onsite_session']),
+    orderType: z.enum(['online_course', 'onsite_session', 'bootcamp']),
     referenceId: z.string().trim().min(1, 'L\'ID de référence est requis'),
     amount: z.coerce.number().min(1, 'Le montant doit être supérieur à 0'),
     currency: z.string().default('XOF'),
@@ -628,6 +628,62 @@ export const insertOrderSchema = createInsertSchema(orders)
 
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+
+// Bootcamp Registrations (for special events like Bootcamp Stock+)
+export const bootcampRegistrations = pgTable("bootcamp_registrations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Bootcamp identifier
+  bootcampName: text("bootcampname").notNull(), // 'bootcamp-stock-nov-2025'
+  
+  // Participant info
+  fullName: text("fullname").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  organization: text("organization").notNull(), // Nom de l'officine
+  
+  // Pricing tier selected
+  pricingTier: text("pricingtier").notNull(), // 'classic', 'smart_pay', 'team_pack', 'max_boost'
+  numberOfParticipants: integer("numberofparticipants").notNull().default(1), // For team_pack and max_boost
+  totalAmount: integer("totalamount").notNull(), // Prix total en FCFA
+  
+  // Payment tracking
+  orderId: varchar("orderid").references(() => orders.id, { onDelete: 'set null' }),
+  paymentStatus: text("paymentstatus").notNull().default('pending'), // 'pending', 'completed', 'failed', 'refunded'
+  
+  // Attendance tracking per session
+  attendedSession1: boolean("attendedsession1").default(false), // AUX-04 - 22 nov
+  attendedSession2: boolean("attendedsession2").default(false), // AUX-10 - 29 nov
+  attendedSession3: boolean("attendedsession3").default(false), // AUX-05 - 06 dec
+  attendedSession4: boolean("attendedsession4").default(false), // AUX-11 & AUX-12 - 13 dec
+  
+  // Cancellation
+  isCancelled: boolean("iscancelled").notNull().default(false),
+  cancellationReason: text("cancellationreason"),
+  cancelledAt: timestamp("cancelledat"),
+  
+  // Notes
+  notes: text("notes"),
+  
+  createdAt: timestamp("createdat").defaultNow().notNull(),
+  updatedAt: timestamp("updatedat").defaultNow().notNull(),
+});
+
+export const insertBootcampRegistrationSchema = createInsertSchema(bootcampRegistrations)
+  .omit({ id: true, createdAt: true, updatedAt: true, attendedSession1: true, attendedSession2: true, attendedSession3: true, attendedSession4: true, isCancelled: true, cancelledAt: true })
+  .extend({
+    bootcampName: z.string().trim().min(3, 'Le nom du bootcamp est requis'),
+    fullName: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
+    email: z.string().trim().email('Adresse email invalide'),
+    phone: z.string().trim().min(8, 'Numéro de téléphone invalide'),
+    organization: z.string().trim().min(2, 'L\'organisation est requise'),
+    pricingTier: z.enum(['classic', 'smart_pay', 'team_pack', 'max_boost']),
+    numberOfParticipants: z.coerce.number().min(1, 'Au moins 1 participant requis').max(10, 'Maximum 10 participants'),
+    totalAmount: z.coerce.number().min(0, 'Le montant ne peut pas être négatif'),
+  });
+
+export type InsertBootcampRegistration = z.infer<typeof insertBootcampRegistrationSchema>;
+export type BootcampRegistration = typeof bootcampRegistrations.$inferSelect;
 
 // Certificates/Attestations
 export const certificates = pgTable("certificates", {
