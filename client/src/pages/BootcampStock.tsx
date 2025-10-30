@@ -73,9 +73,31 @@ export default function BootcampStock() {
       return await response.json();
     },
     onSuccess: (response: any) => {
+      console.log('Registration response:', response);
+      
       if (response.paymentUrl) {
+        // Redirect to Wave payment page
+        console.log('Redirecting to payment:', response.paymentUrl);
         window.location.href = response.paymentUrl;
+      } else if (response.requiresManualPayment) {
+        // Manual payment required - show success message
+        console.log('Manual payment required, showing toast');
+        toast({
+          title: "✅ Inscription enregistrée !",
+          description: response.message || "Notre équipe vous contactera sous peu pour finaliser le paiement.",
+          duration: 8000
+        });
+        // Reset form
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          organization: "",
+          pricingTier: "smart_pay",
+          numberOfParticipants: 2
+        });
       } else {
+        console.log('Standard success, showing toast');
         toast({
           title: "Inscription réussie",
           description: "Votre inscription a été confirmée."

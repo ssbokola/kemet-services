@@ -119,13 +119,30 @@ router.post('/', async (req, res) => {
           paymentUrl: waveResponse.paymentUrl
         });
       } else {
-        // Wave checkout failed, clean up
-        await db.delete(bootcampRegistrations).where(eq(bootcampRegistrations.id, registration.id));
-        await db.delete(orders).where(eq(orders.id, order.id));
+        // Wave checkout failed - check if it's a configuration issue
+        const isConfigError = waveResponse.error?.includes('Invalid Masterkey') || 
+                              waveResponse.error?.includes('Masterkey');
+        
+        if (isConfigError) {
+          // Keep registration for manual processing
+          console.log('⚠️ Wave payment unavailable - registration saved for manual processing:', registration.id);
+          
+          return res.json({
+            success: true,
+            registrationId: registration.id,
+            orderId: order.id,
+            message: 'Inscription enregistrée ! Notre équipe vous contactera pour finaliser le paiement.',
+            requiresManualPayment: true
+          });
+        } else {
+          // Other errors - clean up
+          await db.delete(bootcampRegistrations).where(eq(bootcampRegistrations.id, registration.id));
+          await db.delete(orders).where(eq(orders.id, order.id));
 
-        return res.status(500).json({
-          message: waveResponse.error || 'Erreur lors de l\'initialisation du paiement'
-        });
+          return res.status(500).json({
+            message: waveResponse.error || 'Erreur lors de l\'initialisation du paiement'
+          });
+        }
       }
     } catch (waveError: any) {
       console.error('Wave checkout error:', waveError);
