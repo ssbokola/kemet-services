@@ -645,6 +645,7 @@ export const bootcampRegistrations = pgTable("bootcamp_registrations", {
   // Pricing tier selected
   pricingTier: text("pricingtier").notNull(), // 'classic', 'smart_pay', 'team_pack', 'max_boost'
   numberOfParticipants: integer("numberofparticipants").notNull().default(1), // For team_pack and max_boost
+  sessionsCount: integer("sessionscount").notNull().default(4), // Number of sessions (1-4) - only for Classic tier
   totalAmount: integer("totalamount").notNull(), // Prix total en FCFA
   
   // Payment tracking
@@ -693,6 +694,7 @@ export const insertBootcampRegistrationSchema = createInsertSchema(bootcampRegis
     organization: z.string().trim().min(2, 'L\'organisation est requise'),
     pricingTier: z.enum(['classic', 'smart_pay', 'team_pack', 'max_boost']),
     numberOfParticipants: z.coerce.number().min(1, 'Au moins 1 participant requis').max(10, 'Maximum 10 participants'),
+    sessionsCount: z.coerce.number().min(1, 'Au moins 1 session requise').max(4, 'Maximum 4 sessions'),
     totalAmount: z.coerce.number().min(0, 'Le montant ne peut pas être négatif'),
   });
 

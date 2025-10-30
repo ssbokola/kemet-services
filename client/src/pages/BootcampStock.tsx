@@ -35,22 +35,23 @@ export default function BootcampStock() {
     phone: "",
     organization: "",
     pricingTier: "smart_pay" as 'classic' | 'smart_pay' | 'team_pack' | 'max_boost',
-    numberOfParticipants: 2
+    numberOfParticipants: 2,
+    sessionsCount: 4 // For Classic tier: 1-4 sessions
   });
 
   // Pricing calculation based on tier
   const calculatePrice = () => {
-    const { pricingTier, numberOfParticipants } = formData;
+    const { pricingTier, numberOfParticipants, sessionsCount } = formData;
     
     switch (pricingTier) {
       case 'classic':
-        return 50000 * 4; // 50k per session x 4 sessions
+        return 50000 * sessionsCount; // 50k per session (1-4 sessions)
       case 'smart_pay':
-        return 160000; // -20% discount
+        return 160000; // -20% discount (all 4 sessions)
       case 'team_pack':
-        return 170000 * numberOfParticipants; // -15% per person
+        return 170000 * numberOfParticipants; // -15% per person (all 4 sessions)
       case 'max_boost':
-        return 136000 * numberOfParticipants; // -35% per person
+        return 136000 * numberOfParticipants; // -35% per person (all 4 sessions)
       default:
         return 200000;
     }
@@ -94,7 +95,8 @@ export default function BootcampStock() {
           phone: "",
           organization: "",
           pricingTier: "smart_pay",
-          numberOfParticipants: 2
+          numberOfParticipants: 2,
+          sessionsCount: 4
         });
       } else {
         console.log('Standard success, showing toast');
@@ -124,6 +126,7 @@ export default function BootcampStock() {
       organization: formData.organization,
       pricingTier: formData.pricingTier,
       numberOfParticipants: formData.numberOfParticipants,
+      sessionsCount: formData.sessionsCount,
       totalAmount: calculatePrice()
     });
   };
@@ -283,15 +286,31 @@ export default function BootcampStock() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Badge className="mb-2 bg-green-500">CLASSIC</Badge>
-                        <CardTitle>Paiement par séance</CardTitle>
-                        <CardDescription className="mt-2">Flexibilité maximale</CardDescription>
+                        <CardTitle>Paiement par session</CardTitle>
+                        <CardDescription className="mt-2">Flexibilité maximale - Payez session par session</CardDescription>
                       </div>
                       <div className="text-right">
                         <p className="text-3xl font-bold">{formatCFA(50000)}</p>
-                        <p className="text-sm text-muted-foreground">par séance</p>
+                        <p className="text-sm text-muted-foreground">par session</p>
                       </div>
                     </div>
                   </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                        <span>Choisissez 1 à 4 sessions</span>
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                        <span>Limite PayDunya: 50 000 F par paiement</span>
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                        <span>Parfait pour budget échelonné</span>
+                      </li>
+                    </ul>
+                  </CardContent>
                 </Card>
 
                 <Card className={formData.pricingTier === 'smart_pay' ? 'border-primary' : ''}>
@@ -299,7 +318,7 @@ export default function BootcampStock() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Badge className="mb-2 bg-yellow-500">SMART PAY</Badge>
-                        <CardTitle>Paiement en une fois</CardTitle>
+                        <CardTitle>Les 4 sessions - Paiement unique</CardTitle>
                         <CardDescription className="mt-2">Économisez 20%</CardDescription>
                       </div>
                       <div className="text-right">
@@ -308,6 +327,22 @@ export default function BootcampStock() {
                       </div>
                     </div>
                   </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-yellow-500" />
+                        <span>Accès aux 4 sessions</span>
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-yellow-500" />
+                        <span>-20% de réduction (40 000 F d'économie)</span>
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-yellow-500" />
+                        <span>1 participant</span>
+                      </li>
+                    </ul>
+                  </CardContent>
                 </Card>
 
                 <Card className={formData.pricingTier === 'team_pack' ? 'border-primary' : ''}>
@@ -324,6 +359,22 @@ export default function BootcampStock() {
                       </div>
                     </div>
                   </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-blue-500" />
+                        <span>Les 4 sessions pour tous</span>
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-blue-500" />
+                        <span>-15% de réduction (30 000 F d'économie/pers)</span>
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-blue-500" />
+                        <span>Minimum 2 participants</span>
+                      </li>
+                    </ul>
+                  </CardContent>
                 </Card>
 
                 <Card className={formData.pricingTier === 'max_boost' ? 'border-primary' : ''}>
@@ -332,7 +383,7 @@ export default function BootcampStock() {
                       <div>
                         <Badge className="mb-2 bg-red-500">MAX BOOST</Badge>
                         <CardTitle>Groupe + Paiement comptant</CardTitle>
-                        <CardDescription className="mt-2">Économisez jusqu'à 35%</CardDescription>
+                        <CardDescription className="mt-2">Meilleure économie - jusqu'à 35%</CardDescription>
                       </div>
                       <div className="text-right">
                         <p className="text-3xl font-bold">{formatCFA(136000)}</p>
@@ -340,6 +391,22 @@ export default function BootcampStock() {
                       </div>
                     </div>
                   </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-red-500" />
+                        <span>Les 4 sessions pour tous</span>
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-red-500" />
+                        <span>-35% de réduction (64 000 F d'économie/pers)</span>
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-red-500" />
+                        <span>Minimum 2 participants</span>
+                      </li>
+                    </ul>
+                  </CardContent>
                 </Card>
               </div>
 
@@ -428,35 +495,63 @@ export default function BootcampStock() {
                         onValueChange={(value: any) => {
                           // Reset participants to 2 when switching to team_pack or max_boost
                           const newParticipants = (value === 'team_pack' || value === 'max_boost') ? 2 : 1;
-                          setFormData({ ...formData, pricingTier: value, numberOfParticipants: newParticipants });
+                          // Reset sessions to 4 when switching away from Classic
+                          const newSessions = (value === 'classic') ? formData.sessionsCount : 4;
+                          setFormData({ ...formData, pricingTier: value, numberOfParticipants: newParticipants, sessionsCount: newSessions });
                         }}
                       >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="classic" id="classic" data-testid="radio-classic" />
                           <Label htmlFor="classic" className="cursor-pointer">
-                            Classic - {formatCFA(200000)} (4 x {formatCFA(50000)})
+                            Classic - {formatCFA(50000)}/session (Paiement par session)
                           </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="smart_pay" id="smart_pay" data-testid="radio-smartpay" />
                           <Label htmlFor="smart_pay" className="cursor-pointer">
-                            Smart Pay - {formatCFA(160000)} (-20%)
+                            Smart Pay - {formatCFA(160000)} (-20%, 4 sessions)
                           </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="team_pack" id="team_pack" data-testid="radio-teampack" />
                           <Label htmlFor="team_pack" className="cursor-pointer">
-                            Team Pack - {formatCFA(170000)}/pers (-15%)
+                            Team Pack - {formatCFA(170000)}/pers (-15%, 4 sessions)
                           </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="max_boost" id="max_boost" data-testid="radio-maxboost" />
                           <Label htmlFor="max_boost" className="cursor-pointer">
-                            Max Boost - {formatCFA(136000)}/pers (-35%)
+                            Max Boost - {formatCFA(136000)}/pers (-35%, 4 sessions)
                           </Label>
                         </div>
                       </RadioGroup>
                     </div>
+
+                    {formData.pricingTier === 'classic' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="sessions">Nombre de sessions (1-4)</Label>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="sessions"
+                            type="number"
+                            min="1"
+                            max="4"
+                            value={formData.sessionsCount}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              const validValue = isNaN(value) || value < 1 ? 1 : (value > 4 ? 4 : value);
+                              setFormData({ ...formData, sessionsCount: validValue });
+                            }}
+                            className="pl-10"
+                            data-testid="input-sessions"
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Payez session par session ({formatCFA(50000)} chacune)
+                        </p>
+                      </div>
+                    )}
 
                     {(formData.pricingTier === 'team_pack' || formData.pricingTier === 'max_boost') && (
                       <div className="space-y-2">

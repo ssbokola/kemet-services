@@ -23,19 +23,27 @@ router.post('/', async (req, res) => {
       organization,
       pricingTier,
       numberOfParticipants,
+      sessionsCount,
       totalAmount
     } = validatedData;
 
     // Server-side price calculation (never trust client)
     const participants = numberOfParticipants || 1;
+    const sessions = sessionsCount || 4;
     let calculatedAmount: number;
     
     switch (pricingTier) {
       case 'classic':
-        calculatedAmount = 200000;
+        // Classic: 50k per session (1-4 sessions)
+        if (sessions < 1 || sessions > 4) {
+          return res.status(400).json({ 
+            message: 'Le nombre de sessions doit être entre 1 et 4' 
+          });
+        }
+        calculatedAmount = 50000 * sessions;
         break;
       case 'smart_pay':
-        calculatedAmount = 160000;
+        calculatedAmount = 160000; // 4 sessions with -20% discount
         break;
       case 'team_pack':
         if (participants < 2) {
@@ -43,7 +51,7 @@ router.post('/', async (req, res) => {
             message: 'Team Pack nécessite au moins 2 participants' 
           });
         }
-        calculatedAmount = 170000 * participants;
+        calculatedAmount = 170000 * participants; // 4 sessions with -15% discount per person
         break;
       case 'max_boost':
         if (participants < 2) {
@@ -51,7 +59,7 @@ router.post('/', async (req, res) => {
             message: 'Max Boost nécessite au moins 2 participants' 
           });
         }
-        calculatedAmount = 136000 * participants;
+        calculatedAmount = 136000 * participants; // 4 sessions with -35% discount per person
         break;
       default:
         return res.status(400).json({ 
@@ -73,7 +81,7 @@ router.post('/', async (req, res) => {
       currency: 'XOF',
       status: 'pending',
       paymentMethod: 'wave',
-      metadata: { bootcampName, pricingTier, numberOfParticipants: participants }
+      metadata: { bootcampName, pricingTier, numberOfParticipants: participants, sessionsCount: sessions }
     }).returning();
 
     // Create registration
@@ -85,6 +93,7 @@ router.post('/', async (req, res) => {
       organization,
       pricingTier,
       numberOfParticipants: participants,
+      sessionsCount: sessions, // Store number of sessions
       totalAmount: finalAmount, // Use server-calculated amount
       orderId: order.id,
       paymentStatus: 'pending'
