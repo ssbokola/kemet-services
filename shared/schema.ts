@@ -670,7 +670,21 @@ export const bootcampRegistrations = pgTable("bootcamp_registrations", {
 });
 
 export const insertBootcampRegistrationSchema = createInsertSchema(bootcampRegistrations)
-  .omit({ id: true, createdAt: true, updatedAt: true, attendedSession1: true, attendedSession2: true, attendedSession3: true, attendedSession4: true, isCancelled: true, cancelledAt: true })
+  .omit({ 
+    id: true, 
+    createdAt: true, 
+    updatedAt: true, 
+    attendedSession1: true, 
+    attendedSession2: true, 
+    attendedSession3: true, 
+    attendedSession4: true, 
+    isCancelled: true, 
+    cancelledAt: true,
+    orderId: true, // Server-assigned
+    paymentStatus: true, // Server-assigned
+    notes: true, // Optional, not in form
+    cancellationReason: true // Not in registration form
+  })
   .extend({
     bootcampName: z.string().trim().min(3, 'Le nom du bootcamp est requis'),
     fullName: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
