@@ -134,18 +134,8 @@ router.post('/', async (req, res) => {
       await db.delete(bootcampRegistrations).where(eq(bootcampRegistrations.id, registration.id));
       await db.delete(orders).where(eq(orders.id, order.id));
 
-      // Graceful error handling if Wave is not configured
-      if (waveError.message?.includes('PAYDUNYA')) {
-        return res.json({
-          success: true,
-          registrationId: registration.id,
-          orderId: order.id,
-          message: 'Inscription enregistrée (paiement Wave non configuré en développement)'
-        });
-      }
-
       return res.status(500).json({
-        message: 'Erreur lors de l\'initialisation du paiement'
+        message: 'Erreur lors de l\'initialisation du paiement Wave. Veuillez réessayer ou contactez-nous.'
       });
     }
   } catch (error: any) {
