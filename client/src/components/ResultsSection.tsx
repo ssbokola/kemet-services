@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingDown, TrendingUp, Clock, Star, Quote, CheckCircle2 } from 'lucide-react';
+import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/ScrollReveal';
 
 const kpis = [
   {
@@ -110,196 +111,205 @@ export default function ResultsSection() {
   return (
     <section className="py-24 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold font-serif text-foreground mb-4">
-            Résultats concrets et témoignages
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Nos clients obtiennent des améliorations mesurables et durables de leurs performances
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold font-serif text-foreground mb-4">
+              Résultats concrets et témoignages
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Nos clients obtiennent des améliorations mesurables et durables de leurs performances
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* KPIs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20" staggerDelay={0.15}>
           {kpis.map((kpi, index) => {
             const IconComponent = kpi.icon;
             return (
-              <Card 
-                key={index} 
-                className="text-center border-0 shadow-lg hover-elevate transition-all duration-300"
-                data-testid={`card-kpi-${index}`}
-              >
-                <CardContent className="p-8">
-                  <div className="mb-4 flex justify-center">
-                    <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
-                      <IconComponent className={`w-8 h-8 ${kpi.color}`} />
+              <StaggerItem key={index}>
+                <Card
+                  className="text-center border-0 shadow-lg hover-elevate transition-all duration-300 h-full"
+                  data-testid={`card-kpi-${index}`}
+                >
+                  <CardContent className="p-8">
+                    <div className="mb-4 flex justify-center">
+                      <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
+                        <IconComponent className={`w-8 h-8 ${kpi.color}`} />
+                      </div>
                     </div>
-                  </div>
-                  <div className="mb-4">
-                    <div className={`text-4xl font-bold ${kpi.color} mb-2`}>
-                      {kpi.value}
+                    <div className="mb-4">
+                      <div className={`text-4xl font-bold ${kpi.color} mb-2`}>
+                        {kpi.value}
+                      </div>
+                      <div className="text-lg font-semibold text-foreground mb-1">
+                        {kpi.label}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {kpi.timeframe}
+                      </div>
                     </div>
-                    <div className="text-lg font-semibold text-foreground mb-1">
-                      {kpi.label}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {kpi.timeframe}
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {kpi.description}
-                  </p>
-                </CardContent>
-              </Card>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {kpi.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
 
         {/* Client Testimonials */}
         <div className="mb-20">
-          <div className="text-center mb-12">
-            <h3 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-3">
-              Ce que disent nos clients
-            </h3>
-            <p className="text-muted-foreground">
-              Témoignages de pharmaciens ayant travaillé avec Kemet Services
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <ScrollReveal>
+            <div className="text-center mb-12">
+              <h3 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-3">
+                Ce que disent nos clients
+              </h3>
+              <p className="text-muted-foreground">
+                Témoignages de pharmaciens ayant travaillé avec Kemet Services
+              </p>
+            </div>
+          </ScrollReveal>
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8" staggerDelay={0.12}>
             {clientTestimonials.map((testimonial, index) => (
-              <Card 
-                key={index} 
-                className="border-0 shadow-lg hover-elevate transition-all duration-300 overflow-hidden"
-                data-testid={`card-client-testimonial-${index}`}
-              >
-                <div className="h-48 overflow-hidden bg-muted/30">
-                  <img 
-                    src={testimonial.image}
-                    alt={`${testimonial.name} - ${testimonial.pharmacy}`}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-1 mb-4">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-primary text-primary" />
-                    ))}
+              <StaggerItem key={index}>
+                <Card
+                  className="border-0 shadow-lg hover-elevate transition-all duration-300 overflow-hidden h-full"
+                  data-testid={`card-client-testimonial-${index}`}
+                >
+                  <div className="h-48 overflow-hidden bg-muted/30">
+                    <img
+                      src={testimonial.image}
+                      alt={`${testimonial.name} - ${testimonial.pharmacy}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                   </div>
-                  <Quote className="w-8 h-8 text-primary/20 mb-3" />
-                  <blockquote className="text-muted-foreground leading-relaxed mb-4">
-                    {testimonial.content}
-                  </blockquote>
-                  <div className="border-t pt-4">
-                    <div className="font-semibold text-foreground">
-                      {testimonial.name}
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-1 mb-4">
+                      {Array.from({ length: testimonial.rating }).map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                      ))}
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      {testimonial.role}
+                    <Quote className="w-8 h-8 text-primary/20 mb-3" />
+                    <blockquote className="text-muted-foreground leading-relaxed mb-4">
+                      {testimonial.content}
+                    </blockquote>
+                    <div className="border-t pt-4">
+                      <div className="font-semibold text-foreground">
+                        {testimonial.name}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {testimonial.role}
+                      </div>
+                      <div className="text-sm text-primary font-medium mt-1">
+                        {testimonial.pharmacy}
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {testimonial.date}
+                      </div>
                     </div>
-                    <div className="text-sm text-primary font-medium mt-1">
-                      {testimonial.pharmacy}
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {testimonial.date}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* Case Studies - Before/After */}
         <div>
-          <div className="text-center mb-12">
-            <h3 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-3">
-              Études de cas : Avant / Après
-            </h3>
-            <p className="text-muted-foreground">
-              Transformations concrètes de pharmacies accompagnées par Kemet Services
-            </p>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <ScrollReveal>
+            <div className="text-center mb-12">
+              <h3 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-3">
+                Études de cas : Avant / Après
+              </h3>
+              <p className="text-muted-foreground">
+                Transformations concrètes de pharmacies accompagnées par Kemet Services
+              </p>
+            </div>
+          </ScrollReveal>
+          <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-8" staggerDelay={0.15}>
             {caseStudies.map((study, index) => (
-              <Card 
-                key={index} 
-                className="border-0 shadow-lg overflow-hidden"
-                data-testid={`card-case-study-${index}`}
-              >
-                <div className="bg-primary/5 p-6 border-b">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="text-xl font-bold text-foreground mb-1">
-                        {study.title}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {study.location}
-                      </p>
+              <StaggerItem key={index}>
+                <Card
+                  className="border-0 shadow-lg overflow-hidden h-full"
+                  data-testid={`card-case-study-${index}`}
+                >
+                  <div className="bg-primary/5 p-6 border-b">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h4 className="text-xl font-bold text-foreground mb-1">
+                          {study.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {study.location}
+                        </p>
+                      </div>
+                      <Badge variant="secondary" className="text-xs">
+                        {study.duration}
+                      </Badge>
                     </div>
-                    <Badge variant="secondary" className="text-xs">
-                      {study.duration}
-                    </Badge>
+                    <p className="text-sm text-primary font-medium">
+                      {study.service}
+                    </p>
                   </div>
-                  <p className="text-sm text-primary font-medium">
-                    {study.service}
-                  </p>
-                </div>
-                <CardContent className="p-0">
-                  <div className="grid grid-cols-2 divide-x">
-                    {/* Before */}
-                    <div className="p-6">
-                      <div className="text-center mb-4">
-                        <span className="text-lg font-semibold text-muted-foreground">
-                          {study.before.label}
-                        </span>
-                      </div>
-                      <div className="space-y-3">
-                        {study.before.metrics.map((metric, idx) => (
-                          <div key={idx} className="text-sm">
-                            <div className="text-muted-foreground mb-1">
-                              {metric.label}
-                            </div>
-                            <div className="text-2xl font-bold text-foreground">
-                              {metric.value}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    {/* After */}
-                    <div className="p-6 bg-primary/5">
-                      <div className="text-center mb-4">
-                        <span className="text-lg font-semibold text-primary flex items-center justify-center gap-2">
-                          <CheckCircle2 className="w-5 h-5" />
-                          {study.after.label}
-                        </span>
-                      </div>
-                      <div className="space-y-3">
-                        {study.after.metrics.map((metric, idx) => (
-                          <div key={idx} className="text-sm">
-                            <div className="text-muted-foreground mb-1">
-                              {metric.label}
-                            </div>
-                            <div className="flex items-baseline gap-2">
-                              <div className="text-2xl font-bold text-primary">
+                  <CardContent className="p-0">
+                    <div className="grid grid-cols-2 divide-x">
+                      {/* Before */}
+                      <div className="p-6">
+                        <div className="text-center mb-4">
+                          <span className="text-lg font-semibold text-muted-foreground">
+                            {study.before.label}
+                          </span>
+                        </div>
+                        <div className="space-y-3">
+                          {study.before.metrics.map((metric, idx) => (
+                            <div key={idx} className="text-sm">
+                              <div className="text-muted-foreground mb-1">
+                                {metric.label}
+                              </div>
+                              <div className="text-2xl font-bold text-foreground">
                                 {metric.value}
                               </div>
-                              {metric.improvement && (
-                                <Badge variant="secondary" className="text-xs bg-primary/10 text-primary">
-                                  {metric.improvement}
-                                </Badge>
-                              )}
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+                      </div>
+                      {/* After */}
+                      <div className="p-6 bg-primary/5">
+                        <div className="text-center mb-4">
+                          <span className="text-lg font-semibold text-primary flex items-center justify-center gap-2">
+                            <CheckCircle2 className="w-5 h-5" />
+                            {study.after.label}
+                          </span>
+                        </div>
+                        <div className="space-y-3">
+                          {study.after.metrics.map((metric, idx) => (
+                            <div key={idx} className="text-sm">
+                              <div className="text-muted-foreground mb-1">
+                                {metric.label}
+                              </div>
+                              <div className="flex items-baseline gap-2">
+                                <div className="text-2xl font-bold text-primary">
+                                  {metric.value}
+                                </div>
+                                {metric.improvement && (
+                                  <Badge variant="secondary" className="text-xs bg-primary/10 text-primary">
+                                    {metric.improvement}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </div>
     </section>

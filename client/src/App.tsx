@@ -11,7 +11,6 @@ import CookiePreferences from "@/components/CookiePreferences";
 import { HelmetProvider } from "react-helmet-async";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Home from "@/pages/Home";
-import Formations from "@/pages/Formations";
 import FormationsCatalogue from "@/pages/FormationsCatalogue";
 import FormationDetail from "@/pages/FormationDetail";
 import FormationsPresentiel from "@/pages/FormationsPresentiel";
@@ -53,8 +52,6 @@ import ParticipantCatalogue from "@/pages/ParticipantCatalogue";
 import Login from "@/pages/Login";
 import LessonViewer from "@/pages/LessonViewer";
 import QuizViewer from "@/pages/QuizViewer";
-import { useAuth } from "@/hooks/useAuth";
-
 function Router() {
   return (
     <Switch>

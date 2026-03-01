@@ -10,7 +10,7 @@ import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
 if (!process.env.REPLIT_DOMAINS) {
-  throw new Error("Environment variable REPLIT_DOMAINS not provided");
+  console.warn("Environment variable REPLIT_DOMAINS not provided - Replit Auth disabled");
 }
 
 const getOidcConfig = memoize(
@@ -69,6 +69,11 @@ async function upsertUser(
 }
 
 export async function setupAuth(app: Express) {
+  if (!process.env.REPLIT_DOMAINS) {
+    console.warn("Replit Auth not configured - skipping auth setup");
+    return;
+  }
+
   app.set("trust proxy", 1);
   app.use(getSession());
   app.use(passport.initialize());

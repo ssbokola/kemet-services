@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Mail, MapPin, Linkedin } from 'lucide-react';
+import { Link } from 'wouter';
 import logoImage from '@assets/LOGO KEMET CANVAS_1757585789355.png';
 import { trackWhatsAppClick, trackEvent } from '@/components/GoogleAnalytics';
 
@@ -7,12 +8,12 @@ const footerLinks = {
   services: [
     { name: 'Formations', href: '/formations' },
     { name: 'Consulting', href: '/consulting' },
-    { name: 'Audit 360°', href: '/audit' },
-    { name: 'Accompagnement', href: '/accompagnement' }
+    { name: 'Diagnostic', href: '/diagnostic' },
+    { name: 'Kemet Echo', href: '/kemet-echo' }
   ],
   company: [
-    { name: 'À propos', href: '/apropos' },
-    { name: 'Résultats', href: '/resultats' },
+    { name: 'À propos', href: '/a-propos' },
+    { name: 'Galerie', href: '/galerie' },
     { name: 'Ressources', href: '/ressources' },
     { name: 'Contact', href: '/contact' }
   ],
@@ -20,8 +21,7 @@ const footerLinks = {
     { name: 'Mentions légales', href: '/mentions-legales' },
     { name: 'Politique de confidentialité', href: '/confidentialite' },
     { name: 'Politique de cookies', href: '/politique-cookies' },
-    { name: 'Gérer les cookies', href: '#', action: 'openCookiePreferences' },
-    { name: 'CGV', href: '/cgv' }
+    { name: 'Gérer les cookies', href: '#', action: 'openCookiePreferences' }
   ]
 };
 
@@ -67,9 +67,9 @@ export default function Footer() {
         <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
           <div className="lg:col-span-1">
-            <img 
-              src="/images/logo.png" 
-              alt="Kemet Services" 
+            <img
+              src={logoImage}
+              alt="Kemet Services"
               className="h-12 w-auto mb-6"
               data-testid="img-footer-logo"
             />
@@ -104,13 +104,13 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.services.map((link) => (
                 <li key={link.name}>
-                  <a 
+                  <Link
                     href={link.href}
                     className="text-muted-foreground hover:text-foreground transition-colors"
                     data-testid={`link-footer-${link.name.toLowerCase()}`}
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -122,13 +122,13 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
-                  <a 
+                  <Link
                     href={link.href}
                     className="text-muted-foreground hover:text-foreground transition-colors"
                     data-testid={`link-footer-${link.name.toLowerCase()}`}
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -173,13 +173,13 @@ export default function Footer() {
                         {link.name}
                       </button>
                     ) : (
-                      <a 
+                      <Link
                         href={link.href}
                         className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                         data-testid={`link-footer-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
                       >
                         {link.name}
-                      </a>
+                      </Link>
                     )}
                   </li>
                 ))}

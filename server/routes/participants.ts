@@ -2,11 +2,11 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db';
-import { users, insertLocalUserSchema } from '@shared/schema';
+import { users } from '@shared/schema';
 import { requireAdminAuth } from '../auth';
 import { emailService } from '../emailService';
-import { generateResetToken, hashPassword } from '../passwordUtils';
-import { eq, and, or } from 'drizzle-orm';
+import { generateResetToken, hashPassword, generateTemporaryPassword } from '../passwordUtils';
+import { eq, and, or, sql } from 'drizzle-orm';
 
 const router = Router();
 
@@ -128,12 +128,13 @@ router.get('/', requireAdminAuth(), async (req, res) => {
     let whereClause: any = eq(users.role, 'participant');
     
     if (search) {
+      const searchPattern = `%${search}%`;
       whereClause = and(
         eq(users.role, 'participant'),
         or(
-          eq(users.email, search),
-          eq(users.firstName, search),
-          eq(users.lastName, search)
+          sql`${users.email} ILIKE ${searchPattern}`,
+          sql`${users.firstName} ILIKE ${searchPattern}`,
+          sql`${users.lastName} ILIKE ${searchPattern}`
         )
       );
     }

@@ -68,9 +68,33 @@ export default function Contact() {
     // Track form submission
     trackContactFormSubmit('contact');
     
-    // Simulation d'envoi
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+    try {
+      const response = await fetch('/api/contact-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.nom,
+          role: formData.role,
+          company: formData.officine,
+          phone: formData.telephone,
+          email: formData.email,
+          subject: formData.objet,
+          message: formData.message,
+          dataConsent: formData.dataConsent,
+          marketingConsent: formData.marketingConsent,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'envoi');
+      }
+    } catch (error) {
+      console.error('Erreur envoi formulaire contact:', error);
+      alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+      setIsLoading(false);
+      return;
+    }
+
     setIsSubmitted(true);
     setIsLoading(false);
     

@@ -3,7 +3,6 @@ import { db } from '../db';
 import { sessionRegistrations, trainingSessions, courses, orders } from '@shared/schema';
 import { eq, and } from 'drizzle-orm';
 import { createWaveCheckout } from '../payments/wave';
-import { sendEmail } from '../email';
 
 const router = Router();
 

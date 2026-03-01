@@ -69,12 +69,25 @@ export default function Diagnostic() {
 
   const onSubmit = async (data: DiagnosticForm) => {
     try {
-      // TODO: Envoyer les données vers le backend sécurisé
-      // Removal of PII logging for privacy compliance
-      
-      // Simuler l'envoi
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const response = await fetch('/api/contact-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          company: data.pharmacyName,
+          subject: 'diagnostic',
+          message: `Diagnostic gratuit demandé - ${data.city}, ${data.yearsOperation} ans, équipe de ${data.teamSize}. Défis: ${data.challenges.join(', ')}. ${data.description}`,
+          dataConsent: data.dataConsent,
+          marketingConsent: data.marketingConsent,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'envoi');
+      }
+
       setSubmitted(true);
       toast({
         title: "Diagnostic envoyé !",

@@ -23,11 +23,12 @@ interface ParticipantSetup {
 }
 
 class EmailService {
-  private transporter: nodemailer.Transporter;
+  private transporter: nodemailer.Transporter | null = null;
 
   constructor() {
     if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      throw new Error("Variables d'environnement GMAIL_USER et GMAIL_APP_PASSWORD requises");
+      console.warn("Variables d'environnement GMAIL_USER et GMAIL_APP_PASSWORD manquantes - service email désactivé");
+      return;
     }
 
     this.transporter = nodemailer.createTransport({
@@ -40,6 +41,10 @@ class EmailService {
   }
 
   async sendEmail(params: EmailParams): Promise<boolean> {
+    if (!this.transporter) {
+      console.warn('Email non envoyé (service désactivé):', params.subject);
+      return false;
+    }
     try {
       await this.transporter.sendMail({
         from: `"Kemet Services" <${process.env.GMAIL_USER}>`,
@@ -111,7 +116,7 @@ class EmailService {
             </ul>
             
             <div style="text-align: center;">
-                <a href="http://localhost:5000/login" class="button">Se connecter à la plateforme</a>
+                <a href="${process.env.BASE_URL || (process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000')}/login" class="button">Se connecter à la plateforme</a>
             </div>
             
             <p>Si vous rencontrez des difficultés ou avez des questions, n'hésitez pas à nous contacter.</p>
@@ -140,7 +145,7 @@ Vos identifiants de connexion :
 
 IMPORTANT : Pour votre sécurité, changez ce mot de passe temporaire lors de votre première connexion.
 
-Accédez à votre espace participant : http://localhost:5000/login
+Accédez à votre espace participant : ${process.env.BASE_URL || (process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000')}/login
 
 Nos formations disponibles :
 - Formations Qualité - Amélioration continue et certification
@@ -170,9 +175,9 @@ Experts en formation pharmaceutique
     const { email, firstName, lastName, resetToken } = setup;
     
     // Utiliser l'URL de base depuis les variables d'environnement ou fallback localhost pour dev
-    const baseUrl = process.env.BASE_URL || process.env.REPLIT_DEV_DOMAIN 
-      ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
-      : 'http://localhost:5000';
+    const baseUrl = process.env.BASE_URL || (process.env.REPLIT_DEV_DOMAIN
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}`
+      : 'http://localhost:5000');
     
     const setupLink = `${baseUrl}/setup-password?token=${resetToken}`;
     
@@ -292,6 +297,7 @@ Experts en formation pharmaceutique
   }
 
   async testConnection(): Promise<boolean> {
+    if (!this.transporter) return false;
     try {
       await this.transporter.verify();
       return true;

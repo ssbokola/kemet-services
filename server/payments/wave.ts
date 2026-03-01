@@ -199,7 +199,9 @@ export function verifyWaveWebhook(
         .update(JSON.stringify(payload))
         .digest('hex');
       
-      const isValid = hash === signature;
+      const hashBuffer = Buffer.from(hash, 'hex');
+      const signatureBuffer = Buffer.from(signature, 'hex');
+      const isValid = hashBuffer.length === signatureBuffer.length && crypto.timingSafeEqual(hashBuffer, signatureBuffer);
       if (!isValid) {
         console.error('Invalid webhook signature');
       }
@@ -218,7 +220,9 @@ export function verifyWaveWebhook(
       return false;
     }
     
-    const isValid = paydunyaToken === expectedToken;
+    const tokenBuffer = Buffer.from(paydunyaToken);
+    const expectedBuffer = Buffer.from(expectedToken);
+    const isValid = tokenBuffer.length === expectedBuffer.length && crypto.timingSafeEqual(tokenBuffer, expectedBuffer);
     if (!isValid) {
       console.error('Invalid PayDunya token in webhook request');
     } else {

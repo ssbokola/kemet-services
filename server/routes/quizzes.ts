@@ -5,54 +5,7 @@ import { z } from 'zod';
 
 const router = Router();
 
-// GET /api/quizzes/:id - Détail d'un quiz avec questions (auth required)
-router.get('/:id', async (req: any, res) => {
-  try {
-    // Check authentication
-    if (!req.user) {
-      return res.status(401).json({ 
-        success: false, 
-        error: 'Authentification requise' 
-      });
-    }
-
-    const { id } = req.params;
-    const quiz = await storage.getQuizById(id);
-    
-    if (!quiz) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Quiz non trouvé' 
-      });
-    }
-    
-    // Get questions for this quiz but HIDE correct answers
-    const questions = await storage.getQuestionsByQuizId(id);
-    const questionsWithoutAnswers = questions.map(q => ({
-      id: q.id,
-      questionText: q.questionText,
-      questionType: q.questionType,
-      options: q.options,
-      points: q.points,
-      order: q.order,
-      // correctAnswer is NOT included - only revealed after submission
-    }));
-    
-    res.json({ 
-      success: true, 
-      quiz: {
-        ...quiz,
-        questions: questionsWithoutAnswers
-      }
-    });
-  } catch (error) {
-    console.error('Error fetching quiz:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erreur lors de la récupération du quiz' 
-    });
-  }
-});
+// IMPORTANT: Specific path patterns MUST be defined BEFORE the generic /:id catch-all
 
 // GET /api/quizzes/lesson/:lessonId - Quiz d'une leçon (auth required + progression check)
 router.get('/lesson/:lessonId', async (req: any, res) => {
@@ -168,6 +121,55 @@ router.get('/course/:courseId/final', async (req: any, res) => {
     res.status(500).json({ 
       success: false, 
       error: 'Erreur lors de la récupération du quiz final' 
+    });
+  }
+});
+
+// GET /api/quizzes/:id - Détail d'un quiz avec questions (auth required)
+// NOTE: This generic route MUST be after /lesson/:lessonId and /course/:courseId/final
+router.get('/:id', async (req: any, res) => {
+  try {
+    // Check authentication
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        error: 'Authentification requise'
+      });
+    }
+
+    const { id } = req.params;
+    const quiz = await storage.getQuizById(id);
+
+    if (!quiz) {
+      return res.status(404).json({
+        success: false,
+        error: 'Quiz non trouvé'
+      });
+    }
+
+    // Get questions for this quiz but HIDE correct answers
+    const questions = await storage.getQuestionsByQuizId(id);
+    const questionsWithoutAnswers = questions.map(q => ({
+      id: q.id,
+      questionText: q.questionText,
+      questionType: q.questionType,
+      options: q.options,
+      points: q.points,
+      order: q.order,
+    }));
+
+    res.json({
+      success: true,
+      quiz: {
+        ...quiz,
+        questions: questionsWithoutAnswers
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching quiz:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la récupération du quiz'
     });
   }
 });
