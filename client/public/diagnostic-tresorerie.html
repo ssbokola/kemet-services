@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnostic Trésorerie — Pharmacien Stratège | Kemet Services</title>
+<meta property="og:title" content="Diagnostic Trésorerie — Pharmacien Stratège">
+<meta property="og:description" content="Évaluez votre niveau de pilotage financier en 2 minutes. 10 questions pour savoir si vous pilotez votre officine… ou si vous la subissez.">
+<meta property="og:type" content="website">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+button{cursor:pointer;font-family:inherit}
+input{font-family:inherit}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState} = React;
+const LOGO = "data:image/png;base64,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";
+const C = {vk:"#076739",vp:"#03341C",va:"#129B58",op:"#C4A41E",oc:"#E1C850",of:"#967D0F",n:"#0F0F0F",bc:"#F5F5F0",ch:"#232323"};
+
+const QS = [
+  "Je connais mon solde de trésorerie exact à cet instant.",
+  "Je dispose d'un budget de trésorerie prévisionnel mensuel.",
+  "Je connais le Besoin en Fonds de Roulement (BFR) de mon officine.",
+  "Je connais le délai moyen de paiement de mes clients crédit.",
+  "Je fais un rapprochement bancaire au moins une fois par mois.",
+  "Je sais combien mon officine génère réellement de cash après toutes les charges.",
+  "Je peux identifier mes 3 plus gros postes de dépenses ce mois-ci.",
+  "Je contrôle les écarts de caisse au quotidien.",
+  "J'ai un outil de suivi financier autre que le bilan annuel du comptable.",
+  "Si je m'absente 2 semaines, quelqu'un peut piloter la trésorerie à ma place.",
+];
+
+const SL = [{v:0,l:"Non",c:"#DC2626"},{v:1,l:"Partiellement",c:C.of},{v:2,l:"Oui",c:C.vk}];
+
+function getLevel(s){
+  if(s<=9) return {l:"ALERTE",e:"🔴",c:"#DC2626",bg:"#FEF2F2",bd:"#FECACA",m:"Vous découvrirez les problèmes quand il sera trop tard.",d:"Votre officine fonctionne, mais sans visibilité financière réelle. Les décisions se prennent au ressenti — pas sur des données. Chaque mois qui passe sans pilotage vous coûte de l'argent."};
+  if(s<=15) return {l:"ZONE GRISE",e:"🟡",c:C.of,bg:"#FFFBEB",bd:"#FDE68A",m:"Vous gérez, mais vous ne pilotez pas encore.",d:"Certains réflexes sont là, mais il manque la structure pour anticiper. Vous êtes vulnérable aux imprévus financiers. Un seul incident peut fragiliser votre trésorerie."};
+  return {l:"PHARMACIEN STRATÈGE",e:"🟢",c:C.vk,bg:"#F0FDF4",bd:"#BBF7D0",m:"Votre officine est pilotée. Bravo !",d:"Vous avez les bons outils, les bons réflexes et une vision claire de votre trésorerie. Vous pouvez maintenant optimiser et structurer la croissance."};
+}
+
+function App(){
+  const [ans,setAns]=useState({});
+  const [step,setStep]=useState("intro");
+  const [cq,setCq]=useState(0);
+  const [showC,setShowC]=useState(false);
+  const [contact,setContact]=useState({nom:"",pharmacie:"",tel:"",email:""});
+  const [sent,setSent]=useState(false);
+
+  const cnt=Object.keys(ans).length;
+  const tot=Object.values(ans).reduce((a,b)=>a+b,0);
+  const done=cnt===QS.length;
+  const lv=getLevel(tot);
+
+  const pick=(i,v)=>{setAns(p=>({...p,[i]:v}));if(i<QS.length-1)setTimeout(()=>setCq(i+1),300);};
+  const reset=()=>{setAns({});setCq(0);setStep("intro");setShowC(false);setSent(false);setContact({nom:"",pharmacie:"",tel:"",email:""});};
+
+  if(step==="intro") return (
+    <div style={{minHeight:"100vh",background:`linear-gradient(180deg,${C.vp} 0%,${C.n} 100%)`,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div style={{maxWidth:480,textAlign:"center"}}>
+        <img src={LOGO} alt="Kemet" style={{height:50,marginBottom:8,filter:"brightness(0) invert(1)"}}/>
+        <div style={{width:60,height:2,background:C.op,margin:"0 auto 32px"}}/>
+        <h1 style={{color:"#fff",fontSize:28,fontWeight:800,lineHeight:1.2,margin:"0 0 12px"}}>PHARMACIEN STRATÈGE</h1>
+        <p style={{color:C.oc,fontSize:16,fontStyle:"italic",margin:"0 0 32px",lineHeight:1.5}}>Votre officine fait du chiffre…<br/>mais savez-vous vraiment où passe l'argent ?</p>
+        <div style={{background:"rgba(255,255,255,0.05)",borderRadius:16,padding:"28px 24px",marginBottom:32,border:"1px solid rgba(196,164,30,0.2)"}}>
+          <p style={{color:"rgba(255,255,255,0.7)",fontSize:14,margin:"0 0 8px"}}>Évaluez votre niveau de pilotage financier</p>
+          <p style={{color:"#fff",fontSize:15,margin:"0 0 4px",lineHeight:1.6}}><strong>10 questions</strong> · 2 minutes · Résultat immédiat</p>
+          <p style={{color:"rgba(255,255,255,0.5)",fontSize:13,margin:0}}>Découvrez si vous pilotez votre officine… ou si vous la subissez.</p>
+        </div>
+        <button onClick={()=>setStep("quiz")} style={{background:`linear-gradient(135deg,${C.op},${C.of})`,color:C.vp,border:"none",borderRadius:12,padding:"16px 48px",fontSize:16,fontWeight:700,boxShadow:"0 4px 20px rgba(196,164,30,0.3)"}}>COMMENCER LE DIAGNOSTIC</button>
+        <p style={{color:"rgba(255,255,255,0.35)",fontSize:11,marginTop:24}}>Gratuit · Confidentiel · Sans engagement</p>
+      </div>
+    </div>
+  );
+
+  if(step==="quiz") return (
+    <div style={{minHeight:"100vh",background:C.bc}}>
+      <div style={{background:C.vp,padding:"12px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <img src={LOGO} alt="Kemet" style={{height:24,filter:"brightness(0) invert(1)"}}/>
+        <span style={{color:"rgba(255,255,255,0.6)",fontSize:12}}>{cnt}/{QS.length} réponses</span>
+      </div>
+      <div style={{height:4,background:"#E5E7EB"}}><div style={{height:"100%",background:`linear-gradient(90deg,${C.vk},${C.op})`,width:`${(cnt/QS.length)*100}%`,transition:"width 0.5s",borderRadius:"0 2px 2px 0"}}/></div>
+      <div style={{maxWidth:560,margin:"0 auto",padding:"24px 20px"}}>
+        <div style={{textAlign:"center",marginBottom:24}}>
+          <span style={{fontSize:36,fontWeight:800,color:C.vp}}>{tot}</span>
+          <span style={{fontSize:18,color:"#9CA3AF",fontWeight:500}}> / 20</span>
+        </div>
+        {QS.map((q,i)=>{
+          const active=i===cq,answered=ans[i]!==undefined;
+          return <div key={i} onClick={()=>setCq(i)} style={{background:"#fff",borderRadius:12,padding:"16px 20px",marginBottom:10,border:active?`2px solid ${C.vk}`:answered?`1px solid ${C.va}40`:"1px solid #E5E7EB",opacity:(!answered&&i>cq)?0.5:1,transition:"all 0.3s",boxShadow:active?"0 2px 12px rgba(7,103,57,0.1)":"none"}}>
+            <div style={{display:"flex",gap:12,marginBottom:12}}>
+              <span style={{background:answered?C.vk:"#F3F4F6",color:answered?"#fff":"#9CA3AF",width:28,height:28,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0,transition:"all 0.3s"}}>{answered?"✓":i+1}</span>
+              <p style={{margin:0,fontSize:14,color:C.ch,lineHeight:1.5,fontWeight:active?600:400}}>{q}</p>
+            </div>
+            <div style={{display:"flex",gap:8,marginLeft:40}}>
+              {SL.map(s=><button key={s.v} onClick={e=>{e.stopPropagation();pick(i,s.v);}} style={{flex:1,padding:"8px 4px",borderRadius:8,border:ans[i]===s.v?`2px solid ${s.c}`:"1px solid #E5E7EB",background:ans[i]===s.v?s.c+"10":"#fff",color:ans[i]===s.v?s.c:"#6B7280",fontSize:12,fontWeight:ans[i]===s.v?700:500,transition:"all 0.2s"}}><div style={{fontSize:16,marginBottom:2}}>{s.v}</div>{s.l}</button>)}
+            </div>
+          </div>;
+        })}
+        {done&&<div style={{textAlign:"center",marginTop:24,marginBottom:40}}>
+          <button onClick={()=>setStep("result")} style={{background:`linear-gradient(135deg,${C.vk},${C.vp})`,color:"#fff",border:"none",borderRadius:12,padding:"16px 48px",fontSize:16,fontWeight:700,boxShadow:"0 4px 20px rgba(7,103,57,0.3)"}}>VOIR MON RÉSULTAT →</button>
+        </div>}
+      </div>
+    </div>
+  );
+
+  if(step==="result") return (
+    <div style={{minHeight:"100vh",background:`linear-gradient(180deg,${C.vp} 0%,${C.n} 100%)`}}>
+      <div style={{padding:"16px 20px",textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center",gap:12}}>
+        <img src={LOGO} alt="Kemet" style={{height:28,filter:"brightness(0) invert(1)"}}/>
+        <span style={{color:"rgba(255,255,255,0.5)",fontSize:11}}>DIAGNOSTIC TRÉSORERIE</span>
+      </div>
+      <div style={{maxWidth:480,margin:"0 auto",padding:"0 20px 40px"}}>
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <div style={{width:140,height:140,borderRadius:"50%",border:`4px solid ${lv.c}`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",background:lv.c+"15",boxShadow:`0 0 40px ${lv.c}30`}}>
+            <span style={{fontSize:48,fontWeight:800,color:"#fff"}}>{tot}</span>
+            <span style={{fontSize:14,color:"rgba(255,255,255,0.5)"}}>/ 20</span>
+          </div>
+          <span style={{display:"inline-block",background:lv.c,color:"#fff",padding:"6px 20px",borderRadius:20,fontSize:13,fontWeight:700,letterSpacing:1}}>{lv.e} {lv.l}</span>
+        </div>
+        <div style={{background:lv.bg,border:`1px solid ${lv.bd}`,borderRadius:16,padding:24,marginBottom:24}}>
+          <h3 style={{color:lv.c,fontSize:18,fontWeight:700,margin:"0 0 8px"}}>{lv.m}</h3>
+          <p style={{color:C.ch,fontSize:14,lineHeight:1.6,margin:0}}>{lv.d}</p>
+        </div>
+        <div style={{background:"rgba(255,255,255,0.05)",borderRadius:16,padding:20,marginBottom:32}}>
+          <h4 style={{color:"#fff",fontSize:14,margin:"0 0 16px",fontWeight:600}}>Vos réponses</h4>
+          {QS.map((q,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:12,marginBottom:10,paddingBottom:10,borderBottom:i<9?"1px solid rgba(255,255,255,0.06)":"none"}}>
+            <span style={{color:"rgba(255,255,255,0.6)",fontSize:12,lineHeight:1.5,flex:1}}>{q}</span>
+            <span style={{background:ans[i]===0?"#DC262620":ans[i]===1?C.of+"20":C.vk+"20",color:ans[i]===0?"#DC2626":ans[i]===1?C.oc:C.va,padding:"2px 10px",borderRadius:12,fontSize:13,fontWeight:700,flexShrink:0}}>{ans[i]}/2</span>
+          </div>)}
+        </div>
+
+        {tot<16?<div style={{background:`linear-gradient(135deg,${C.vp},${C.vk})`,borderRadius:16,padding:28,textAlign:"center",border:`1px solid ${C.op}30`}}>
+          <p style={{color:C.op,fontSize:13,fontWeight:600,letterSpacing:1,margin:"0 0 8px",textTransform:"uppercase"}}>Ce score n'est qu'une photo floue</p>
+          <h3 style={{color:"#fff",fontSize:20,fontWeight:700,margin:"0 0 12px",lineHeight:1.3}}>Obtenez votre Bilan de Maturité Organisationnelle</h3>
+          <p style={{color:"rgba(255,255,255,0.7)",fontSize:14,margin:"0 0 20px",lineHeight:1.5}}>30 minutes · Gratuit · Personnalisé<br/>Réservé aux participants de la Master Class</p>
+          {!showC?<button onClick={()=>setShowC(true)} style={{background:`linear-gradient(135deg,${C.op},${C.of})`,color:C.vp,border:"none",borderRadius:12,padding:"14px 36px",fontSize:15,fontWeight:700,boxShadow:"0 4px 20px rgba(196,164,30,0.3)"}}>JE VEUX MON DIAGNOSTIC COMPLET</button>
+          :!sent?<div style={{textAlign:"left"}}>
+            {["nom","pharmacie","tel","email"].map(f=><input key={f} type={f==="email"?"email":f==="tel"?"tel":"text"} placeholder={f==="nom"?"Dr...":f==="pharmacie"?"Nom de votre pharmacie":f==="tel"?"+225...":"Email"} value={contact[f]} onChange={e=>setContact(p=>({...p,[f]:e.target.value}))} style={{width:"100%",padding:"12px 16px",borderRadius:8,border:"1px solid rgba(255,255,255,0.15)",background:"rgba(255,255,255,0.08)",color:"#fff",fontSize:14,marginBottom:8,outline:"none",boxSizing:"border-box"}}/>)}
+            <button onClick={()=>setSent(true)} disabled={!contact.nom||!contact.tel} style={{width:"100%",background:contact.nom&&contact.tel?`linear-gradient(135deg,${C.op},${C.of})`:"#555",color:contact.nom&&contact.tel?C.vp:"#999",border:"none",borderRadius:10,padding:"14px",fontSize:15,fontWeight:700,marginTop:8,cursor:contact.nom&&contact.tel?"pointer":"not-allowed"}}>RÉSERVER MON CRÉNEAU BMO →</button>
+          </div>
+          :<div style={{textAlign:"center"}}><div style={{fontSize:40,marginBottom:12}}>✅</div><h4 style={{color:C.op,fontSize:16,margin:"0 0 8px"}}>Merci {contact.nom} !</h4><p style={{color:"rgba(255,255,255,0.7)",fontSize:14,margin:0,lineHeight:1.5}}>Nous vous recontactons sous 48h pour planifier votre Bilan de Maturité Organisationnelle.</p></div>}
+        </div>
+        :<div style={{background:C.vk+"15",borderRadius:16,padding:24,textAlign:"center",border:`1px solid ${C.vk}30`}}>
+          <h3 style={{color:C.va,fontSize:18,fontWeight:700,margin:"0 0 8px"}}>Félicitations, vous faites partie de l'élite !</h3>
+          <p style={{color:"rgba(255,255,255,0.7)",fontSize:14,margin:"0 0 16px",lineHeight:1.5}}>Votre officine est structurée. La prochaine étape : optimiser et accélérer la croissance.</p>
+          <button onClick={()=>setShowC(true)} style={{background:`linear-gradient(135deg,${C.op},${C.of})`,color:C.vp,border:"none",borderRadius:12,padding:"14px 36px",fontSize:14,fontWeight:700}}>DISCUTONS DE VOTRE CROISSANCE</button>
+        </div>}
+
+        <div style={{marginTop:24,background:"rgba(255,255,255,0.03)",borderRadius:12,padding:20,textAlign:"center",border:"1px solid rgba(255,255,255,0.06)"}}>
+          <p style={{color:C.op,fontSize:12,fontWeight:600,margin:"0 0 4px",letterSpacing:1}}>MASTER CLASS — 25 AVRIL 2026</p>
+          <p style={{color:"#fff",fontSize:14,fontWeight:600,margin:"0 0 4px"}}>Pharmacien Stratège × AT Agency</p>
+          <p style={{color:"rgba(255,255,255,0.5)",fontSize:12,margin:0}}>Maison du Pharmacien — Abidjan · 125 000 F CFA</p>
+        </div>
+        <div style={{textAlign:"center",marginTop:24}}><button onClick={reset} style={{background:"none",border:"1px solid rgba(255,255,255,0.15)",color:"rgba(255,255,255,0.4)",padding:"8px 24px",borderRadius:8,fontSize:12}}>Refaire le diagnostic</button></div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
