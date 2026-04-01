@@ -38,7 +38,7 @@ export default function ServiceCards() {
   };
 
   const handleDiagnosticClick = () => {
-    setLocation('/diagnostic');
+    window.location.href = '/grille-prediagnostic.html';
   };
 
   return (

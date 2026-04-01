@@ -28,7 +28,7 @@ export default function Hero() {
   const [, setLocation] = useLocation();
 
   const handleDiagnosticClick = () => {
-    setLocation('/diagnostic');
+    window.location.href = '/grille-prediagnostic.html';
   };
 
   const handleFormationsClick = () => {

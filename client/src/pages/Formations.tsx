@@ -267,7 +267,7 @@ export default function Formations() {
               <Button 
                 variant="outline" 
                 size="lg"
-                onClick={() => setLocation('/diagnostic')}
+                onClick={() => window.location.href = '/grille-prediagnostic.html'}
                 data-testid="button-diagnostic-needs"
               >
                 Évaluer mes besoins

@@ -39,7 +39,7 @@ export default function FocusFormations() {
   const [, setLocation] = useLocation();
 
   const handleInscription = (formationTitle: string) => {
-    setLocation('/diagnostic');
+    window.location.href = '/grille-prediagnostic.html';
   };
 
   const handleVoirFormations = () => {

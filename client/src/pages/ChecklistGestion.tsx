@@ -382,7 +382,7 @@ export default function ChecklistGestion() {
                     Nos experts peuvent vous aider à optimiser concrètement la gestion de votre pharmacie.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button variant="default" onClick={() => window.location.href = '/diagnostic'}>
+                    <Button variant="default" onClick={() => window.location.href = '/grille-prediagnostic.html'}>
                       Demander un diagnostic gratuit
                     </Button>
                     <Button variant="outline" onClick={() => window.location.href = '/formations'}>

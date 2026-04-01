@@ -19,7 +19,7 @@ export default function CTASection() {
       event_label: 'cta_diagnostic',
       value: 1
     });
-    setLocation('/diagnostic');
+    window.location.href = '/grille-prediagnostic.html';
   };
 
   const handleFormationsClick = () => {

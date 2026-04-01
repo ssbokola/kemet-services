@@ -8,7 +8,7 @@ const footerLinks = {
   services: [
     { name: 'Formations', href: '/formations' },
     { name: 'Consulting', href: '/consulting' },
-    { name: 'Diagnostic', href: '/diagnostic' },
+    { name: 'Diagnostic', href: '/grille-prediagnostic.html' },
     { name: 'Kemet Echo', href: '/kemet-echo' }
   ],
   company: [

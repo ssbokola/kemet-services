@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grille Pré-Diagnostic — Kemet Services</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8F7F2;min-height:100vh;color:#232323}
+#app{max-width:720px;margin:0 auto;padding:0 16px 60px}
+.header{background:linear-gradient(135deg,#076739,#03341C);border-radius:0 0 16px 16px;padding:24px 24px 20px;margin:0 -16px 20px}
+.header h1{font-size:20px;font-weight:800;color:#fff;letter-spacing:1px}
+.header .tagline{font-size:11px;color:#E1C850;margin-top:2px;font-style:italic}
+.header h2{font-size:16px;font-weight:700;color:#fff;margin-top:12px}
+.header .progress-label{font-size:12px;color:#E1C850;margin-top:4px}
+.progress-bar-bg{height:6px;border-radius:3px;background:rgba(255,255,255,0.2);margin-top:8px}
+.progress-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,#C4A41E,#E1C850);transition:width 0.4s}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.meta-grid label{font-size:11px;font-weight:700;color:#03341C;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px}
+.meta-grid input{width:100%;padding:8px 12px;border-radius:8px;border:1.5px solid #d0d0d0;font-size:13px;font-family:inherit;background:#fff;outline:none;transition:border 0.2s}
+.meta-grid input:focus{border-color:#129B58}
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab{flex:1;min-width:110px;padding:10px 8px;border-radius:10px;border:2px solid transparent;background:#f0efe8;cursor:pointer;font-family:inherit;text-align:center;transition:all 0.2s}
+.tab.active{border-color:#076739;background:#fff}
+.tab.active-summary{border-color:#C4A41E;background:#fff}
+.tab .icon{font-size:16px}
+.tab .label{font-size:10px;font-weight:700;color:#232323;margin-top:4px;line-height:1.2}
+.tab.active .label{color:#076739}
+.tab.active-summary .label{color:#C4A41E}
+.tab .count{font-size:10px;color:#999;margin-top:2px}
+.axe-header{padding:12px 16px;border-radius:10px;background:rgba(7,103,57,0.05);border:1px solid rgba(7,103,57,0.12);margin-bottom:16px}
+.axe-header .axe-title{font-size:14px;font-weight:700;color:#076739}
+.axe-header .axe-obj{font-size:12px;color:#232323;margin-top:4px}
+.field-card{margin-bottom:16px;padding:14px 18px;border-radius:10px;background:#fff;border:1px solid #eaeaea;transition:border 0.2s}
+.field-card.filled{border-color:rgba(18,155,88,0.25)}
+.field-label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:#03341C;line-height:1.5}
+.field-id{color:#C4A41E;font-weight:800;margin-right:8px;font-family:monospace;font-size:12px}
+.field-card input,.field-card select,.field-card textarea{width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #d0d0d0;font-size:14px;font-family:inherit;background:#fff;outline:none;transition:border 0.2s}
+.field-card input:focus,.field-card select:focus,.field-card textarea:focus{border-color:#129B58}
+.field-card textarea{resize:vertical}
+details summary{font-size:12px;color:#967D0F;cursor:pointer;user-select:none;margin-top:6px}
+details textarea{margin-top:6px;border-color:#E1C850 !important}
+.nav{display:flex;justify-content:space-between;margin-top:20px;gap:12px}
+.btn-prev{padding:12px 24px;border-radius:8px;border:2px solid #076739;background:transparent;color:#076739;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit}
+.btn-prev:disabled{border-color:#ccc;color:#ccc;cursor:default}
+.btn-next{padding:12px 24px;border-radius:8px;border:none;background:linear-gradient(135deg,#076739,#129B58);color:#fff;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;box-shadow:0 2px 8px rgba(7,103,57,0.3)}
+.btn-recap{padding:12px 24px;border-radius:8px;border:none;background:linear-gradient(135deg,#C4A41E,#967D0F);color:#fff;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit}
+.recap-header{padding:16px 20px;border-radius:12px;background:#fff;border:2px solid #C4A41E;margin-bottom:20px}
+.recap-header h3{font-size:16px;font-weight:700;color:#03341C}
+.recap-header .recap-meta{font-size:13px;color:#232323;margin-top:4px}
+.recap-header .recap-score{font-size:13px;color:#076739;font-weight:700;margin-top:8px}
+.recap-axe{margin-bottom:20px}
+.recap-axe-header{padding:10px 14px;border-radius:8px 8px 0 0;background:#076739;color:#fff;font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+.recap-axe-header span.cnt{color:#E1C850;font-size:12px}
+.recap-axe-body{background:#fff;border-radius:0 0 8px 8px;border:1px solid #eaeaea;border-top:none}
+.recap-row{padding:8px 14px;border-bottom:1px solid #f5f5f5;font-size:13px;display:flex;gap:8px}
+.recap-row:last-child{border-bottom:none}
+.recap-qid{color:#C4A41E;font-weight:800;font-size:11px;font-family:monospace;min-width:32px}
+.recap-q{color:#03341C;font-weight:600;font-size:12px}
+.recap-a{color:#129B58;font-size:12px;margin-top:2px}
+.recap-a.empty{color:#bbb;font-style:italic}
+.recap-obs{color:#967D0F;font-size:11px;font-style:italic;margin-top:2px}
+.btn-pdf{width:100%;padding:16px;border-radius:12px;border:none;background:linear-gradient(135deg,#076739,#03341C);color:#fff;font-weight:800;font-size:16px;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(7,103,57,0.3);margin-top:8px;transition:background 0.3s}
+.btn-pdf.done{background:#129B58}
+.btn-pdf.error{background:#c0392b}
+.btn-pdf:disabled{cursor:wait}
+.footer-note{text-align:center;margin-top:16px;font-size:11px;color:#999}
+.back-link{display:inline-block;margin:16px 0;color:#076739;text-decoration:none;font-size:14px;font-weight:600}
+.back-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div id="app">
+  <a href="/" class="back-link">&larr; Retour au site</a>
+  <div class="header">
+    <h1>KEMET SERVICES</h1>
+    <div class="tagline">On ne forme pas des pharmaciens. On transforme des officines.</div>
+    <h2>Grille de Pré-Diagnostic</h2>
+    <div class="progress-label" id="progress-label">0 / 72 questions — 0%</div>
+    <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  </div>
+
+  <div class="meta-grid">
+    <div><label>Officine</label><input id="meta-officine" placeholder="Nom de l'officine"></div>
+    <div><label>Titulaire</label><input id="meta-titulaire" placeholder="Nom du titulaire"></div>
+    <div><label>Date de visite</label><input id="meta-date" placeholder="JJ/MM/AAAA"></div>
+    <div><label>Consultant</label><input id="meta-consultant" placeholder="Votre nom"></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="content"></div>
+</div>
+
+<script>
+const axes = [
+  {
+    id:"finances",titre:"FINANCES & TRÉSORERIE",icon:"\ud83d\udcb0",
+    objectif:"Cartographier la situation financière et la capacité de pilotage.",
+    questions:[
+      {id:"F1",q:"Chiffre d'affaires mensuel moyen 2025 (montant exact) ?",type:"text",placeholder:"Ex : 15 000 000 FCFA"},
+      {id:"F2",q:"Chiffre d'affaires mensuel moyen 2024 ?",type:"text",placeholder:"Ex : 12 000 000 FCFA"},
+      {id:"F3",q:"Évolution du CA sur les 3 dernières années (tendance) ?",type:"select",options:["En hausse","Stable","En baisse","Ne sait pas"]},
+      {id:"F4",q:"Répartition du CA : ventes comptoir / tiers payant / conventionné ?",type:"text",placeholder:"Ex : 60% comptoir / 30% TP / 10% conv."},
+      {id:"F5",q:"Marge brute moyenne (%) ?",type:"text",placeholder:"Ex : 28%"},
+      {id:"F6",q:"Montant du prêt en cours (agrandissement, exploitation) ?",type:"text",placeholder:"Ex : 25 000 000 FCFA"},
+      {id:"F7",q:"Montant de la mensualité de remboursement ?",type:"text",placeholder:"Ex : 500 000 FCFA/mois"},
+      {id:"F8",q:"Durée restante du prêt ?",type:"text",placeholder:"Ex : 36 mois"},
+      {id:"F9",q:"Autres crédits en cours (exploitation ou personnels) ?",type:"textarea",placeholder:"Détaillez..."},
+      {id:"F10",q:"Solde moyen du compte courant en fin de mois ?",type:"text",placeholder:"Ex : 2 000 000 FCFA"},
+      {id:"F11",q:"Fréquence et montant des prélèvements personnels ?",type:"text",placeholder:"Ex : 1 500 000 FCFA / 2 fois par mois"},
+      {id:"F12",q:"Budget de fonctionnement mensuel (loyer, salaires, charges) ?",type:"text",placeholder:"Ex : 5 000 000 FCFA"},
+      {id:"F13",q:"Mode de paiement fournisseurs ?",type:"select",options:["Comptant","15 jours","30 jours","Mixte"]},
+      {id:"F14",q:"Délais de paiement accordés par les grossistes ?",type:"text",placeholder:"Ex : J+5 chez DPCI, crédit 30j chez UBIPHARM"},
+      {id:"F15",q:"Solde créditeur ou débiteur chez chaque grossiste ?",type:"textarea",placeholder:"UBIPHARM : ...\nDPCI : ...\nTEDIS : ...\nCOPHARMED : ..."},
+      {id:"F16",q:"Montant des créances clients (tiers payant en attente) ?",type:"text",placeholder:"Ex : 8 000 000 FCFA"},
+      {id:"F17",q:"Délai moyen de recouvrement tiers payant ?",type:"text",placeholder:"Ex : 45 jours"},
+      {id:"F18",q:"Un budget prévisionnel est-il établi chaque année ?",type:"select",options:["Oui","Non","Partiellement"]},
+      {id:"F19",q:"Utilisez-vous un outil de suivi de trésorerie ?",type:"select",options:["Oui (précisez en observation)","Non","Cahier manuel"]},
+      {id:"F20",q:"Quel logiciel de gestion utilisez-vous ?",type:"text",placeholder:"Ex : Médiciel, SAGE, Excel, aucun..."},
+      {id:"F21",q:"Connaissez-vous votre BFR actuel ?",type:"select",options:["Oui (précisez en observation)","Non","Notion vague"]},
+      {id:"F22",q:"Quel est le délai moyen d'écoulement de votre stock (en jours) ?",type:"text",placeholder:"Ex : 60 jours"},
+    ]
+  },
+  {
+    id:"stock",titre:"STOCK & APPROVISIONNEMENT",icon:"\ud83d\udce6",
+    objectif:"Évaluer la gestion du stock, les pertes et la chaîne d'approvisionnement.",
+    questions:[
+      {id:"S1",q:"Valeur du stock actuel (achat) ?",type:"text",placeholder:"Ex : 20 000 000 FCFA"},
+      {id:"S2",q:"Fréquence des inventaires (tournants, annuels) ?",type:"select",options:["Annuel","Semestriel","Trimestriel","Tournant mensuel","Jamais réalisé"]},
+      {id:"S3",q:"Résultat du dernier inventaire : écart total constaté ?",type:"text",placeholder:"Ex : +300 000 FCFA d'écart"},
+      {id:"S4",q:"Valeur des périmés identifiés (2024 et 2025) ?",type:"text",placeholder:"Ex : 2024 : 500 000 / 2025 : 800 000 FCFA"},
+      {id:"S5",q:"Existe-t-il un suivi mensuel des périmés (contrôle DLU, retrait rayon) ?",type:"select",options:["Oui, suivi formalisé","Oui, mais informel","Non"]},
+      {id:"S6",q:"Connaissez-vous la valeur de vos stocks dormants (>6 mois sans mouvement) ?",type:"select",options:["Oui (précisez en observation)","Non","Jamais évalué"]},
+      {id:"S7",q:"Taux de rupture estimé (produits demandés non disponibles) ?",type:"select",options:["Faible (<10%)","Moyen (10-20%)","Élevé (>20%)","Ne sait pas"]},
+      {id:"S8",q:"Fréquence de commande chez chaque grossiste ?",type:"text",placeholder:"Ex : DPCI 3x/sem, UBIPHARM 2x/sem..."},
+      {id:"S9",q:"Grossistes utilisés et répartition des achats ?",type:"textarea",placeholder:"UBIPHARM : ...%\nDPCI : ...%\nTEDIS : ...%\nCOPHARMED : ...%"},
+      {id:"S10",q:"Qui passe les commandes ? Sur quels critères ?",type:"textarea",placeholder:"Fonction + critères (seuil auto, visuel, ressenti...)"},
+      {id:"S11",q:"Commande automatisée via le logiciel ou manuelle ?",type:"select",options:["Automatisée","Manuelle","Mixte"]},
+      {id:"S12",q:"Procédure de réception des livraisons (contrôle BL vs colis) ?",type:"select",options:["Contrôle systématique BL/colis","Contrôle partiel","Pas de contrôle formalisé"]},
+      {id:"S13",q:"Qui réceptionne et vérifie les livraisons ?",type:"text",placeholder:"Ex : Le préparateur de garde"},
+      {id:"S14",q:"Gestion des produits à chaîne de froid ?",type:"select",options:["Frigo dédié + relevé T°","Frigo dédié sans relevé","Pas de frigo dédié"]},
+      {id:"S15",q:"Méthode de rotation des stocks appliquée ?",type:"select",options:["FEFO (premier expiré, premier sorti)","FIFO (premier entré, premier sorti)","Aucune méthode définie"]},
+      {id:"S15b",q:"Critère de classement / rangement des produits ?",type:"select",options:["Ordre alphabétique","Par forme galénique","Par classe thérapeutique","Mixte","Pas de classement défini"]},
+      {id:"S16",q:"Existence d'un stock minimum / stock de sécurité défini ?",type:"select",options:["Oui, paramétré dans le logiciel","Oui, informel","Non"]},
+      {id:"S17",q:"Produits les plus vendus (top 20) identifiés ?",type:"select",options:["Oui","Non","Partiellement"]},
+      {id:"S18",q:"Mesurez-vous le délai d'écoulement ou identifiez-vous vos stocks morts ?",type:"select",options:["Oui, suivi régulier","Occasionnellement","Non"]},
+    ]
+  },
+  {
+    id:"qualite",titre:"QUALITÉ & PROCÉDURES",icon:"\u2705",
+    objectif:"Mesurer le niveau de formalisation et de conformité de l'officine.",
+    questions:[
+      {id:"Q1",q:"Procédures écrites existantes (accueil, dispensation, réception, caisse) ?",type:"select",options:["Oui, plusieurs procédures","Quelques-unes","Aucune procédure écrite"]},
+      {id:"Q2",q:"Manuel qualité ou référentiel interne ?",type:"select",options:["Oui","En cours d'élaboration","Non"]},
+      {id:"Q3",q:"Indicateurs de performance définis et suivis ?",type:"select",options:["Oui","Partiellement","Non"]},
+      {id:"Q4",q:"Si oui, lesquels et à quelle fréquence ?",type:"textarea",placeholder:"Listez les indicateurs suivis et leur fréquence..."},
+      {id:"Q5",q:"Tableau de bord de gestion existant ?",type:"select",options:["Oui","Non"]},
+      {id:"Q6",q:"Réunions d'équipe : fréquence et contenu ?",type:"text",placeholder:"Ex : Hebdomadaire, point ventes et ruptures"},
+      {id:"Q7",q:"Gestion des réclamations clients : processus en place ?",type:"select",options:["Oui, processus formalisé","Traitement au cas par cas","Aucun processus"]},
+      {id:"Q8",q:"Existence d'un cahier de réclamations ou registre dédié ?",type:"select",options:["Oui","Non"]},
+      {id:"Q9",q:"Registre des stupéfiants à jour ?",type:"select",options:["Oui","Partiellement","Non","Non concerné"]},
+      {id:"Q10",q:"Registre des ordonnanciers à jour ?",type:"select",options:["Oui","Partiellement","Non"]},
+      {id:"Q11",q:"Quels affichages réglementaires sont en place ?",type:"textarea",placeholder:"Tableau de garde, prix médicaments, diplômes, horaires, n° ordre..."},
+      {id:"Q12",q:"Conformité de l'espace de confidentialité ?",type:"select",options:["Espace dédié conforme","Espace existant mais insuffisant","Pas d'espace de confidentialité"]},
+      {id:"Q13",q:"Maintenance des équipements (frigo, clim, informatique) ?",type:"select",options:["Contrat de maintenance","Maintenance ponctuelle","Aucune maintenance planifiée"]},
+      {id:"Q14",q:"Plan de nettoyage et hygiène des locaux ?",type:"select",options:["Oui, formalisé","Oui, informel","Non"]},
+      {id:"Q15",q:"Connaissance des BPO (Bonnes Pratiques Officinales) ?",type:"select",options:["Bonne connaissance","Notion vague","Pas du tout"]},
+      {id:"Q16",q:"Intérêt pour une démarche qualité formalisée ?",type:"select",options:["Oui, c'est une priorité","Oui, à moyen terme","Pas pour l'instant"]},
+    ]
+  },
+  {
+    id:"rh",titre:"RH & ORGANISATION",icon:"\ud83d\udc65",
+    objectif:"Évaluer la structuration RH, les compétences et la délégation.",
+    questions:[
+      {id:"R1",q:"Organigramme : existe-t-il ? Est-il affiché ?",type:"select",options:["Existe et affiché","Existe mais non affiché","N'existe pas"]},
+      {id:"R2",q:"Nombre total d'employés (CDI / CDD / stage) ?",type:"text",placeholder:"Ex : 8 CDI, 2 CDD, 1 stagiaire"},
+      {id:"R3",q:"Fiches de poste écrites pour chaque fonction ?",type:"select",options:["Oui, pour tous","Partiellement","Non"]},
+      {id:"R4",q:"Rôles et responsabilités clairement définis ?",type:"select",options:["Oui","Partiellement","Non"]},
+      {id:"R5",q:"Planning de travail : comment est-il organisé ?",type:"text",placeholder:"Ex : Planning hebdomadaire affiché, rotation..."},
+      {id:"R6",q:"Grille de compétences par poste ?",type:"select",options:["Oui","Non"]},
+      {id:"R7",q:"Plan de formation annuel formalisé ?",type:"select",options:["Oui","Non, mais formations régulières","Non"]},
+      {id:"R8",q:"Dernières formations suivies par l'équipe ?",type:"textarea",placeholder:"Thème, date, nombre de participants..."},
+      {id:"R9",q:"Entretiens annuels d'évaluation réalisés ?",type:"select",options:["Oui, systématiquement","Occasionnellement","Jamais"]},
+      {id:"R10",q:"Système de prime ou d'intéressement ?",type:"select",options:["Oui","Non"]},
+      {id:"R11",q:"Taux de turnover sur les 3 dernières années ?",type:"select",options:["Faible (0-1 départ/an)","Moyen (2-3 départs/an)","Élevé (>3 départs/an)"]},
+      {id:"R12",q:"Délégation : quelles tâches sont déléguées à qui ?",type:"textarea",placeholder:"Décrivez les principales délégations..."},
+      {id:"R13",q:"Organisation actuelle de l'équipe : qui fait quoi au quotidien ?",type:"textarea",placeholder:"Ex : 2 au comptoir, 1 aux commandes, titulaire supervise..."},
+      {id:"R14",q:"Climat social : tensions, difficultés relationnelles ?",type:"select",options:["Bon climat","Quelques tensions","Climat difficile"]},
+      {id:"R15",q:"Procédure disciplinaire formalisée ?",type:"select",options:["Oui","Non"]},
+      {id:"R16",q:"Règlement intérieur affiché et signé ?",type:"select",options:["Oui","Existe mais pas affiché/signé","Non"]},
+    ]
+  }
+];
+
+const totalQ = axes.reduce((s,a)=>s+a.questions.length,0);
+let state = { axe:0, view:"form", ans:{}, obs:{} };
+
+function getAnswered(){ return Object.values(state.ans).filter(v=>v&&v.trim()).length; }
+function axeAns(i){ return axes[i].questions.filter(q=>state.ans[q.id]?.trim()).length; }
+function pct(){ return Math.round(getAnswered()/totalQ*100); }
+
+function updateProgress(){
+  const a=getAnswered(), p=pct();
+  document.getElementById("progress-label").textContent=`${a} / ${totalQ} questions \u2014 ${p}%`;
+  document.getElementById("progress-bar").style.width=p+"%";
+}
+
+function renderTabs(){
+  const t=document.getElementById("tabs");
+  t.innerHTML="";
+  axes.forEach((a,i)=>{
+    const active=state.view==="form"&&state.axe===i;
+    const btn=document.createElement("button");
+    btn.className="tab"+(active?" active":"");
+    btn.innerHTML=`<div class="icon">${a.icon}</div><div class="label">${a.titre}</div><div class="count">${axeAns(i)}/${a.questions.length}</div>`;
+    btn.onclick=()=>{ state.axe=i; state.view="form"; render(); window.scrollTo(0,0); };
+    t.appendChild(btn);
+  });
+  const recap=document.createElement("button");
+  recap.className="tab"+(state.view==="summary"?" active-summary":"");
+  recap.innerHTML=`<div class="icon">\ud83d\udccb</div><div class="label">R\u00c9CAP & PDF</div><div class="count">${pct()}%</div>`;
+  recap.onclick=()=>{ state.view="summary"; render(); window.scrollTo(0,0); };
+  t.appendChild(recap);
+}
+
+function buildField(q){
+  const val=state.ans[q.id]||"";
+  const obsVal=state.obs[q.id]||"";
+  const card=document.createElement("div");
+  card.className="field-card"+(val?" filled":"");
+  card.id="card-"+q.id;
+
+  const lbl=document.createElement("label");
+  lbl.className="field-label";
+  lbl.innerHTML=`<span class="field-id">${q.id}</span>${q.q}`;
+  card.appendChild(lbl);
+
+  let input;
+  if(q.type==="select"){
+    input=document.createElement("select");
+    const def=document.createElement("option");
+    def.value=""; def.textContent="\u2014 S\u00e9lectionnez \u2014";
+    input.appendChild(def);
+    q.options.forEach(o=>{ const opt=document.createElement("option"); opt.value=o; opt.textContent=o; if(val===o) opt.selected=true; input.appendChild(opt); });
+  } else if(q.type==="textarea"){
+    input=document.createElement("textarea");
+    input.rows=3; input.placeholder=q.placeholder||"";
+    input.value=val;
+  } else {
+    input=document.createElement("input");
+    input.type="text"; input.placeholder=q.placeholder||"";
+    input.value=val;
+  }
+  input.addEventListener("input",e=>{ state.ans[q.id]=e.target.value; card.className="field-card"+(e.target.value.trim()?" filled":""); updateProgress(); renderTabs(); });
+  card.appendChild(input);
+
+  const det=document.createElement("details");
+  const sum=document.createElement("summary"); sum.textContent="+ Observation"; det.appendChild(sum);
+  const obsTA=document.createElement("textarea"); obsTA.rows=2; obsTA.placeholder="Observation libre..."; obsTA.value=obsVal;
+  obsTA.style.cssText="width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #E1C850;font-size:13px;font-family:inherit;background:#fff;outline:none;box-sizing:border-box;margin-top:6px;resize:vertical";
+  obsTA.addEventListener("input",e=>{ state.obs[q.id]=e.target.value; });
+  det.appendChild(obsTA);
+  card.appendChild(det);
+  return card;
+}
+
+function renderForm(){
+  const c=document.getElementById("content");
+  c.innerHTML="";
+  const a=axes[state.axe];
+
+  const hdr=document.createElement("div"); hdr.className="axe-header";
+  hdr.innerHTML=`<div class="axe-title">${a.icon} ${a.titre}</div><div class="axe-obj">${a.objectif}</div>`;
+  c.appendChild(hdr);
+
+  a.questions.forEach(q=>c.appendChild(buildField(q)));
+
+  const nav=document.createElement("div"); nav.className="nav";
+  const prev=document.createElement("button"); prev.className="btn-prev"; prev.textContent="\u2190 Pr\u00e9c\u00e9dent";
+  prev.disabled=state.axe===0;
+  prev.onclick=()=>{ if(state.axe>0){ state.axe--; state.view="form"; render(); window.scrollTo(0,0); } };
+  nav.appendChild(prev);
+
+  if(state.axe<axes.length-1){
+    const next=document.createElement("button"); next.className="btn-next"; next.textContent="Suivant \u2192";
+    next.onclick=()=>{ state.axe++; state.view="form"; render(); window.scrollTo(0,0); };
+    nav.appendChild(next);
+  } else {
+    const recap=document.createElement("button"); recap.className="btn-recap"; recap.textContent="R\u00e9cap & PDF \u2192";
+    recap.onclick=()=>{ state.view="summary"; render(); window.scrollTo(0,0); };
+    nav.appendChild(recap);
+  }
+  c.appendChild(nav);
+}
+
+function renderSummary(){
+  const c=document.getElementById("content");
+  c.innerHTML="";
+  const officine=document.getElementById("meta-officine").value;
+  const titulaire=document.getElementById("meta-titulaire").value;
+  const dateV=document.getElementById("meta-date").value;
+
+  const hdr=document.createElement("div"); hdr.className="recap-header";
+  let meta="";
+  if(officine) meta+=`<strong>Officine :</strong> ${officine} \u2014 `;
+  if(titulaire) meta+=`<strong>Titulaire :</strong> ${titulaire} \u2014 `;
+  if(dateV) meta+=`<strong>Date :</strong> ${dateV}`;
+  hdr.innerHTML=`<h3>R\u00e9capitulatif</h3><div class="recap-meta">${meta}</div><div class="recap-score">${getAnswered()} / ${totalQ} (${pct()}%)</div>`;
+  c.appendChild(hdr);
+
+  axes.forEach((a,ai)=>{
+    const block=document.createElement("div"); block.className="recap-axe";
+    const ah=document.createElement("div"); ah.className="recap-axe-header";
+    ah.innerHTML=`<span>${a.icon} ${a.titre}</span><span class="cnt">${axeAns(ai)}/${a.questions.length}</span>`;
+    block.appendChild(ah);
+    const body=document.createElement("div"); body.className="recap-axe-body";
+    a.questions.forEach(q=>{
+      const row=document.createElement("div"); row.className="recap-row";
+      const ans=state.ans[q.id]||"";
+      const obs=state.obs[q.id]||"";
+      row.innerHTML=`<span class="recap-qid">${q.id}</span><div><div class="recap-q">${q.q}</div><div class="recap-a${ans?"":" empty"}">${ans||"Non renseign\u00e9"}</div>${obs?`<div class="recap-obs">Obs: ${obs}</div>`:""}</div>`;
+      body.appendChild(row);
+    });
+    block.appendChild(body);
+    c.appendChild(block);
+  });
+
+  const btn=document.createElement("button"); btn.className="btn-pdf"; btn.id="btn-pdf"; btn.textContent="\ud83d\udcc4 T\u00e9l\u00e9charger le PDF";
+  btn.onclick=generatePDF;
+  c.appendChild(btn);
+  const foot=document.createElement("div"); foot.className="footer-note"; foot.textContent="DOCUMENT CONFIDENTIEL \u2014 Usage exclusif Kemet Services";
+  c.appendChild(foot);
+}
+
+function render(){
+  renderTabs();
+  updateProgress();
+  if(state.view==="form") renderForm();
+  else renderSummary();
+}
+
+async function generatePDF(){
+  const btn=document.getElementById("btn-pdf");
+  btn.disabled=true; btn.textContent="\u23f3 G\u00e9n\u00e9ration..."; btn.className="btn-pdf";
+  try {
+    if(!window.jspdf){
+      await new Promise((res,rej)=>{ const s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+    }
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({unit:"mm",format:"a4"});
+    const W=210,M=18,pw=W-2*M; let y=M;
+    const check=need=>{ if(y+need>280){ doc.addPage(); y=M; } };
+    const officine=document.getElementById("meta-officine").value;
+    const titulaire=document.getElementById("meta-titulaire").value;
+    const dateV=document.getElementById("meta-date").value;
+    const consultant=document.getElementById("meta-consultant").value;
+    const answered=getAnswered(), p=pct();
+
+    doc.setFillColor(7,103,57); doc.rect(0,0,W,42,"F");
+    doc.setFillColor(196,164,30); doc.rect(0,42,W,2.5,"F");
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(20); doc.setFont("helvetica","bold"); doc.text("KEMET SERVICES",M,16);
+    doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.text("On ne forme pas des pharmaciens. On transforme des officines.",M,23);
+    doc.setFontSize(15); doc.setFont("helvetica","bold"); doc.text("GRILLE DE PRE-DIAGNOSTIC",M,35);
+    y=52;
+    doc.setTextColor(35,35,35); doc.setFontSize(10); doc.setFont("helvetica","normal");
+    doc.text(`Officine : ${officine||"___"}`,M,y); doc.text(`Titulaire : ${titulaire||"___"}`,M+pw/2,y); y+=6;
+    doc.text(`Date : ${dateV||"___"}`,M,y); doc.text(`Consultant : ${consultant||"___"}`,M+pw/2,y); y+=6;
+    doc.text(`Questions renseignees : ${answered} / ${totalQ} (${p}%)`,M,y); y+=10;
+
+    axes.forEach((a,ai)=>{
+      check(18);
+      doc.setFillColor(7,103,57); doc.rect(M,y-1,pw,8,"F");
+      doc.setTextColor(255,255,255); doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.text(a.titre,M+3,y+4.5);
+      doc.setTextColor(196,164,30); doc.setFontSize(8); doc.text(`${axeAns(ai)}/${a.questions.length}`,M+pw-3,y+4.5,{align:"right"});
+      y+=12;
+      a.questions.forEach(q=>{
+        const answer=state.ans[q.id]||""; const note=state.obs[q.id]||"";
+        const qL=doc.splitTextToSize(`${q.id}. ${q.q}`,pw-4);
+        const aL=answer?doc.splitTextToSize(`> ${answer}`,pw-8):[];
+        const oL=note?doc.splitTextToSize(`Obs: ${note}`,pw-8):[];
+        check(qL.length*4.2+aL.length*3.8+oL.length*3.5+6);
+        doc.setTextColor(3,52,28); doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.text(qL,M+2,y); y+=qL.length*4.2;
+        if(answer){ doc.setFont("helvetica","normal"); doc.setTextColor(18,155,88); doc.text(aL,M+5,y); y+=aL.length*3.8; }
+        else { doc.setFont("helvetica","italic"); doc.setTextColor(180,180,180); doc.text("> Non renseigne",M+5,y); y+=3.8; }
+        if(note){ doc.setFont("helvetica","italic"); doc.setTextColor(150,125,15); doc.setFontSize(8); doc.text(oL,M+5,y); y+=oL.length*3.5; }
+        y+=2.5;
+      });
+      y+=4;
+    });
+    check(15);
+    doc.setDrawColor(196,164,30); doc.line(M,y,M+pw,y); y+=6;
+    doc.setTextColor(150,150,150); doc.setFontSize(8); doc.setFont("helvetica","italic");
+    doc.text("DOCUMENT CONFIDENTIEL - Usage exclusif Kemet Services",W/2,y,{align:"center"});
+    doc.text(`Genere le ${new Date().toLocaleDateString("fr-FR")}`,W/2,y+4,{align:"center"});
+    doc.save(`PreDiagnostic_${(officine||"Officine").replace(/\s+/g,"_")}_${new Date().toISOString().slice(0,10)}.pdf`);
+    btn.className="btn-pdf done"; btn.textContent="\u2705 PDF t\u00e9l\u00e9charg\u00e9 !";
+  } catch(err){
+    console.error(err); btn.className="btn-pdf error"; btn.textContent="\u274c Erreur, r\u00e9essayez";
+  }
+  btn.disabled=false;
+  setTimeout(()=>{ btn.className="btn-pdf"; btn.textContent="\ud83d\udcc4 T\u00e9l\u00e9charger le PDF"; },3000);
+}
+
+render();
+</script>
+</body>
+</html>

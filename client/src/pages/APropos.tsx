@@ -371,7 +371,7 @@ export default function APropos() {
             Commencez par un diagnostic gratuit de votre situation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" data-testid="button-cta-diagnostic">
+            <Button size="lg" data-testid="button-cta-diagnostic" onClick={() => window.location.href = '/grille-prediagnostic.html'}>
               Diagnostic gratuit
             </Button>
             <Button variant="outline" size="lg" data-testid="button-cta-contact">

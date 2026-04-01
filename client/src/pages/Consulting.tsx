@@ -161,7 +161,7 @@ export default function Consulting() {
   };
 
   const handleDiagnosticClick = () => {
-    setLocation('/diagnostic');
+    window.location.href = '/grille-prediagnostic.html';
   };
 
   const handleWhatsAppClick = (packName?: string) => {
