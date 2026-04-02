@@ -70,6 +70,7 @@ details textarea{margin-top:6px;border-color:#E1C850 !important}
 </style>
 </head>
 <body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 <div id="app">
   <a href="/" class="back-link">&larr; Retour au site</a>
   <div class="header">
@@ -348,9 +349,7 @@ async function generatePDF(){
   const btn=document.getElementById("btn-pdf");
   btn.disabled=true; btn.textContent="\u23f3 G\u00e9n\u00e9ration..."; btn.className="btn-pdf";
   try {
-    if(!window.jspdf){
-      await new Promise((res,rej)=>{ const s=document.createElement("script"); s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
-    }
+    if(!window.jspdf){ throw new Error("jsPDF non charge. Verifiez votre connexion internet."); }
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({unit:"mm",format:"a4"});
     const W=210,M=18,pw=W-2*M; let y=M;
@@ -402,10 +401,10 @@ async function generatePDF(){
     doc.save(`PreDiagnostic_${(officine||"Officine").replace(/\s+/g,"_")}_${new Date().toISOString().slice(0,10)}.pdf`);
     btn.className="btn-pdf done"; btn.textContent="\u2705 PDF t\u00e9l\u00e9charg\u00e9 !";
   } catch(err){
-    console.error(err); btn.className="btn-pdf error"; btn.textContent="\u274c Erreur, r\u00e9essayez";
+    console.error(err); btn.className="btn-pdf error"; btn.textContent="\u274c Erreur: " + err.message;
   }
   btn.disabled=false;
-  setTimeout(()=>{ btn.className="btn-pdf"; btn.textContent="\ud83d\udcc4 T\u00e9l\u00e9charger le PDF"; },3000);
+  setTimeout(()=>{ btn.className="btn-pdf"; btn.textContent="\ud83d\udcc4 T\u00e9l\u00e9charger le PDF"; },8000);
 }
 
 render();
