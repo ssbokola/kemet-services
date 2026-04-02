@@ -339,6 +339,11 @@ function render(){
   else renderSummary();
 }
 
+function stripAccents(str){
+  const map={"à":"a","â":"a","ä":"a","é":"e","è":"e","ê":"e","ë":"e","î":"i","ï":"i","ô":"o","ö":"o","ù":"u","û":"u","ü":"u","ç":"c","À":"A","Â":"A","Ä":"A","É":"E","È":"E","Ê":"E","Ë":"E","Î":"I","Ï":"I","Ô":"O","Ö":"O","Ù":"U","Û":"U","Ü":"U","Ç":"C","—":"-","–":"-","\u2019":"'","\u2018":"'","\u201c":'"',"\u201d":'"',"\u2026":"..."};
+  return str.replace(/[àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ\u2014\u2013\u2019\u2018\u201c\u201d\u2026]/g,c=>map[c]||c);
+}
+
 async function generatePDF(){
   const btn=document.getElementById("btn-pdf");
   btn.disabled=true; btn.textContent="\u23f3 G\u00e9n\u00e9ration..."; btn.className="btn-pdf";
@@ -359,26 +364,27 @@ async function generatePDF(){
     doc.setFillColor(7,103,57); doc.rect(0,0,W,42,"F");
     doc.setFillColor(196,164,30); doc.rect(0,42,W,2.5,"F");
     doc.setTextColor(255,255,255);
+    const t=s=>stripAccents(s);
     doc.setFontSize(20); doc.setFont("helvetica","bold"); doc.text("KEMET SERVICES",M,16);
-    doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.text("On ne forme pas des pharmaciens. On transforme des officines.",M,23);
+    doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.text(t("On ne forme pas des pharmaciens. On transforme des officines."),M,23);
     doc.setFontSize(15); doc.setFont("helvetica","bold"); doc.text("GRILLE DE PRE-DIAGNOSTIC",M,35);
     y=52;
     doc.setTextColor(35,35,35); doc.setFontSize(10); doc.setFont("helvetica","normal");
-    doc.text(`Officine : ${officine||"___"}`,M,y); doc.text(`Titulaire : ${titulaire||"___"}`,M+pw/2,y); y+=6;
-    doc.text(`Date : ${dateV||"___"}`,M,y); doc.text(`Consultant : ${consultant||"___"}`,M+pw/2,y); y+=6;
-    doc.text(`Questions renseignees : ${answered} / ${totalQ} (${p}%)`,M,y); y+=10;
+    doc.text(t(`Officine : ${officine||"___"}`),M,y); doc.text(t(`Titulaire : ${titulaire||"___"}`),M+pw/2,y); y+=6;
+    doc.text(t(`Date : ${dateV||"___"}`),M,y); doc.text(t(`Consultant : ${consultant||"___"}`),M+pw/2,y); y+=6;
+    doc.text(t(`Questions renseignees : ${answered} / ${totalQ} (${p}%)`),M,y); y+=10;
 
     axes.forEach((a,ai)=>{
       check(18);
       doc.setFillColor(7,103,57); doc.rect(M,y-1,pw,8,"F");
-      doc.setTextColor(255,255,255); doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.text(a.titre,M+3,y+4.5);
+      doc.setTextColor(255,255,255); doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.text(t(a.titre),M+3,y+4.5);
       doc.setTextColor(196,164,30); doc.setFontSize(8); doc.text(`${axeAns(ai)}/${a.questions.length}`,M+pw-3,y+4.5,{align:"right"});
       y+=12;
       a.questions.forEach(q=>{
         const answer=state.ans[q.id]||""; const note=state.obs[q.id]||"";
-        const qL=doc.splitTextToSize(`${q.id}. ${q.q}`,pw-4);
-        const aL=answer?doc.splitTextToSize(`> ${answer}`,pw-8):[];
-        const oL=note?doc.splitTextToSize(`Obs: ${note}`,pw-8):[];
+        const qL=doc.splitTextToSize(t(`${q.id}. ${q.q}`),pw-4);
+        const aL=answer?doc.splitTextToSize(t(`> ${answer}`),pw-8):[];
+        const oL=note?doc.splitTextToSize(t(`Obs: ${note}`),pw-8):[];
         check(qL.length*4.2+aL.length*3.8+oL.length*3.5+6);
         doc.setTextColor(3,52,28); doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.text(qL,M+2,y); y+=qL.length*4.2;
         if(answer){ doc.setFont("helvetica","normal"); doc.setTextColor(18,155,88); doc.text(aL,M+5,y); y+=aL.length*3.8; }
@@ -392,7 +398,7 @@ async function generatePDF(){
     doc.setDrawColor(196,164,30); doc.line(M,y,M+pw,y); y+=6;
     doc.setTextColor(150,150,150); doc.setFontSize(8); doc.setFont("helvetica","italic");
     doc.text("DOCUMENT CONFIDENTIEL - Usage exclusif Kemet Services",W/2,y,{align:"center"});
-    doc.text(`Genere le ${new Date().toLocaleDateString("fr-FR")}`,W/2,y+4,{align:"center"});
+    doc.text(t(`Genere le ${new Date().toLocaleDateString("fr-FR")}`),W/2,y+4,{align:"center"});
     doc.save(`PreDiagnostic_${(officine||"Officine").replace(/\s+/g,"_")}_${new Date().toISOString().slice(0,10)}.pdf`);
     btn.className="btn-pdf done"; btn.textContent="\u2705 PDF t\u00e9l\u00e9charg\u00e9 !";
   } catch(err){
