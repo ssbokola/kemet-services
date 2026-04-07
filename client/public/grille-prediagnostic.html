@@ -67,10 +67,19 @@ details textarea{margin-top:6px;border-color:#E1C850 !important}
 .footer-note{text-align:center;margin-top:16px;font-size:11px;color:#999}
 .back-link{display:inline-block;margin:16px 0;color:#076739;text-decoration:none;font-size:14px;font-weight:600}
 .back-link:hover{text-decoration:underline}
+@media print {
+  body{background:#fff !important}
+  .tabs,.nav,.btn-pdf,.back-link,.field-card details{display:none !important}
+  .header{background:#076739 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border-radius:0 !important;margin:0 !important;padding:16px !important}
+  .header h1,.header h2,.header .tagline,.header .progress-label{color:#fff !important}
+  .recap-axe-header{background:#076739 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff !important}
+  #app{max-width:100% !important;padding:0 !important}
+  .recap-row{page-break-inside:avoid}
+  .recap-axe{page-break-inside:auto}
+}
 </style>
 </head>
 <body>
-<script src="/jspdf.umd.min.js"></script>
 <div id="app">
   <a href="/" class="back-link">&larr; Retour au site</a>
   <div class="header">
@@ -326,8 +335,8 @@ function renderSummary(){
     c.appendChild(block);
   });
 
-  const btn=document.createElement("button"); btn.className="btn-pdf"; btn.id="btn-pdf"; btn.textContent="\ud83d\udcc4 T\u00e9l\u00e9charger le PDF";
-  btn.onclick=generatePDF;
+  const btn=document.createElement("button"); btn.className="btn-pdf"; btn.id="btn-pdf"; btn.textContent="\ud83d\udcc4 Imprimer / Enregistrer en PDF";
+  btn.onclick=()=>window.print();
   c.appendChild(btn);
   const foot=document.createElement("div"); foot.className="footer-note"; foot.textContent="DOCUMENT CONFIDENTIEL \u2014 Usage exclusif Kemet Services";
   c.appendChild(foot);
