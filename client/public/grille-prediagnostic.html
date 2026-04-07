@@ -335,7 +335,7 @@ function renderSummary(){
     c.appendChild(block);
   });
 
-  const btn=document.createElement("button"); btn.className="btn-pdf"; btn.id="btn-pdf"; btn.textContent="\ud83d\udcc4 Imprimer / Enregistrer en PDF";
+  const btn=document.createElement("button"); btn.className="btn-pdf"; btn.id="btn-pdf"; btn.textContent="\ud83d\udcc4 Imprimer / Enregistrer en PDF (Microsoft Print to PDF)";
   btn.onclick=()=>window.print();
   c.appendChild(btn);
   const foot=document.createElement("div"); foot.className="footer-note"; foot.textContent="DOCUMENT CONFIDENTIEL \u2014 Usage exclusif Kemet Services";
