@@ -341,8 +341,16 @@ function render(){
 }
 
 function stripAccents(str){
-  const map={"à":"a","â":"a","ä":"a","é":"e","è":"e","ê":"e","ë":"e","î":"i","ï":"i","ô":"o","ö":"o","ù":"u","û":"u","ü":"u","ç":"c","À":"A","Â":"A","Ä":"A","É":"E","È":"E","Ê":"E","Ë":"E","Î":"I","Ï":"I","Ô":"O","Ö":"O","Ù":"U","Û":"U","Ü":"U","Ç":"C","—":"-","–":"-","\u2019":"'","\u2018":"'","\u201c":'"',"\u201d":'"',"\u2026":"..."};
-  return str.replace(/[àâäéèêëîïôöùûüçÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ\u2014\u2013\u2019\u2018\u201c\u201d\u2026]/g,c=>map[c]||c).replace(/[\u{1F000}-\u{1FFFF}|\u{2600}-\u{27BF}|\u{FE00}-\u{FE0F}|\u{1F900}-\u{1F9FF}|\u{200D}|\u{20E3}|\u{E0020}-\u{E007F}|\u{2700}-\u{27BF}|\u{2300}-\u{23FF}|\u{2B50}|\u{2705}|\u{274C}|\u{23F3}|\u{1F4B0}|\u{1F4E6}|\u{1F4CB}|\u{1F4C4}|\u{1F465}]/gu,"");
+  if(str==null) return "";
+  return String(str)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[\u2014\u2013]/g,"-")
+    .replace(/[\u2018\u2019]/g,"'")
+    .replace(/[\u201c\u201d]/g,'"')
+    .replace(/\u2026/g,"...")
+    .replace(/[^\x20-\x7E]/g,"")
+    .trim();
 }
 
 async function generatePDF(){
