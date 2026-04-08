@@ -315,16 +315,23 @@ export default function Consulting() {
             et des résultats mesurables.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={handleDiagnosticClick}
               data-testid="button-cta-contact"
             >
               Demander un diagnostic gratuit
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
+            <Button
+              size="lg"
+              onClick={() => window.location.href = '/autonomie-tresorerie.html'}
+              data-testid="button-cta-autonomie"
+            >
+              Tester mon autonomie de trésorerie
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
               onClick={() => handleWhatsAppClick()}
               data-testid="button-cta-whatsapp"
             >
