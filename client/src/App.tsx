@@ -30,6 +30,8 @@ import KemetEcho from "@/pages/KemetEcho";
 import ChecklistGestion from "@/pages/ChecklistGestion";
 import InscriptionFormation from "@/pages/InscriptionFormation";
 import Inscriptions from "@/pages/Inscriptions";
+import FDFP from "@/pages/FDFP";
+import FAQ from "@/pages/FAQ";
 import NotFound from "@/pages/not-found";
 import MentionsLegales from "@/pages/MentionsLegales";
 import Confidentialite from "@/pages/Confidentialite";
@@ -75,6 +77,8 @@ function Router() {
       <Route path="/article/:id" component={Article} />
       <Route path="/ressources/checklist-gestion" component={ChecklistGestion} />
       <Route path="/contact" component={Contact} />
+      <Route path="/fdfp" component={FDFP} />
+      <Route path="/faq" component={FAQ} />
       <Route path="/inscription-formation" component={InscriptionFormation} />
       <Route path="/inscriptions" component={Inscriptions} />
       <Route path="/mentions-legales" component={MentionsLegales} />

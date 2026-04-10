@@ -9,13 +9,15 @@ const footerLinks = {
     { name: 'Formations', href: '/formations' },
     { name: 'Consulting', href: '/consulting' },
     { name: 'Diagnostic', href: '/grille-prediagnostic.html' },
-    { name: 'Kemet Echo', href: '/kemet-echo' }
+    { name: 'Kemet Echo', href: '/kemet-echo' },
+    { name: 'Prise en charge FDFP', href: '/fdfp' }
   ],
   company: [
     { name: 'À propos', href: '/a-propos' },
     { name: 'Galerie', href: '/galerie' },
     { name: 'Ressources', href: '/ressources' },
-    { name: 'Contact', href: '/contact' }
+    { name: 'Contact', href: '/contact' },
+    { name: 'FAQ', href: '/faq' }
   ],
   legal: [
     { name: 'Mentions légales', href: '/mentions-legales' },

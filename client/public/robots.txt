@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /participant/
+Disallow: /grille-prediagnostic.html
+Disallow: /api/
+
+Sitemap: https://kemetservices.com/sitemap.xml

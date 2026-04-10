@@ -118,6 +118,20 @@ const routeConfigs: Record<string, SEOConfig> = {
     keywords: 'cookies kemet services, politique cookies, consentement cookies',
     ogType: 'website',
     canonical: '/politique-cookies'
+  },
+  '/fdfp': {
+    title: 'Formations Pharmacie Éligibles FDFP - Prise en Charge Jusqu\'à 100%',
+    description: 'Toutes nos formations pharmacie sont éligibles à la prise en charge FDFP. Kemet Services monte votre dossier. Jusqu\'à 100% financés. 22 formations disponibles.',
+    keywords: 'FDFP formation pharmacie, prise en charge FDFP, financement formation Côte d\'Ivoire, FDFP pharmacie, taxe apprentissage formation',
+    ogType: 'website',
+    canonical: '/fdfp'
+  },
+  '/faq': {
+    title: 'FAQ - Questions Fréquentes | Kemet Services',
+    description: 'Réponses à vos questions sur les formations, le consulting, le FDFP, Kemet Echo et nos services pour pharmacies en Côte d\'Ivoire. Tarifs, durée, résultats.',
+    keywords: 'FAQ formation pharmacie, questions fréquentes kemet services, FDFP questions, consulting pharmacie questions',
+    ogType: 'website',
+    canonical: '/faq'
   }
 };
 
@@ -243,6 +257,16 @@ function generateMetaTags(config: SEOConfig, path: string): string {
         <!-- Diagnostic Service Schema -->
         <script type="application/ld+json">
         ${JSON.stringify(diagnosticConsultingSchema)}
+        </script>`;
+      break;
+
+    case '/fdfp':
+    case '/faq':
+      // Pages FDFP et FAQ : FAQ Schema (géré côté client via Helmet)
+      richSnippets += `
+        <!-- FAQ Schema -->
+        <script type="application/ld+json">
+        ${JSON.stringify(faqSchema)}
         </script>`;
       break;
   }
