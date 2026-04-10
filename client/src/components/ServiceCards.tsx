@@ -81,15 +81,9 @@ export default function ServiceCards() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Programmes certifiés adaptés aux réalités africaines pour pharmaciens et auxiliaires.
                 </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                  data-testid="button-formations-explore"
-                >
-                  Découvrir nos formations
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+                <span className="text-sm text-primary font-medium hover:underline" data-testid="link-formations-explore">
+                  Découvrir nos formations →
+                </span>
               </CardContent>
             </Card>
           </StaggerItem>
@@ -115,33 +109,9 @@ export default function ServiceCards() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Accompagnement personnalisé pour optimiser votre gestion et réduire les écarts.
                 </p>
-                <div className="space-y-2">
-                  <Button
-                    size="sm"
-                    className="w-full"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDiagnosticClick();
-                    }}
-                    data-testid="button-consulting-diagnostic"
-                  >
-                    <Stethoscope className="w-4 h-4 mr-2" />
-                    Diagnostic gratuit
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleWhatsAppClick();
-                    }}
-                    data-testid="button-consulting-whatsapp"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    WhatsApp
-                  </Button>
-                </div>
+                <span className="text-sm text-primary font-medium hover:underline" data-testid="link-consulting-explore">
+                  Découvrir nos packs →
+                </span>
               </CardContent>
             </Card>
           </StaggerItem>
@@ -167,20 +137,9 @@ export default function ServiceCards() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Catalogue complet, guides pratiques et outils pour votre pharmacie.
                 </p>
-                <div className="space-y-2">
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <KemetCatalog.Button className="w-full" />
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    data-testid="button-ressources-explore"
-                  >
-                    Explorer les ressources
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
+                <span className="text-sm text-primary font-medium hover:underline" data-testid="link-ressources-explore">
+                  Explorer les ressources →
+                </span>
               </CardContent>
             </Card>
           </StaggerItem>
@@ -206,15 +165,9 @@ export default function ServiceCards() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Doctorat Pharmacie, MBA, Master Qualité. 5+ pharmacies transformées.
                 </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                  data-testid="button-a-propos-about"
-                >
-                  En savoir plus
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
+                <span className="text-sm text-primary font-medium hover:underline" data-testid="link-a-propos-about">
+                  En savoir plus →
+                </span>
               </CardContent>
             </Card>
           </StaggerItem>

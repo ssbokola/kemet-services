@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, Package, TrendingUp, Shield, BarChart3 } from 'lucide-react';
+import { ArrowRight, Package, TrendingUp, Shield, MessageCircle } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import heroImage from '@assets/_D6A2216_1757585998505.jpg';
@@ -137,9 +137,9 @@ export default function Hero() {
             ))}
           </div>
 
-          {/* CTAs */}
+          {/* CTAs — 2 max */}
           <motion.div
-            className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8"
+            className="flex flex-col sm:flex-row flex-wrap gap-4 mb-6"
             variants={fadeUp}
             initial="hidden"
             animate="visible"
@@ -157,22 +157,29 @@ export default function Hero() {
             <Button
               size="lg"
               variant="outline"
-              onClick={handleFormationsClick}
-              className="text-lg px-8 py-6 bg-background/80 backdrop-blur-sm border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-              data-testid="button-hero-formations"
+              onClick={() => window.open('https://wa.me/225759068744?text=Bonjour%20Kemet%20Services%2C%0AJe%20souhaite%20obtenir%20plus%20d%27informations.', '_blank')}
+              className="text-lg px-8 py-6 border-gold text-gold-dark hover:bg-gold/10"
+              data-testid="button-hero-whatsapp"
             >
-              Voir nos formations
+              <MessageCircle className="mr-2 h-5 w-5" />
+              Discuter sur WhatsApp
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={handleKemetEchoClick}
-              className="text-lg px-8 py-6 bg-primary/10 backdrop-blur-sm border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-              data-testid="button-hero-kemet-echo"
-            >
-              <BarChart3 className="mr-2 h-5 w-5" />
-              Kemet Echo - Satisfaction Client
-            </Button>
+          </motion.div>
+
+          {/* Liens textuels secondaires */}
+          <motion.div
+            className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-8"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.8}
+          >
+            <button onClick={handleFormationsClick} className="text-primary hover:underline font-medium" data-testid="link-hero-formations">
+              Voir nos formations →
+            </button>
+            <button onClick={handleKemetEchoClick} className="text-primary hover:underline font-medium" data-testid="link-hero-kemet-echo">
+              Kemet Echo — Satisfaction Client →
+            </button>
           </motion.div>
 
           {/* Trust Badge */}

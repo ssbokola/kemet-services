@@ -33,7 +33,7 @@ const steps = [
 
 export default function ConsultingSection() {
   const handleConsultingContact = () => {
-    console.log('Consulting contact triggered');
+    window.location.href = '/grille-prediagnostic.html';
   };
 
   return (
@@ -91,7 +91,7 @@ export default function ConsultingSection() {
                   onClick={handleConsultingContact}
                   data-testid="button-consulting-contact"
                 >
-                  Demander un accompagnement
+                  Diagnostic gratuit
                 </Button>
               </div>
             </ScrollReveal>

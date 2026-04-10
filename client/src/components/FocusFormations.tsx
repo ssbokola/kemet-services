@@ -113,14 +113,14 @@ export default function FocusFormations() {
                         </div>
                       </div>
 
-                      {/* CTA */}
-                      <Button
-                        className="w-full"
+                      {/* CTA — lien texte */}
+                      <button
+                        className="w-full text-center text-sm text-primary font-medium hover:underline py-2"
                         onClick={() => handleInscription(formation.title)}
-                        data-testid={`button-inscription-${index}`}
+                        data-testid={`link-inscription-${index}`}
                       >
-                        S'inscrire
-                      </Button>
+                        En savoir plus →
+                      </button>
                     </div>
                   </CardContent>
                 </Card>
@@ -129,18 +129,16 @@ export default function FocusFormations() {
           })}
         </StaggerContainer>
 
-        {/* View All CTA */}
+        {/* View All — lien texte */}
         <ScrollReveal delay={0.3}>
           <div className="text-center mt-12">
-            <Button
-              variant="outline"
-              size="lg"
+            <button
               onClick={handleVoirFormations}
-              className="text-primary border-primary"
-              data-testid="button-voir-formations"
+              className="text-primary hover:underline font-medium"
+              data-testid="link-voir-formations"
             >
-              Voir toutes nos formations
-            </Button>
+              Voir toutes nos formations →
+            </button>
           </div>
         </ScrollReveal>
       </div>

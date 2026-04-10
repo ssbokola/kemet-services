@@ -50,10 +50,10 @@ export default function CTASection() {
                 Prêt à transformer votre officine ?
               </h2>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
-                Demandez votre diagnostic gratuit ou réservez une session découverte pour découvrir comment optimiser vos performances.
+                Demandez votre diagnostic gratuit et découvrez comment optimiser vos performances.
               </p>
 
-              <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center mb-8">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Button
                   size="lg"
                   onClick={handleDiagnosticClick}
@@ -66,18 +66,8 @@ export default function CTASection() {
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={handleFormationsClick}
-                  className="text-lg px-8 py-6 text-primary border-primary"
-                  data-testid="button-cta-formations"
-                >
-                  <BookOpen className="mr-2 h-5 w-5" />
-                  Réserver une session découverte
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
                   onClick={handleWhatsAppClick}
-                  className="text-lg px-8 py-6 text-primary border-primary"
+                  className="text-lg px-8 py-6 border-gold text-gold-dark hover:bg-gold/10"
                   data-testid="button-cta-whatsapp"
                 >
                   <MessageCircle className="mr-2 h-5 w-5" />

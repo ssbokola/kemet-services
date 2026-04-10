@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { KemetWhatsAppCallout } from "@/components/ui/whatsapp-callout";
+import StickyWhatsApp from "@/components/StickyWhatsApp";
 import CookieManager from "@/components/CookieManager";
 import CookieBanner from "@/components/CookieBanner";
 import CookiePreferences from "@/components/CookiePreferences";
@@ -115,9 +115,9 @@ function App() {
             <TooltipProvider>
               <Toaster />
               <Router />
+              <StickyWhatsApp />
               <CookieBanner />
               <CookiePreferences />
-              <KemetWhatsAppCallout.Default autoShow={true} showDelay={5000} />
             </TooltipProvider>
           </CookieManager>
         </ThemeProvider>
