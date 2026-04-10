@@ -195,7 +195,7 @@ export default function Footer() {
               © {new Date().getFullYear()} Kemet Services. Tous droits réservés.
             </p>
             <div className="flex items-center space-x-4 mt-4 md:mt-0">
-              <span className="text-xs text-muted-foreground">Certifié ISO 9001:2015</span>
+              <span className="text-xs text-muted-foreground">Accompagnement vers la certification ISO 9001:2015</span>
               <span className="text-xs text-muted-foreground">•</span>
               <span className="text-xs text-muted-foreground">BPF</span>
             </div>

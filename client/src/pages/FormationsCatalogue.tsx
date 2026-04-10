@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Clock, BookOpen, Filter } from 'lucide-react';
+import { Clock, BookOpen, Filter, Award, ArrowRight } from 'lucide-react';
 import { categoryLabels } from '@/data/formations';
 import { formatPriceCFA } from '@/lib/utils';
 
@@ -63,9 +63,13 @@ export default function FormationsCatalogue() {
               <h1 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-4">
                 Formations en ligne
               </h1>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-xl text-muted-foreground mb-6">
                 Développez vos compétences à votre rythme avec nos formations pratiques et certifiantes
               </p>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: '#03341C', color: '#C4A41E' }}>
+                <Award className="w-4 h-4" />
+                Éligible FDFP — Formation prise en charge
+              </span>
             </div>
           </div>
         </section>
@@ -201,6 +205,19 @@ export default function FormationsCatalogue() {
                 </div>
               </>
             )}
+          </div>
+        </section>
+        {/* Maillage interne */}
+        <section className="py-12 bg-muted/30">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p className="text-muted-foreground mb-4">
+              Besoin d'un accompagnement plus poussé ? Découvrez nos packs de consulting sur-mesure.
+            </p>
+            <Button variant="outline" asChild>
+              <Link href="/consulting">
+                Voir les packs consulting <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
           </div>
         </section>
       </main>

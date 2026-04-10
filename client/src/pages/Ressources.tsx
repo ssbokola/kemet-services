@@ -20,13 +20,19 @@ import { KemetNewsletter } from '@/components/ui/newsletter';
 import SEO from '@/components/SEO';
 import { articles } from '@/data/articles';
 
-const categories = [
-  { id: 'tous', name: 'Tous les articles', count: 3 },
-  { id: 'gestion-stock', name: 'Gestion des stocks', count: 2 },
-  { id: 'satisfaction-client', name: 'Satisfaction Client', count: 1 },
-  { id: 'performance', name: 'Performance', count: 0 },
-  { id: 'finance', name: 'Finance & Trésorerie', count: 0 }
+const categoryDefs = [
+  { id: 'tous', name: 'Tous les articles' },
+  { id: 'gestion-stock', name: 'Gestion des stocks' },
+  { id: 'satisfaction-client', name: 'Satisfaction Client' },
+  { id: 'performance', name: 'Performance' },
+  { id: 'finance', name: 'Finance & Trésorerie' }
 ];
+
+// Compute counts dynamically from actual articles data
+const categories = categoryDefs.map(cat => ({
+  ...cat,
+  count: cat.id === 'tous' ? articles.length : articles.filter(a => a.category === cat.id).length
+}));
 
 
 export default function Ressources() {
@@ -185,9 +191,19 @@ export default function Ressources() {
                       </Button>
                       
                       {article.formationLiee && (
-                        <Button variant="secondary" className="flex-1" data-testid={`button-formation-${article.id}`}>
-                          <Target className="w-4 h-4 mr-2" />
-                          Formation : {article.formationLiee}
+                        <Button variant="secondary" className="flex-1" asChild data-testid={`button-formation-${article.id}`}>
+                          <Link href="/formations">
+                            <Target className="w-4 h-4 mr-2" />
+                            Formation : {article.formationLiee}
+                          </Link>
+                        </Button>
+                      )}
+                      {'consultingPackLie' in article && article.consultingPackLie && (
+                        <Button variant="outline" className="flex-1" asChild data-testid={`button-consulting-${article.id}`}>
+                          <Link href={article.consultingPackLie.url}>
+                            <TrendingUp className="w-4 h-4 mr-2" />
+                            Pack : {article.consultingPackLie.name}
+                          </Link>
                         </Button>
                       )}
                     </div>
@@ -199,23 +215,28 @@ export default function Ressources() {
             {filteredArticles.length === 0 && (
               <Card>
                 <CardContent className="text-center py-12">
-                  <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-foreground mb-2">
-                    Aucun article trouvé
+                    Nouveaux articles bientôt
                   </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Essayez de modifier vos critères de recherche ou de sélectionner une autre catégorie.
+                  <p className="text-muted-foreground mb-6">
+                    Nous préparons de nouveaux contenus pour cette catégorie. Abonnez-vous pour être informé dès leur publication.
                   </p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSelectedCategory('tous');
-                    }}
-                    data-testid="button-reset-search"
-                  >
-                    Voir tous les articles
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSearchQuery('');
+                        setSelectedCategory('tous');
+                      }}
+                      data-testid="button-reset-search"
+                    >
+                      Voir tous les articles
+                    </Button>
+                    <Button variant="default" asChild>
+                      <Link href="/contact">S'abonner à la newsletter</Link>
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             )}

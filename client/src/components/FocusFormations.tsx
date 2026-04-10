@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Users, BookOpen } from 'lucide-react';
+import { Clock, Users, BookOpen, Award } from 'lucide-react';
 import { useLocation } from 'wouter';
 import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/ScrollReveal';
 
@@ -54,9 +54,13 @@ export default function FocusFormations() {
             <h2 className="text-3xl md:text-4xl font-bold font-serif text-foreground mb-4">
               Formations phares
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
               Des formations ciblées pour résoudre les défis quotidiens de votre officine
             </p>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: '#03341C', color: '#C4A41E' }}>
+              <Award className="w-4 h-4" />
+              Éligible FDFP — Formation prise en charge
+            </span>
           </div>
         </ScrollReveal>
 

@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { Clock, BookOpen, CheckCircle2, AlertCircle, Users, Download, FileText, Link as LinkIcon } from 'lucide-react';
+import { Clock, BookOpen, CheckCircle2, AlertCircle, Users, Download, FileText, Link as LinkIcon, Award, ArrowRight } from 'lucide-react';
 import { categoryLabels } from '@/data/formations';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
@@ -226,8 +226,37 @@ export default function FormationDetail() {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>{formation.title} - Kemet Services</title>
+        <title>{formation.title} - Formation Pharmacie | Kemet Services</title>
         <meta name="description" content={formation.description} />
+        <meta property="og:title" content={`${formation.title} - Kemet Services`} />
+        <meta property="og:description" content={formation.description} />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={`https://kemetservices.com/formation/${formation.slug}`} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": formation.title,
+            "description": formation.description,
+            "provider": {
+              "@type": "Organization",
+              "name": "Kemet Services",
+              "url": "https://kemetservices.com"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": formation.price,
+              "priceCurrency": "XOF",
+              "availability": "https://schema.org/InStock"
+            },
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "onsite",
+              "duration": `PT${Math.floor(formation.duration / 60)}H${formation.duration % 60}M`,
+              "inLanguage": "fr"
+            }
+          })}
+        </script>
       </Helmet>
 
       <Header />
@@ -235,15 +264,23 @@ export default function FormationDetail() {
       <main>
         <section className="py-12 bg-muted/30">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
               <Badge variant="outline" data-testid="badge-category">
                 {categoryLabels[formation.category as keyof typeof categoryLabels]}
               </Badge>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: '#03341C', color: '#C4A41E' }}>
+                <Award className="w-3.5 h-3.5" />
+                Éligible FDFP
+              </span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-6" data-testid="text-title">
+            <h1 className="text-4xl md:text-5xl font-bold font-serif text-foreground mb-4" data-testid="text-title">
               {formation.title}
             </h1>
+
+            <p className="text-lg font-accent italic text-muted-foreground mb-6">
+              Comment résoudre ce défi au quotidien dans votre officine ?
+            </p>
 
             <p className="text-xl text-muted-foreground mb-8">{formation.description}</p>
 
@@ -427,6 +464,22 @@ export default function FormationDetail() {
                 </div>
               </div>
             )}
+
+            {/* Maillage interne — tunnel formation → diagnostic → consulting */}
+            <Card className="border-dashed">
+              <CardContent className="pt-6">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button variant="outline" size="sm" asChild className="flex-1">
+                    <Link href="/consulting">
+                      Découvrir nos packs consulting <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" className="flex-1" onClick={() => window.location.href = '/grille-prediagnostic.html'}>
+                    Pré-diagnostic gratuit <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card className="bg-primary/5">
               <CardContent className="pt-6">

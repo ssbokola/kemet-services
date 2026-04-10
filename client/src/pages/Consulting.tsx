@@ -1,20 +1,22 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Users, 
-  Target, 
-  Package, 
-  DollarSign, 
-  Shield, 
+import {
+  Users,
+  Target,
+  Package,
+  DollarSign,
+  Shield,
   Award,
   CheckCircle,
   Clock,
-  TrendingUp
+  TrendingUp,
+  ArrowRight,
+  BookOpen
 } from 'lucide-react';
 import Header from '@/components/Header';
 import { ConsultingSEO } from '@/components/SEO';
-import { useLocation } from 'wouter';
+import { useLocation, Link } from 'wouter';
 import { trackWhatsAppClick } from '@/components/GoogleAnalytics';
 
 const consultingPacks = [
@@ -226,6 +228,13 @@ export default function Consulting() {
             </p>
           </div>
           
+          <div className="flex justify-center mb-8">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold" style={{ backgroundColor: '#03341C', color: '#C4A41E' }}>
+              <Award className="w-4 h-4" />
+              Éligible FDFP — Formation prise en charge
+            </span>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {consultingPacks.map((pack) => {
               const IconComponent = pack.icon;
@@ -304,6 +313,42 @@ export default function Consulting() {
         </div>
       </section>
 
+      {/* Maillage interne — tunnel formation → diagnostic → consulting */}
+      <section className="py-12 border-t border-border">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="hover-elevate">
+              <CardContent className="pt-6">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-primary" />
+                  Évaluez votre officine
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Remplissez notre grille de pré-diagnostic pour identifier vos axes d'amélioration prioritaires.
+                </p>
+                <Button variant="outline" size="sm" onClick={handleDiagnosticClick}>
+                  Pré-diagnostic gratuit <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </CardContent>
+            </Card>
+            <Card className="hover-elevate">
+              <CardContent className="pt-6">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" />
+                  Formez votre équipe
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Complétez le consulting par nos formations ciblées pour ancrer les bonnes pratiques.
+                </p>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/formations">Voir les formations <ArrowRight className="w-4 h-4 ml-2" /></Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Call to Action */}
       <section className="bg-primary/5 py-16">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -311,7 +356,7 @@ export default function Consulting() {
             Prêt à transformer votre officine ?
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Nos experts vous accompagnent avec des solutions personnalisées 
+            Nos experts vous accompagnent avec des solutions personnalisées
             et des résultats mesurables.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

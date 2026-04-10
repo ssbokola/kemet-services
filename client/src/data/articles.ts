@@ -92,7 +92,8 @@ Il est illusoire de penser qu'une pharmacie puisse totalement éliminer le risqu
     readTime: '5 min',
     category: 'gestion-stock',
     tags: ['Ruptures de stock', 'Prévention', 'Gestion proactive', 'Seuils d\'alerte'],
-    formationLiee: 'La Gestion des Stocks et Approvisionnements'
+    formationLiee: 'La Gestion des Stocks et Approvisionnements',
+    consultingPackLie: { name: 'WAYO — Gestion Stock', url: '/consulting#wayo' }
   },
   {
     id: 'silence-clients-hemorragie-invisible',
@@ -223,7 +224,8 @@ Fondateur de <strong>KEMET Services</strong></p>
     date: '2024-09-30',
     readTime: '5 min',
     category: 'satisfaction-client',
-    tags: ['Satisfaction client', 'Expérience client', 'Fidélisation', 'Feedback']
+    tags: ['Satisfaction client', 'Expérience client', 'Fidélisation', 'Feedback'],
+    consultingPackLie: { name: 'CLIENTÈLE — Acquisition & Fidélisation', url: '/consulting#clientele' }
   },
   {
     id: '5-erreurs-gestion-stocks-officine',
@@ -289,7 +291,8 @@ En officine, nous savons tous qu'un petit oubli dans la gestion des stocks peut 
     readTime: '3 min',
     category: 'gestion-stock',
     tags: ['Stock', 'Erreurs courantes', 'Procédures', 'FEFO'],
-    formationLiee: 'La Gestion des Stocks et Approvisionnements'
+    formationLiee: 'La Gestion des Stocks et Approvisionnements',
+    consultingPackLie: { name: 'WAYO — Gestion Stock', url: '/consulting#wayo' }
   }
 ];
 
