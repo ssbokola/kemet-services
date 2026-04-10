@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
-import { Helmet } from 'react-helmet-async';
+import SEO from '@/components/SEO';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -48,10 +48,11 @@ export default function FormationsCatalogue() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>Formations en ligne - Kemet Services</title>
-        <meta name="description" content="Catalogue de formations en ligne pour pharmaciens : gestion de stock, service client, finance, management d'équipe. Apprenez à votre rythme avec des experts." />
-      </Helmet>
+      <SEO
+        title="Formations en Ligne pour Pharmaciens"
+        description="Catalogue de formations en ligne pour pharmaciens : gestion de stock, service client, finance, management d'equipe. Apprenez a votre rythme avec des experts."
+        canonical="/formations"
+      />
 
       <Header />
 

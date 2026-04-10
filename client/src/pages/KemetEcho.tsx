@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '@/components/SEO';
 import { Link } from 'wouter';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -101,12 +101,11 @@ export default function KemetEcho() {
 
   return (
     <>
-      <Helmet>
-        <title>Kemet Echo - Baromètre Client | Kemet Services</title>
-        <meta name="description" content="Kemet Echo : Solution innovante de satisfaction client pour pharmacies et cliniques en Côte d'Ivoire. CSAT, NPS, enquêtes anonymes, rapports détaillés. Essai gratuit 30 jours." />
-        <meta property="og:title" content="Kemet Echo - Baromètre Client pour Pharmacies" />
-        <meta property="og:description" content="Mesurez et améliorez la satisfaction de vos clients avec Kemet Echo. Tableau de bord en temps réel, enquêtes personnalisées, rapports détaillés." />
-      </Helmet>
+      <SEO
+        title="Kemet Echo - Barometre Client pour Pharmacies"
+        description="Kemet Echo : Solution innovante de satisfaction client pour pharmacies et cliniques en Cote d'Ivoire. CSAT, NPS, enquetes anonymes, rapports detailles. Essai gratuit 30 jours."
+        canonical="/kemet-echo"
+      />
 
       <div className="min-h-screen flex flex-col bg-background">
         <Header />

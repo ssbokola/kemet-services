@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '@/components/SEO';
 import { Link } from 'wouter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -123,12 +123,11 @@ export default function Galerie() {
 
   return (
     <>
-      <Helmet>
-        <title>Galerie Médias | Kemet Services</title>
-        <meta name="description" content="Galerie photo et médias de Kemet Services. Découvrez nos formations en action, notre identité visuelle et nos moments professionnels en Côte d'Ivoire." />
-        <meta property="og:title" content="Galerie Médias | Kemet Services" />
-        <meta property="og:description" content="Galerie photo et médias de Kemet Services. Découvrez nos formations professionnelles et notre expertise." />
-      </Helmet>
+      <SEO
+        title="Galerie Medias"
+        description="Galerie photo et medias de Kemet Services. Decouvrez nos formations en action, notre identite visuelle et nos moments professionnels en Cote d'Ivoire."
+        canonical="/galerie"
+      />
 
       <Header />
       

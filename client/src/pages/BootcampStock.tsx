@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEO from '@/components/SEO';
 import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -140,6 +141,11 @@ export default function BootcampStock() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Bootcamp Gestion des Stocks Pharmacie"
+        description="Bootcamp intensif de gestion des stocks pour pharmacies d'officine. Maitrisez vos approvisionnements, reduisez les perimes et optimisez votre rentabilite."
+        canonical="/bootcamp-stock"
+      />
       <Header />
       <main className="pt-16">
         {/* Hero Section */}

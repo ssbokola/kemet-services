@@ -1,3 +1,4 @@
+import SEO from '@/components/SEO';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,6 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export default function PolitiqueCookies() {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Politique de Cookies"
+        description="Politique de cookies du site kemetservices.com. Types de cookies utilises, gestion des preferences et consentement."
+        canonical="/politique-cookies"
+      />
       <Header />
       
       <main className="pt-16">

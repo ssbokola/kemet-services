@@ -1,3 +1,4 @@
+import SEO from '@/components/SEO';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,6 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export default function MentionsLegales() {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Mentions Legales"
+        description="Mentions legales du site kemetservices.com. Editeur, hebergeur, propriete intellectuelle et conditions d'utilisation."
+        canonical="/mentions-legales"
+      />
       <Header />
       
       <main className="pt-16">

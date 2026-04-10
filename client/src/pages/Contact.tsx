@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -166,8 +167,13 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Contact - Devis Formation & Consultance Pharmacie"
+        description="Contactez Kemet Services pour un devis personnalise en formation ou consultance pharmaceutique. Reponse sous 24h, diagnostic gratuit disponible."
+        canonical="/contact"
+      />
       <Header />
-      
+
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

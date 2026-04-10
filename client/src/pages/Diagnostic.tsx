@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import SEO from '@/components/SEO';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -151,6 +152,11 @@ export default function Diagnostic() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Diagnostic Gratuit Pharmacie"
+        description="Diagnostic gratuit et confidentiel de votre pharmacie : analyse des processus, identification des axes d'amelioration, recommandations personnalisees."
+        canonical="/diagnostic"
+      />
       <Header />
       <main className="pt-16">
         {/* Hero Section */}

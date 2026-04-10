@@ -69,6 +69,55 @@ const routeConfigs: Record<string, SEOConfig> = {
     keywords: 'diagnostic gratuit pharmacie, évaluation pharmacie, audit pharmacie gratuit, diagnostic performance officine',
     ogType: 'website',
     canonical: '/diagnostic'
+  },
+  '/kemet-echo': {
+    title: 'Kemet Echo - Baromètre Client pour Pharmacies | Kemet Services',
+    description: 'Kemet Echo : Solution innovante de satisfaction client pour pharmacies et cliniques en Côte d\'Ivoire. CSAT, NPS, enquêtes anonymes, rapports détaillés.',
+    keywords: 'satisfaction client pharmacie, baromètre client, NPS pharmacie, CSAT officine, enquête satisfaction',
+    ogType: 'website',
+    canonical: '/kemet-echo'
+  },
+  '/galerie': {
+    title: 'Galerie Médias | Kemet Services',
+    description: 'Galerie photo et médias de Kemet Services. Découvrez nos formations en action, notre identité visuelle et nos moments professionnels en Côte d\'Ivoire.',
+    keywords: 'galerie kemet services, photos formations pharmacie, événements pharmacie Abidjan',
+    ogType: 'website',
+    canonical: '/galerie'
+  },
+  '/ressources': {
+    title: 'Ressources & Articles - Gestion Pharmacie | Kemet Services',
+    description: 'Articles, guides et ressources pratiques pour pharmaciens : gestion des stocks, trésorerie, management d\'équipe, qualité officinale.',
+    keywords: 'ressources pharmacie, articles gestion officine, guide pharmacien, bonnes pratiques pharmacie',
+    ogType: 'website',
+    canonical: '/ressources'
+  },
+  '/bootcamp-stock': {
+    title: 'Bootcamp Gestion des Stocks Pharmacie | Kemet Services',
+    description: 'Bootcamp intensif de gestion des stocks pour pharmacies d\'officine. Maîtrisez vos approvisionnements, réduisez les périmés et optimisez votre rentabilité.',
+    keywords: 'bootcamp stock pharmacie, formation gestion stocks, réduction périmés officine, optimisation approvisionnement',
+    ogType: 'website',
+    canonical: '/bootcamp-stock'
+  },
+  '/mentions-legales': {
+    title: 'Mentions Légales | Kemet Services',
+    description: 'Mentions légales du site kemetservices.com. Éditeur, hébergeur, propriété intellectuelle et conditions d\'utilisation.',
+    keywords: 'mentions légales kemet services',
+    ogType: 'website',
+    canonical: '/mentions-legales'
+  },
+  '/confidentialite': {
+    title: 'Politique de Confidentialité | Kemet Services',
+    description: 'Politique de confidentialité et protection des données personnelles de Kemet Services. RGPD, traitement des données, droits des utilisateurs.',
+    keywords: 'politique confidentialité kemet services, RGPD, données personnelles',
+    ogType: 'website',
+    canonical: '/confidentialite'
+  },
+  '/politique-cookies': {
+    title: 'Politique de Cookies | Kemet Services',
+    description: 'Politique de cookies du site kemetservices.com. Types de cookies utilisés, gestion des préférences et consentement.',
+    keywords: 'cookies kemet services, politique cookies, consentement cookies',
+    ogType: 'website',
+    canonical: '/politique-cookies'
   }
 };
 
