@@ -119,6 +119,13 @@ const routeConfigs: Record<string, SEOConfig> = {
     ogType: 'website',
     canonical: '/politique-cookies'
   },
+  '/calendrier-2026': {
+    title: 'Calendrier 2026 – Formations & Événements Pharmacie | Kemet Services',
+    description: 'Calendrier complet 2026 : Master Class pharmaciens, webinaires gratuits et formations auxiliaires FDFP. 13 événements pour développer votre officine.',
+    keywords: 'calendrier formations pharmacie 2026, master class pharmacie, webinaire pharmacie gratuit, formation auxiliaires FDFP',
+    ogType: 'website',
+    canonical: '/calendrier-2026'
+  },
   '/fdfp': {
     title: 'Formations Pharmacie Éligibles FDFP - Prise en Charge Jusqu\'à 100%',
     description: 'Toutes nos formations pharmacie sont éligibles à la prise en charge FDFP. Kemet Services monte votre dossier. Jusqu\'à 100% financés. 22 formations disponibles.',

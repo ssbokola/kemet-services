@@ -10,7 +10,8 @@ const footerLinks = {
     { name: 'Consulting', href: '/consulting' },
     { name: 'Diagnostic', href: '/grille-prediagnostic.html' },
     { name: 'Kemet Echo', href: '/kemet-echo' },
-    { name: 'Prise en charge FDFP', href: '/fdfp' }
+    { name: 'Prise en charge FDFP', href: '/fdfp' },
+    { name: 'Calendrier 2026', href: '/calendrier-2026' }
   ],
   company: [
     { name: 'À propos', href: '/a-propos' },
