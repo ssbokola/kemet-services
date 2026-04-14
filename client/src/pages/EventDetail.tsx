@@ -243,6 +243,17 @@ export default function EventDetail() {
                 </div>
               </div>
 
+              {/* Event image/flyer */}
+              {event.image && (
+                <div className="mb-8 rounded-xl overflow-hidden shadow-lg">
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-full h-auto"
+                  />
+                </div>
+              )}
+
               {/* Tabs */}
               <div className="border-b mb-6">
                 <div className="flex gap-0">

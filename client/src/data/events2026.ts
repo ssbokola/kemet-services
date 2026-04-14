@@ -16,6 +16,7 @@ export interface KemetEvent {
   targetAudience: 'pharmaciens' | 'auxiliaires';
   cobranding: string | null;
   objectives: string[];
+  image?: string;
   fdfpEligible: boolean;
   maxParticipants: number | null;
   location: string;
@@ -46,6 +47,7 @@ export const events2026: KemetEvent[] = [
       'Construire une stratégie de développement durable pour son officine',
       'Maîtriser le cycle cash de la parapharmacie'
     ],
+    image: '/images/masterclass-pharmacien-stratege-23avril.jpg',
     fdfpEligible: false,
     maxParticipants: 30,
     location: 'Hôtel Novotel, Plateau – Abidjan'
