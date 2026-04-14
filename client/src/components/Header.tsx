@@ -103,7 +103,7 @@ export default function Header() {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger 
                     className={`text-sm font-medium ${
-                      location === '/formations' || location === '/formations-presentiel' || location === '/calendrier-formations' || location === '/bootcamp-stock'
+                      location === '/calendrier-2026' || location === '/formations-presentiel' || location === '/fdfp' || location.startsWith('/evenement/')
                         ? 'text-primary' 
                         : 'text-muted-foreground'
                     }`}
@@ -116,13 +116,13 @@ export default function Header() {
                       <li>
                         <NavigationMenuLink asChild>
                           <RouterLink
-                            href="/formations"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            data-testid="link-formations-en-ligne"
+                            href="/calendrier-2026"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground bg-primary/5"
+                            data-testid="link-calendrier-2026"
                           >
-                            <div className="text-sm font-medium leading-none">Formations en Ligne</div>
+                            <div className="text-sm font-medium leading-none text-primary">Calendrier 2026</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Catalogue LMS
+                              13 événements à venir
                             </p>
                           </RouterLink>
                         </NavigationMenuLink>
@@ -134,9 +134,9 @@ export default function Header() {
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             data-testid="link-formations-presentiel"
                           >
-                            <div className="text-sm font-medium leading-none">Formations en Présentiel</div>
+                            <div className="text-sm font-medium leading-none">Catalogue Formations</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Sessions programmées
+                              22 formations disponibles
                             </p>
                           </RouterLink>
                         </NavigationMenuLink>
@@ -144,27 +144,13 @@ export default function Header() {
                       <li>
                         <NavigationMenuLink asChild>
                           <RouterLink
-                            href="/calendrier-formations"
+                            href="/fdfp"
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            data-testid="link-calendrier-formations"
+                            data-testid="link-fdfp-nav"
                           >
-                            <div className="text-sm font-medium leading-none">Calendrier</div>
+                            <div className="text-sm font-medium leading-none">Prise en charge FDFP</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Prochaines sessions
-                            </p>
-                          </RouterLink>
-                        </NavigationMenuLink>
-                      </li>
-                      <li className="border-t pt-1">
-                        <NavigationMenuLink asChild>
-                          <RouterLink
-                            href="/bootcamp-stock"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground bg-primary/5"
-                            data-testid="link-bootcamp-stock"
-                          >
-                            <div className="text-sm font-medium leading-none text-primary">🔥 Bootcamp Stock+</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Événement spécial - Nov-Déc 2025
+                              Jusqu'à 100% financés
                             </p>
                           </RouterLink>
                         </NavigationMenuLink>

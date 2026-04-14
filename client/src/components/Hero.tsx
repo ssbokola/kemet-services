@@ -32,7 +32,7 @@ export default function Hero() {
   };
 
   const handleFormationsClick = () => {
-    setLocation('/formations');
+    setLocation('/calendrier-2026');
   };
 
   const handleKemetEchoClick = () => {

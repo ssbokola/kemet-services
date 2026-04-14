@@ -43,7 +43,7 @@ export default function FocusFormations() {
   };
 
   const handleVoirFormations = () => {
-    setLocation('/formations');
+    setLocation('/calendrier-2026');
   };
 
   return (

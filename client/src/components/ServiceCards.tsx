@@ -18,7 +18,7 @@ export default function ServiceCards() {
   const [, setLocation] = useLocation();
 
   const handleFormationsClick = () => {
-    setLocation('/formations');
+    setLocation('/calendrier-2026');
   };
 
   const handleConsultingClick = () => {

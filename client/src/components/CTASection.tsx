@@ -28,7 +28,7 @@ export default function CTASection() {
       event_label: 'cta_formations',
       value: 1
     });
-    setLocation('/formations');
+    setLocation('/calendrier-2026');
   };
 
   const handleEmailClick = () => {
