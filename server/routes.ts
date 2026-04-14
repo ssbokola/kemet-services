@@ -15,6 +15,7 @@ import { z } from "zod";
 // import { sendRegistrationNotification } from "./email"; // Unused - file logging active
 import { logRegistrationNotification, logKemetEchoNotification } from "./notifications";
 import { sendGmailNotification, sendParticipantConfirmation, sendKemetEchoNotification } from "./gmail";
+import { sendTelegramNotification, formatRegistrationNotification } from "./telegram";
 import adminRoutes from "./routes/admin";
 import spfRoutes from "./routes/spf";
 import dkimRoutes from "./routes/dkim";
@@ -148,6 +149,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           } catch (error) {
             console.error('❌ Erreur lors de l\'envoi de la confirmation participant:', error);
+          }
+        })(),
+
+        // 3. Send Telegram notification to admin
+        (async () => {
+          try {
+            const message = formatRegistrationNotification({
+              participantName: registration.participantName,
+              email: registration.email,
+              phone: registration.phone,
+              trainingTitle: registration.trainingTitle,
+              role: registration.role || undefined,
+              officine: registration.officine || undefined
+            });
+            await sendTelegramNotification(message);
+          } catch (error) {
+            console.error('❌ Erreur notification Telegram:', error);
           }
         })()
       ]);
