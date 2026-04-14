@@ -24,7 +24,7 @@ export default function EventDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { toast } = useToast();
   const event = getEventBySlug(slug || '');
-  const [activeTab, setActiveTab] = useState<'description' | 'programme' | 'infos'>('description');
+  const [activeTab, setActiveTab] = useState<'description' | 'infos'>('description');
   const [submitted, setSubmitted] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -153,7 +153,6 @@ export default function EventDetail() {
 
   const tabs = [
     { id: 'description' as const, label: 'Description' },
-    { id: 'programme' as const, label: 'Programme' },
     { id: 'infos' as const, label: 'Infos pratiques' },
   ];
 
@@ -297,24 +296,6 @@ export default function EventDetail() {
                         </p>
                       </div>
                     )}
-                  </div>
-                )}
-
-                {activeTab === 'programme' && (
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-semibold mb-3">Programme détaillé</h2>
-                    <ol className="space-y-4">
-                      {event.topics.map((topic, i) => (
-                        <li key={i} className="flex gap-4">
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
-                            {i + 1}
-                          </div>
-                          <div className="pt-1">
-                            <span className="text-foreground font-medium">{topic}</span>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
                   </div>
                 )}
 

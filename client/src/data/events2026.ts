@@ -16,7 +16,6 @@ export interface KemetEvent {
   targetAudience: 'pharmaciens' | 'auxiliaires';
   cobranding: string | null;
   objectives: string[];
-  topics: string[];
   fdfpEligible: boolean;
   maxParticipants: number | null;
   location: string;
@@ -47,15 +46,8 @@ export const events2026: KemetEvent[] = [
       'Construire une stratégie de développement durable pour son officine',
       'Maîtriser le cycle cash de la parapharmacie'
     ],
-    topics: [
-      'Tableau de bord trésorerie simplifié',
-      'Analyse du BFR officinal',
-      'Sélection et rotation des produits parapharmacie',
-      'Stratégie de pricing et merchandising',
-      'Plan d\'action personnalisé'
-    ],
     fdfpEligible: false,
-    maxParticipants: 25,
+    maxParticipants: 30,
     location: 'Hôtel Novotel, Plateau – Abidjan'
   },
   {
@@ -78,12 +70,6 @@ export const events2026: KemetEvent[] = [
       'Calculer votre coût de fonctionnement réel',
       'Comprendre l\'impact sur votre marge nette',
       'Découvrir 3 actions immédiates pour réduire vos charges'
-    ],
-    topics: [
-      'Les 5 postes de coûts sous-estimés',
-      'Méthode de calcul du coût complet',
-      'Benchmark sectoriel Côte d\'Ivoire',
-      'Plan d\'action immédiat'
     ],
     fdfpEligible: false,
     maxParticipants: null,
@@ -110,13 +96,6 @@ export const events2026: KemetEvent[] = [
       'Maîtriser les techniques de négociation',
       'Construire un tableau de suivi achats'
     ],
-    topics: [
-      'Analyse ABC de vos achats',
-      'Stratégie multi-grossistes',
-      'Techniques de négociation appliquées',
-      'Gestion des avoirs et retours',
-      'Indicateurs de performance achats'
-    ],
     fdfpEligible: false,
     maxParticipants: 25,
     location: 'Abidjan, Côte d\'Ivoire'
@@ -141,12 +120,6 @@ export const events2026: KemetEvent[] = [
       'Identifier les dysfonctionnements organisationnels',
       'Comprendre le coût réel d\'un recrutement raté',
       'Découvrir les leviers de motivation non-financiers'
-    ],
-    topics: [
-      'Ratio CA/effectif : où vous situez-vous ?',
-      'Les signaux d\'alerte RH',
-      'Coût visible vs coût caché d\'un collaborateur',
-      'Actions correctives immédiates'
     ],
     fdfpEligible: false,
     maxParticipants: null,
@@ -173,13 +146,6 @@ export const events2026: KemetEvent[] = [
       'Définir des indicateurs de suivi qualité',
       'Initier un plan d\'amélioration continue'
     ],
-    topics: [
-      'Les 7 principes de la qualité ISO adaptés à l\'officine',
-      'Cartographie des processus officinaux',
-      'Rédaction de procédures simples et efficaces',
-      'Tableaux de bord qualité',
-      'Feuille de route vers la certification'
-    ],
     fdfpEligible: false,
     maxParticipants: 25,
     location: 'Abidjan, Côte d\'Ivoire'
@@ -204,12 +170,6 @@ export const events2026: KemetEvent[] = [
       'Comprendre la spirale de la crise de trésorerie',
       'Mettre en place un système de veille financière',
       'Connaître les actions d\'urgence à déclencher'
-    ],
-    topics: [
-      'Signal 1 : le BFR qui dérape',
-      'Signal 2 : la dépendance fournisseur',
-      'Signal 3 : l\'érosion silencieuse de la marge',
-      'Kit de survie trésorerie'
     ],
     fdfpEligible: false,
     maxParticipants: null,
@@ -236,13 +196,6 @@ export const events2026: KemetEvent[] = [
       'Maîtriser les étapes du recouvrement amiable',
       'Connaître les recours juridiques disponibles'
     ],
-    topics: [
-      'État des lieux : vos créances en chiffres',
-      'Politique de crédit : qui, combien, comment',
-      'Relance structurée en 4 étapes',
-      'Outils de suivi et tableaux de bord',
-      'Cadre juridique OHADA applicable'
-    ],
     fdfpEligible: false,
     maxParticipants: 25,
     location: 'Abidjan, Côte d\'Ivoire'
@@ -268,12 +221,6 @@ export const events2026: KemetEvent[] = [
       'Anticiper les changements dans les habitudes patients',
       'Préparer son plan d\'adaptation 2027'
     ],
-    topics: [
-      'Nouveautés réglementaires 2027',
-      'Digitalisation de l\'officine',
-      'Évolution du parcours patient',
-      'Opportunités de diversification'
-    ],
     fdfpEligible: false,
     maxParticipants: null,
     location: 'En ligne (Zoom)'
@@ -298,13 +245,6 @@ export const events2026: KemetEvent[] = [
       'Identifier les réussites et les axes d\'amélioration',
       'Fixer des objectifs SMART pour 2027',
       'Construire un plan d\'action trimestriel'
-    ],
-    topics: [
-      'Méthodologie du bilan annuel',
-      'Analyse des KPIs clés de votre officine',
-      'Fixation d\'objectifs et priorisation',
-      'Construction du plan d\'action 2027',
-      'Calendrier de mise en œuvre'
     ],
     fdfpEligible: false,
     maxParticipants: 25,
@@ -335,13 +275,6 @@ export const events2026: KemetEvent[] = [
       'Gérer les niveaux de stock (min/max/sécurité)',
       'Réduire les périmés et les ruptures'
     ],
-    topics: [
-      'Le processus de commande étape par étape',
-      'Réception et contrôle qualité/quantité',
-      'Gestion des niveaux de stock',
-      'Rotation des produits (FEFO)',
-      'Inventaire et réconciliation'
-    ],
     fdfpEligible: true,
     maxParticipants: 30,
     location: 'Abidjan, Côte d\'Ivoire'
@@ -366,13 +299,6 @@ export const events2026: KemetEvent[] = [
       'Pratiquer l\'écoute active et le questionnement',
       'Gérer les situations difficiles au comptoir',
       'Contribuer à la fidélisation des patients'
-    ],
-    topics: [
-      'Les 5 étapes de l\'accueil professionnel',
-      'Techniques d\'écoute active',
-      'Communication verbale et non-verbale',
-      'Gestion des réclamations et conflits',
-      'Mises en situation pratiques'
     ],
     fdfpEligible: true,
     maxParticipants: 30,
@@ -399,13 +325,6 @@ export const events2026: KemetEvent[] = [
       'Rédiger une réclamation fournisseur efficace',
       'Suivre les avoirs et résolutions'
     ],
-    topics: [
-      'Checklist de réception en 7 points',
-      'Contrôle qualité à la réception',
-      'Types de non-conformités courantes',
-      'Rédaction et suivi des réclamations',
-      'Bonnes pratiques documentaires'
-    ],
     fdfpEligible: true,
     maxParticipants: 30,
     location: 'Abidjan, Côte d\'Ivoire'
@@ -430,13 +349,6 @@ export const events2026: KemetEvent[] = [
       'Appliquer les règles d\'hygiène et de sécurité',
       'Respecter la chaîne du froid et le stockage',
       'Contribuer à la traçabilité des actes officinaux'
-    ],
-    topics: [
-      'Introduction aux BPO',
-      'Hygiène et tenue professionnelle',
-      'Conservation et stockage des médicaments',
-      'Traçabilité et documentation',
-      'Dispensation sécurisée'
     ],
     fdfpEligible: true,
     maxParticipants: 30,
