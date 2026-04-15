@@ -56,6 +56,7 @@ import {
   Download,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import FinalQuizSection from '@/components/admin/FinalQuizSection';
 
 interface Module {
   id: string;
@@ -668,6 +669,9 @@ export default function AdminCourseContent() {
           Ajouter un module
         </Button>
       </div>
+
+      {/* Final quiz (quiz de certification généré par Claude) */}
+      {courseId && <FinalQuizSection courseId={courseId} />}
 
       {/* Modules List */}
       <Card>

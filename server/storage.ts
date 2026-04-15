@@ -21,6 +21,12 @@ import {
   type InsertOrder,
   type Enrollment,
   type InsertEnrollment,
+  type FinalQuiz,
+  type InsertFinalQuiz,
+  type FinalQuizAttempt,
+  type InsertFinalQuizAttempt,
+  type FinalQuizQuestion,
+  type FinalQuizAnswerSnapshot,
 } from "@shared/schema";
 
 // modify the interface with any CRUD methods
@@ -108,13 +114,28 @@ export interface IStorage {
   // Lesson Progress
   updateLessonProgress(userId: string, lessonId: string, data: Partial<any>): Promise<void>;
   getLessonProgress(userId: string, lessonId: string): Promise<any | undefined>;
+
+  // Final Quiz (quiz de certification — pool de 30 généré par Claude)
+  getFinalQuizByCourseId(courseId: string): Promise<FinalQuiz | undefined>;
+  upsertFinalQuiz(data: InsertFinalQuiz): Promise<FinalQuiz>;
+  deleteFinalQuizByCourseId(courseId: string): Promise<boolean>;
+
+  // Final Quiz Attempts
+  getLastFinalQuizAttempt(userId: string, courseId: string): Promise<FinalQuizAttempt | undefined>;
+  createFinalQuizAttempt(data: InsertFinalQuizAttempt): Promise<FinalQuizAttempt>;
+  getFinalQuizAttemptById(id: string): Promise<FinalQuizAttempt | undefined>;
+  submitFinalQuizAttempt(
+    id: string,
+    patch: { score: number; passed: boolean; answersSnapshot: FinalQuizAnswerSnapshot[]; submittedAt: Date }
+  ): Promise<FinalQuizAttempt | undefined>;
+  getFinalQuizAttemptsByUser(userId: string, courseId: string): Promise<FinalQuizAttempt[]>;
 }
 
 import { db } from "./db";
-import { 
-  users, 
-  trainingRegistrations, 
-  courses, 
+import {
+  users,
+  trainingRegistrations,
+  courses,
   enrollments,
   courseModules,
   courseLessons,
@@ -124,6 +145,8 @@ import {
   quizResults,
   courseResources,
   orders,
+  finalQuizzes,
+  finalQuizAttempts,
 } from "@shared/schema";
 import { eq, and, desc, asc } from "drizzle-orm";
 
@@ -740,6 +763,129 @@ export class DatabaseStorage implements IStorage {
       .where(eq(orders.id, id))
       .returning();
     return order;
+  }
+
+  // ------------------------------------------------------------------
+  // Final Quiz — pool de 30 questions généré par Claude à partir d'un PDF
+  // ------------------------------------------------------------------
+
+  async getFinalQuizByCourseId(courseId: string): Promise<FinalQuiz | undefined> {
+    const [quiz] = await db
+      .select()
+      .from(finalQuizzes)
+      .where(eq(finalQuizzes.courseId, courseId))
+      .limit(1);
+    return quiz;
+  }
+
+  /**
+   * Upsert a final quiz for a course. Unique index on courseId means one pool
+   * per course — re-uploading a PDF overwrites (we want regeneration, not
+   * duplication). We update all generation fields, not just `questions`.
+   */
+  async upsertFinalQuiz(data: InsertFinalQuiz): Promise<FinalQuiz> {
+    const existing = await this.getFinalQuizByCourseId(data.courseId);
+
+    if (existing) {
+      const [updated] = await db
+        .update(finalQuizzes)
+        .set({
+          questions: data.questions,
+          questionsCount: data.questionsCount,
+          sourcePdfName: data.sourcePdfName ?? null,
+          sourcePdfSizeBytes: data.sourcePdfSizeBytes ?? null,
+          aiModel: data.aiModel ?? 'claude-sonnet-4-20250514',
+          updatedAt: new Date(),
+        })
+        .where(eq(finalQuizzes.id, existing.id))
+        .returning();
+      return updated;
+    }
+
+    const [created] = await db
+      .insert(finalQuizzes)
+      .values(data)
+      .returning();
+    return created;
+  }
+
+  async deleteFinalQuizByCourseId(courseId: string): Promise<boolean> {
+    const result = await db
+      .delete(finalQuizzes)
+      .where(eq(finalQuizzes.courseId, courseId))
+      .returning();
+    return result.length > 0;
+  }
+
+  // ------------------------------------------------------------------
+  // Final Quiz Attempts
+  // ------------------------------------------------------------------
+
+  /**
+   * Most recent attempt by a user for a given course — used to enforce the
+   * 1h cooldown between attempt starts.
+   */
+  async getLastFinalQuizAttempt(userId: string, courseId: string): Promise<FinalQuizAttempt | undefined> {
+    const [attempt] = await db
+      .select()
+      .from(finalQuizAttempts)
+      .where(and(
+        eq(finalQuizAttempts.userId, userId),
+        eq(finalQuizAttempts.courseId, courseId),
+      ))
+      .orderBy(desc(finalQuizAttempts.startedAt))
+      .limit(1);
+    return attempt;
+  }
+
+  async createFinalQuizAttempt(data: InsertFinalQuizAttempt): Promise<FinalQuizAttempt> {
+    const [created] = await db
+      .insert(finalQuizAttempts)
+      .values(data)
+      .returning();
+    return created;
+  }
+
+  async getFinalQuizAttemptById(id: string): Promise<FinalQuizAttempt | undefined> {
+    const [attempt] = await db
+      .select()
+      .from(finalQuizAttempts)
+      .where(eq(finalQuizAttempts.id, id))
+      .limit(1);
+    return attempt;
+  }
+
+  /**
+   * Finalize an attempt: store score, pass/fail flag, the answers snapshot,
+   * and the submit timestamp. Does NOT re-validate — caller is responsible
+   * for computing score from the server-side correct answers.
+   */
+  async submitFinalQuizAttempt(
+    id: string,
+    patch: { score: number; passed: boolean; answersSnapshot: FinalQuizAnswerSnapshot[]; submittedAt: Date },
+  ): Promise<FinalQuizAttempt | undefined> {
+    const [updated] = await db
+      .update(finalQuizAttempts)
+      .set({
+        score: patch.score,
+        passed: patch.passed,
+        answersSnapshot: patch.answersSnapshot,
+        submittedAt: patch.submittedAt,
+      })
+      .where(eq(finalQuizAttempts.id, id))
+      .returning();
+    return updated;
+  }
+
+  async getFinalQuizAttemptsByUser(userId: string, courseId: string): Promise<FinalQuizAttempt[]> {
+    return await db
+      .select()
+      .from(finalQuizAttempts)
+      .where(and(
+        eq(finalQuizAttempts.userId, userId),
+        eq(finalQuizAttempts.courseId, courseId),
+      ))
+      .orderBy(desc(finalQuizAttempts.startedAt));
   }
 }
 

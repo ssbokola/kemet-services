@@ -17,6 +17,7 @@ import { logRegistrationNotification, logKemetEchoNotification } from "./notific
 import { sendGmailNotification, sendParticipantConfirmation, sendKemetEchoNotification } from "./gmail";
 import { sendTelegramNotification, formatRegistrationNotification } from "./telegram";
 import adminRoutes from "./routes/admin";
+import adminFinalQuizRoutes from "./routes/admin-final-quiz";
 import spfRoutes from "./routes/spf";
 import dkimRoutes from "./routes/dkim";
 import trainingRoutes from "./routes/training";
@@ -72,6 +73,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Admin final quiz routes (must be mounted BEFORE the generic /api/admin
+  // router so the specific /api/admin/courses/:id/final-quiz paths win.)
+  app.use('/api/admin/courses', adminFinalQuizRoutes);
+
   // Admin routes
   app.use('/api/admin', adminRoutes);
   
