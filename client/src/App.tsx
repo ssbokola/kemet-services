@@ -54,6 +54,9 @@ import ParticipantDashboard from "@/pages/ParticipantDashboard";
 import ParticipantFormations from "@/pages/ParticipantFormations";
 import ParticipantCatalogue from "@/pages/ParticipantCatalogue";
 import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
 import LessonViewer from "@/pages/LessonViewer";
 import QuizViewer from "@/pages/QuizViewer";
 function Router() {
@@ -99,8 +102,11 @@ function Router() {
       <Route path="/admin/spf" component={SPFConfig} />
       <Route path="/admin/dkim" component={DKIMConfig} />
       <Route path="/admin/email-auth" component={EmailAuthOverview} />
-      {/* Route de connexion - blueprint:javascript_log_in_with_replit */}
+      {/* Routes de connexion — auth locale (email/password) + Replit OAuth */}
       <Route path="/login" component={Login} />
+      <Route path="/inscription" component={Register} />
+      <Route path="/mot-de-passe-oublie" component={ForgotPassword} />
+      <Route path="/reinitialiser-mot-de-passe" component={ResetPassword} />
       {/* Routes participants sécurisées - blueprint:javascript_log_in_with_replit */}
       <Route path="/participant/dashboard" component={ParticipantDashboard} />
       <Route path="/participant/formations" component={ParticipantFormations} />

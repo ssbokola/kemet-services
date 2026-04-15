@@ -29,6 +29,7 @@ import paymentsRoutes from "./routes/payments";
 import onsiteTrainingsRoutes from "./routes/onsite-trainings";
 import sessionRegistrationsRoutes from "./routes/session-registrations";
 import bootcampRegistrationsRoutes from "./routes/bootcamp-registrations";
+import localAuthRoutes from "./routes/local-auth";
 import { serveDynamicSitemap, serveDynamicRobots } from "./dynamic-sitemap";
 // Authentification Replit Auth - blueprint:javascript_log_in_with_replit
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -37,7 +38,12 @@ import { storage } from "./storage";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware - blueprint:javascript_log_in_with_replit
   await setupAuth(app);
-  
+
+  // Local auth routes (email/password) — complements Replit OAuth.
+  // Mounted at /api/auth: POST /register, /login, /forgot-password, /reset-password.
+  // Does NOT conflict with the GET /api/auth/user route below.
+  app.use('/api/auth', localAuthRoutes);
+
   // SEO routes - Dynamic sitemap and robots.txt
   app.get('/sitemap.xml', serveDynamicSitemap);
   app.get('/robots.txt', serveDynamicRobots);

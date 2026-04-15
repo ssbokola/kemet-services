@@ -27,10 +27,17 @@ import {
 // you might need
 
 export interface IStorage {
-  // User operations - Required for Replit Auth
+  // User operations - Required for Replit Auth + Local Auth
   getUser(id: string): Promise<User | undefined>;
   getUserById(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  createLocalUser(userData: UpsertUser): Promise<User>;
+  updateUserPassword(userId: string, hashedPassword: string): Promise<void>;
+  updateUserLastLogin(userId: string): Promise<void>;
+  setPasswordResetToken(userId: string, token: string, expiry: Date): Promise<void>;
+  clearPasswordResetToken(userId: string): Promise<void>;
+  getUserByPasswordResetToken(token: string): Promise<User | undefined>;
   
   // Training registrations methods
   createTrainingRegistration(registration: InsertTrainingRegistration): Promise<TrainingRegistration>;
@@ -135,18 +142,18 @@ export class DatabaseStorage implements IStorage {
   async upsertUser(userData: UpsertUser): Promise<User> {
     // Chercher d'abord un utilisateur existant par email
     let existingUser: User | null = null;
-    
+
     if (userData.email) {
       const results = await db.select().from(users).where(eq(users.email, userData.email as string)).limit(1);
       existingUser = results[0] || null;
     }
-    
+
     // Si pas trouvé par email et qu'on a un ID, chercher par ID
     if (!existingUser && userData.id) {
       const results = await db.select().from(users).where(eq(users.id, userData.id as string)).limit(1);
       existingUser = results[0] || null;
     }
-    
+
     if (existingUser) {
       // Mettre à jour l'utilisateur existant
       const [updatedUser] = await db
@@ -166,6 +173,98 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return newUser;
     }
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email.toLowerCase().trim()))
+      .limit(1);
+    return user;
+  }
+
+  /**
+   * Create a local-auth user. Fails if an account with the same email already exists
+   * and was NOT created via local auth (to prevent account takeover).
+   */
+  async createLocalUser(userData: UpsertUser): Promise<User> {
+    const normalizedEmail = (userData.email as string).toLowerCase().trim();
+
+    // Check for existing user with same email
+    const existing = await this.getUserByEmail(normalizedEmail);
+    if (existing) {
+      throw new Error('EMAIL_ALREADY_REGISTERED');
+    }
+
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        ...userData,
+        email: normalizedEmail,
+        authType: 'local',
+      })
+      .returning();
+    return newUser;
+  }
+
+  async updateUserPassword(userId: string, hashedPassword: string): Promise<void> {
+    await db
+      .update(users)
+      .set({
+        password: hashedPassword,
+        passwordResetAt: new Date(),
+        isTemporaryPassword: false,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async updateUserLastLogin(userId: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ lastLoginAt: new Date() })
+      .where(eq(users.id, userId));
+  }
+
+  async setPasswordResetToken(userId: string, token: string, expiry: Date): Promise<void> {
+    await db
+      .update(users)
+      .set({
+        passwordResetToken: token,
+        passwordResetTokenExpiry: expiry,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async clearPasswordResetToken(userId: string): Promise<void> {
+    await db
+      .update(users)
+      .set({
+        passwordResetToken: null,
+        passwordResetTokenExpiry: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async getUserByPasswordResetToken(token: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.passwordResetToken, token))
+      .limit(1);
+
+    // Verify token is not expired
+    if (user && user.passwordResetTokenExpiry) {
+      const now = new Date();
+      if (user.passwordResetTokenExpiry < now) {
+        return undefined; // token expired
+      }
+    }
+
+    return user;
   }
 
   // Training registrations methods

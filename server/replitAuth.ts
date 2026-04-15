@@ -69,15 +69,21 @@ async function upsertUser(
 }
 
 export async function setupAuth(app: Express) {
-  if (!process.env.REPLIT_DOMAINS) {
-    console.warn("Replit Auth not configured - skipping auth setup");
-    return;
-  }
-
+  // Session + Passport are ALWAYS installed — local auth needs them even
+  // when Replit OAuth is not configured.
   app.set("trust proxy", 1);
   app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
+
+  passport.serializeUser((user: Express.User, cb) => cb(null, user));
+  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
+
+  // Replit-specific OAuth setup is optional (only if REPLIT_DOMAINS is set)
+  if (!process.env.REPLIT_DOMAINS) {
+    console.warn("Replit Auth not configured — only local auth available");
+    return;
+  }
 
   const config = await getOidcConfig();
 
@@ -105,9 +111,6 @@ export async function setupAuth(app: Express) {
     passport.use(strategy);
   }
 
-  passport.serializeUser((user: Express.User, cb) => cb(null, user));
-  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
-
   app.get("/api/login", (req, res, next) => {
     passport.authenticate(`replitauth:${req.hostname}`, {
       prompt: "login consent",
@@ -123,21 +126,48 @@ export async function setupAuth(app: Express) {
   });
 
   app.get("/api/logout", (req, res) => {
+    const user = req.user as any;
+    const isLocalUser = user?.authType === 'local';
+
     req.logout(() => {
-      res.redirect(
-        client.buildEndSessionUrl(config, {
-          client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
-        }).href
-      );
+      if (isLocalUser) {
+        // Local auth: just destroy session + redirect home
+        req.session?.destroy(() => {
+          res.redirect('/');
+        });
+      } else {
+        // Replit OAuth: also call Replit's end_session endpoint
+        res.redirect(
+          client.buildEndSessionUrl(config, {
+            client_id: process.env.REPL_ID!,
+            post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
+          }).href
+        );
+      }
     });
   });
 }
 
+/**
+ * Hybrid authentication middleware — works for BOTH:
+ *   - Replit OAuth users: session has `user.expires_at`, `user.refresh_token`, `user.claims`
+ *   - Local auth users: session has `user.authType === 'local'` + `user.id` + `user.claims` (we
+ *     mirror the claims shape so `req.user.claims.sub` works uniformly across routes)
+ */
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated() || !user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  // Local auth: no token expiry, session is sufficient
+  if (user.authType === 'local') {
+    return next();
+  }
+
+  // Replit OAuth: check token expiry, auto-refresh if needed
+  if (!user.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
