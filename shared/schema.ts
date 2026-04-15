@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, boolean, timestamp, index, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, boolean, timestamp, index, jsonb, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -216,7 +216,11 @@ export const enrollments = pgTable("enrollments", {
   progressPercent: integer("progresspercent").notNull().default(0),
   lastProgressEmailSentAt: timestamp("lastprogressemailsentat"), // Pour tracker les emails hebdomadaires
   progressEmailsCount: integer("progressemailscount").notNull().default(0), // Nombre d'emails envoyés
-});
+}, (table) => [
+  // Contrainte d'unicité : empêche qu'un utilisateur soit inscrit 2x à la même formation
+  // (protection contre les doubles enrollments lors des retries webhook)
+  uniqueIndex("enrollments_user_course_unique").on(table.userId, table.courseId),
+]);
 
 export const insertEnrollmentSchema = createInsertSchema(enrollments)
   .omit({ id: true, enrolledAt: true });
