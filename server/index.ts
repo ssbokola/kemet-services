@@ -1,3 +1,7 @@
+// IMPORTANT : charge .env AVANT tout import qui lit process.env au module init
+// (ex: ./db → DATABASE_URL, ./routes → ANTHROPIC_API_KEY, etc.)
+import "./load-env";
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -66,11 +70,17 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
+  // `reusePort` is Linux-specific — Windows + some macOS versions throw
+  // ENOTSUP. Keep it on in production (Linux) but skip it on Windows so
+  // dev works locally.
+  const listenOptions: { port: number; host: string; reusePort?: boolean } = {
     port,
     host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
+  };
+  if (process.platform !== 'win32') {
+    listenOptions.reusePort = true;
+  }
+  server.listen(listenOptions, () => {
     log(`serving on port ${port}`);
   });
 })();

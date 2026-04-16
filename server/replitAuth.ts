@@ -39,7 +39,10 @@ export function getSession() {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
+      // secure=true impose HTTPS. En dev local (http://localhost:5000) le
+      // browser refuserait alors de renvoyer le cookie → session perdue à
+      // chaque request → boucle 401. On active secure uniquement en prod.
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax', // CSRF protection basique
       maxAge: sessionTtl,
     },
