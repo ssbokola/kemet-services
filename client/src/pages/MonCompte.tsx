@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
-import { BookOpen, Mail, User as UserIcon, CheckCircle2, Clock } from 'lucide-react';
+import { BookOpen, Mail, User as UserIcon, CheckCircle2, Clock, Award } from 'lucide-react';
 
 interface UserData {
   email?: string;
@@ -305,13 +305,27 @@ export default function MonCompte() {
                           Inscrit le {format(new Date(enrollment.enrolledAt), 'dd MMMM yyyy', { locale: fr })}
                         </div>
 
-                        <Button 
-                          asChild 
+                        <Button
+                          asChild
                           className="w-full"
                           data-testid={`button-continue-${index}`}
                         >
                           <Link href={`/formation/${course.slug}`}>
                             {isCompleted ? 'Revoir la formation' : 'Continuer la formation'}
+                          </Link>
+                        </Button>
+
+                        {/* Quiz de certification — accessible en permanence ; le
+                            serveur contrôle l'éligibilité (inscription + cooldown). */}
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="w-full"
+                          data-testid={`button-final-quiz-${index}`}
+                        >
+                          <Link href={`/formation-quiz/${course.id}`}>
+                            <Award className="w-4 h-4 mr-2" />
+                            Quiz de certification
                           </Link>
                         </Button>
                       </CardContent>
