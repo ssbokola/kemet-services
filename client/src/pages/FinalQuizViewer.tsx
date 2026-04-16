@@ -582,7 +582,7 @@ export default function FinalQuizViewer() {
               >
                 <div className="flex items-start gap-3">
                   <Award className="h-6 w-6 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                  <div className="space-y-2 flex-1">
+                  <div className="space-y-3 flex-1">
                     <p className="font-semibold text-amber-900 dark:text-amber-100">
                       Votre certificat est émis
                     </p>
@@ -595,8 +595,38 @@ export default function FinalQuizViewer() {
                     >
                       {result.certificate.verificationCode}
                     </code>
-                    <p className="text-xs text-amber-700 dark:text-amber-300 mt-2">
-                      Vous recevrez votre certificat PDF par email dans les prochaines minutes.
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                      <Button
+                        asChild
+                        className="bg-amber-600 hover:bg-amber-700 text-white"
+                        data-testid="button-download-certificate"
+                      >
+                        <a
+                          href={`/api/certificates/${result.certificate.verificationCode}/download`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <Award className="w-4 h-4 mr-2" />
+                          Télécharger le PDF
+                        </a>
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="border-amber-600 text-amber-800 hover:bg-amber-50 dark:text-amber-200 dark:hover:bg-amber-900/30"
+                        data-testid="button-view-certificate-page"
+                      >
+                        <a
+                          href={`/certificats/${result.certificate.verificationCode}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Page de vérification publique
+                        </a>
+                      </Button>
+                    </div>
+                    <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                      Un email avec le lien vers votre certificat a également été envoyé à votre adresse.
                     </p>
                   </div>
                 </div>

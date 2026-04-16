@@ -60,6 +60,7 @@ import ResetPassword from "@/pages/ResetPassword";
 import LessonViewer from "@/pages/LessonViewer";
 import QuizViewer from "@/pages/QuizViewer";
 import FinalQuizViewer from "@/pages/FinalQuizViewer";
+import CertificateVerification from "@/pages/CertificateVerification";
 function Router() {
   return (
     <Switch>
@@ -75,6 +76,8 @@ function Router() {
       <Route path="/lecon/:lessonId" component={LessonViewer} />
       <Route path="/quiz/:quizId" component={QuizViewer} />
       <Route path="/formation-quiz/:courseId" component={FinalQuizViewer} />
+      <Route path="/certificats/:code" component={CertificateVerification} />
+      <Route path="/certificats" component={CertificateVerification} />
       <Route path="/galerie" component={Galerie} />
       <Route path="/kemet-echo" component={KemetEcho} />
       <Route path="/diagnostic" component={Diagnostic} />

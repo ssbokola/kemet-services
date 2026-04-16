@@ -129,6 +129,35 @@ export interface IStorage {
     patch: { score: number; passed: boolean; answersSnapshot: FinalQuizAnswerSnapshot[]; submittedAt: Date }
   ): Promise<FinalQuizAttempt | undefined>;
   getFinalQuizAttemptsByUser(userId: string, courseId: string): Promise<FinalQuizAttempt[]>;
+
+  // Certificates (délivrés à la réussite du quiz final)
+  getCertificateWithContext(verificationCode: string): Promise<CertificateWithContext | undefined>;
+}
+
+// Shape retournée par getCertificateWithContext — tout ce qu'il faut pour
+// générer le PDF et afficher la page publique de vérification.
+export interface CertificateWithContext {
+  certificate: {
+    id: string;
+    userId: string;
+    courseId: string;
+    certificateNumber: string;
+    finalScore: number;
+    completedAt: Date;
+    verificationCode: string;
+    issuedAt: Date;
+  };
+  holder: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+  };
+  course: {
+    id: string;
+    title: string;
+    slug: string;
+  };
 }
 
 import { db } from "./db";
@@ -147,6 +176,7 @@ import {
   orders,
   finalQuizzes,
   finalQuizAttempts,
+  certificates,
 } from "@shared/schema";
 import { eq, and, desc, asc } from "drizzle-orm";
 
@@ -886,6 +916,61 @@ export class DatabaseStorage implements IStorage {
         eq(finalQuizAttempts.courseId, courseId),
       ))
       .orderBy(desc(finalQuizAttempts.startedAt));
+  }
+
+  // ------------------------------------------------------------------
+  // Certificates — lookup enrichi pour PDF + page publique de vérif
+  // ------------------------------------------------------------------
+
+  /**
+   * Récupère un certificat par son code de vérification avec les données
+   * du titulaire et de la formation jointes — tout ce qu'il faut pour
+   * régénérer le PDF et afficher la page publique /certificats/:code.
+   *
+   * Retourne undefined si le code n'existe pas (la page publique affiche
+   * alors "certificat non trouvé").
+   */
+  async getCertificateWithContext(
+    verificationCode: string,
+  ): Promise<CertificateWithContext | undefined> {
+    const rows = await db
+      .select({
+        cert: certificates,
+        user: {
+          id: users.id,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          email: users.email,
+        },
+        course: {
+          id: courses.id,
+          title: courses.title,
+          slug: courses.slug,
+        },
+      })
+      .from(certificates)
+      .innerJoin(users, eq(users.id, certificates.userId))
+      .innerJoin(courses, eq(courses.id, certificates.courseId))
+      .where(eq(certificates.verificationCode, verificationCode))
+      .limit(1);
+
+    const row = rows[0];
+    if (!row) return undefined;
+
+    return {
+      certificate: {
+        id: row.cert.id,
+        userId: row.cert.userId,
+        courseId: row.cert.courseId,
+        certificateNumber: row.cert.certificateNumber,
+        finalScore: row.cert.finalScore,
+        completedAt: row.cert.completedAt,
+        verificationCode: row.cert.verificationCode,
+        issuedAt: row.cert.issuedAt,
+      },
+      holder: row.user,
+      course: row.course,
+    };
   }
 }
 

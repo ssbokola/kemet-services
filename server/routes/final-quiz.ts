@@ -23,6 +23,7 @@ import { isAuthenticated } from '../replitAuth';
 import { storage } from '../storage';
 import { db } from '../db';
 import { eq, and } from 'drizzle-orm';
+import { sendCertificateEmail } from '../emails/certificate-delivery';
 import {
   type FinalQuizQuestion,
   type FinalQuizAnswerSnapshot,
@@ -391,6 +392,42 @@ router.post('/attempts/:id/submit', isAuthenticated, async (req: any, res) => {
               id: created.id,
               verificationCode: created.verificationCode,
             };
+
+            // Fire-and-forget : envoi de l'email de délivrance. On ne bloque
+            // pas la réponse, et on ne renvoie l'email qu'à la création
+            // initiale du cert (pas sur les re-passages réussis).
+            const newCode = created.verificationCode;
+            (async () => {
+              try {
+                const ctx = await storage.getCertificateWithContext(newCode);
+                if (!ctx?.holder.email) {
+                  console.warn(
+                    `[FINAL-QUIZ] Cert ${newCode} : pas d'email pour le titulaire, skip envoi.`,
+                  );
+                  return;
+                }
+                const baseUrl = (
+                  process.env.APP_BASE_URL ||
+                  (process.env.NODE_ENV === 'production'
+                    ? 'https://kemetservices.com'
+                    : 'http://localhost:5000')
+                ).replace(/\/$/, '');
+
+                await sendCertificateEmail({
+                  to: ctx.holder.email,
+                  firstName: ctx.holder.firstName,
+                  courseTitle: ctx.course.title,
+                  finalScore: ctx.certificate.finalScore,
+                  verificationCode: ctx.certificate.verificationCode,
+                  baseUrl,
+                });
+              } catch (emailErr) {
+                console.error(
+                  '[FINAL-QUIZ] Cert email send failed (non-fatal):',
+                  emailErr,
+                );
+              }
+            })();
           }
         }
       } catch (certErr) {

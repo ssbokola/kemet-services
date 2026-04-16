@@ -19,6 +19,7 @@ import { sendTelegramNotification, formatRegistrationNotification } from "./tele
 import adminRoutes from "./routes/admin";
 import adminFinalQuizRoutes from "./routes/admin-final-quiz";
 import finalQuizRoutes from "./routes/final-quiz";
+import certificatesRoutes from "./routes/certificates";
 import spfRoutes from "./routes/spf";
 import dkimRoutes from "./routes/dkim";
 import trainingRoutes from "./routes/training";
@@ -103,6 +104,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Final quiz (certification) — student-facing: status / start / submit
   app.use('/api/final-quiz', finalQuizRoutes);
+
+  // Certificates — public verification + authenticated PDF download
+  app.use('/api/certificates', certificatesRoutes);
   
   // Payment routes (Wave Mobile Money)
   app.use('/api/payments', paymentsRoutes);

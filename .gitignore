@@ -9,3 +9,11 @@ vite.config.ts.*
 .env
 .env.local
 .env.*.local
+
+# Local state (Claude Code, Replit agent, etc.)
+.claude/
+.local/
+
+# Runtime logs
+*.log
+notifications_inscriptions.log
