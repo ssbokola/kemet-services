@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/Header';
 import { KemetClientTimeline } from '@/components/ui/timeline';
-import founderImage from '@assets/1757573169268_1757594043126.jpg';
+import founderImage from '@assets/founder-sonhon-bokola-tinni.jpg';
 import SEO from '@/components/SEO';
 
 const valeurs = [
