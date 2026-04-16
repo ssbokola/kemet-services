@@ -1,16 +1,29 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, Link, useLocation } from 'wouter';
 import { Helmet } from 'react-helmet-async';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { Clock, BookOpen, CheckCircle2, AlertCircle, Users, Download, FileText, Link as LinkIcon, Award, ArrowRight } from 'lucide-react';
+import {
+  Clock, BookOpen, CheckCircle2, AlertCircle, Users, Download, FileText,
+  Link as LinkIcon, Award, ArrowRight, CreditCard, Smartphone, Loader2, Shield,
+} from 'lucide-react';
 import { categoryLabels } from '@/data/formations';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
@@ -69,11 +82,21 @@ interface EnrollmentStatus {
   } | null;
 }
 
+// Regex permissive pour téléphones Afrique de l'Ouest (CI / SN).
+// On laisse passer +225, 225, ou rien devant, puis 8–10 chiffres.
+// La normalisation du préfixe pays est faite côté serveur (server/payments/wave.ts).
+const PHONE_REGEX = /^(\+?22[15])?\s*\d{2}[\s-]?\d{2}[\s-]?\d{2}[\s-]?\d{2}(?:[\s-]?\d{2})?$/;
+
 export default function FormationDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
+
+  // État de la modale de paiement (saisie du téléphone Wave avant redirection PayDunya)
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [phoneInput, setPhoneInput] = useState('');
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   const { data, isLoading, error } = useQuery<{ success: boolean; formation: Formation }>({
     queryKey: ['/api/formations/slug', slug],
@@ -173,6 +196,57 @@ export default function FormationDetail() {
       });
     },
   });
+
+  // Mutation pour créer un checkout Wave (formations payantes)
+  const paymentMutation = useMutation({
+    mutationFn: async (customerPhone: string) => {
+      if (!formation?.id) throw new Error('Formation ID manquant');
+      const response = await apiRequest('POST', '/api/payments/wave/checkout', {
+        courseId: formation.id,
+        customerPhone,
+      });
+      return response.json();
+    },
+    onSuccess: (data: { success: boolean; paymentUrl?: string; error?: string }) => {
+      if (data.success && data.paymentUrl) {
+        // Redirection vers PayDunya / Wave — quitte l'app React
+        window.location.href = data.paymentUrl;
+        return;
+      }
+      toast({
+        title: 'Erreur de paiement',
+        description: data.error || 'Impossible de créer la session de paiement.',
+        variant: 'destructive',
+      });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: 'Non authentifié',
+          description: 'Vous devez être connecté pour payer.',
+          variant: 'destructive',
+        });
+        setTimeout(() => { window.location.href = '/login'; }, 1000);
+        return;
+      }
+      toast({
+        title: 'Erreur',
+        description: error.message || 'Une erreur est survenue lors de la création du paiement.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handlePayerSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = phoneInput.trim();
+    if (!PHONE_REGEX.test(trimmed)) {
+      setPhoneError('Format invalide. Exemple accepté : +225 07 00 00 00 00 ou 0700000000.');
+      return;
+    }
+    setPhoneError(null);
+    paymentMutation.mutate(trimmed);
+  };
 
   const formatDuration = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
@@ -496,32 +570,47 @@ export default function FormationDetail() {
                   </div>
                   <div className="flex flex-col gap-3 w-full md:w-auto">
                     {!isAuthenticated ? (
-                      <Button 
-                        size="lg" 
-                        asChild 
-                        className="w-full md:w-auto" 
+                      <Button
+                        size="lg"
+                        asChild
+                        className="w-full md:w-auto"
                         data-testid="button-login"
                       >
-                        <a href="/api/login">Se connecter pour s'inscrire</a>
+                        <a href="/login">
+                          {formation.price > 0 ? 'Se connecter pour payer' : 'Se connecter pour s\'inscrire'}
+                        </a>
                       </Button>
                     ) : isEnrolled ? (
-                      <Button 
-                        size="lg" 
-                        asChild 
-                        className="w-full md:w-auto" 
+                      <Button
+                        size="lg"
+                        asChild
+                        className="w-full md:w-auto"
                         data-testid="button-access-formation"
                       >
                         <Link href="/mon-compte">Accéder à ma formation</Link>
                       </Button>
+                    ) : formation.price > 0 ? (
+                      // Formation payante → ouvre la modale Wave
+                      <Button
+                        size="lg"
+                        onClick={() => setShowPaymentModal(true)}
+                        disabled={isLoadingStatus}
+                        className="w-full md:w-auto bg-[#1DC8D3] hover:bg-[#17a8b1] text-white"
+                        data-testid="button-payer-wave"
+                      >
+                        <Smartphone className="w-5 h-5 mr-2" />
+                        Payer {formatPriceCFA(formation.price)} avec Wave
+                      </Button>
                     ) : (
-                      <Button 
-                        size="lg" 
-                        onClick={handleInscription} 
+                      // Formation gratuite → enroll direct
+                      <Button
+                        size="lg"
+                        onClick={handleInscription}
                         disabled={enrollMutation.isPending || isLoadingStatus}
-                        className="w-full md:w-auto" 
+                        className="w-full md:w-auto"
                         data-testid="button-inscription"
                       >
-                        {enrollMutation.isPending ? 'Inscription en cours...' : 'S\'inscrire à la formation'}
+                        {enrollMutation.isPending ? 'Inscription en cours...' : 'S\'inscrire gratuitement'}
                       </Button>
                     )}
                     <div className="text-center">
@@ -536,6 +625,105 @@ export default function FormationDetail() {
       </main>
 
       <Footer />
+
+      {/* Modale de paiement Wave — saisie du téléphone avant redirection PayDunya */}
+      <Dialog open={showPaymentModal} onOpenChange={(open) => {
+        if (!paymentMutation.isPending) setShowPaymentModal(open);
+      }}>
+        <DialogContent className="sm:max-w-md" data-testid="dialog-wave-payment">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Smartphone className="w-5 h-5 text-[#1DC8D3]" />
+              Paiement par Wave
+            </DialogTitle>
+            <DialogDescription>
+              Indiquez le numéro de téléphone associé à votre compte Wave.
+              Vous serez redirigé(e) vers Wave pour confirmer le paiement.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handlePayerSubmit} className="space-y-4 py-2" data-testid="form-wave-payment">
+            {/* Récapitulatif */}
+            <div className="bg-muted/50 border rounded-lg p-3 space-y-1">
+              <div className="text-xs text-muted-foreground uppercase tracking-wide">
+                Formation
+              </div>
+              <div className="font-medium text-sm">{formation.title}</div>
+              <div className="flex items-baseline justify-between pt-2 border-t mt-2">
+                <span className="text-sm text-muted-foreground">Total à payer</span>
+                <span className="text-xl font-bold text-primary">
+                  {formatPriceCFA(formation.price)}
+                </span>
+              </div>
+            </div>
+
+            {/* Champ téléphone */}
+            <div className="space-y-2">
+              <Label htmlFor="wave-phone">Numéro Wave *</Label>
+              <Input
+                id="wave-phone"
+                type="tel"
+                placeholder="+225 07 00 00 00 00"
+                value={phoneInput}
+                onChange={(e) => {
+                  setPhoneInput(e.target.value);
+                  if (phoneError) setPhoneError(null);
+                }}
+                disabled={paymentMutation.isPending}
+                autoFocus
+                data-testid="input-wave-phone"
+              />
+              {phoneError && (
+                <p className="text-sm text-red-600" data-testid="text-wave-phone-error">
+                  {phoneError}
+                </p>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Utilisez le numéro rattaché à votre compte Wave (Côte d'Ivoire ou Sénégal).
+              </p>
+            </div>
+
+            {/* Rassurance sécurité */}
+            <div className="flex items-start gap-2 bg-teal-50 border border-teal-200 rounded-lg p-3">
+              <Shield className="w-4 h-4 text-teal-700 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-teal-900">
+                Paiement sécurisé opéré par <strong>PayDunya</strong>. Vos informations
+                ne sont jamais stockées par Kemet Services.
+              </p>
+            </div>
+
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowPaymentModal(false)}
+                disabled={paymentMutation.isPending}
+                data-testid="button-wave-cancel"
+              >
+                Annuler
+              </Button>
+              <Button
+                type="submit"
+                disabled={paymentMutation.isPending || !phoneInput.trim()}
+                className="bg-[#1DC8D3] hover:bg-[#17a8b1] text-white"
+                data-testid="button-wave-submit"
+              >
+                {paymentMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Redirection...
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Payer maintenant
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

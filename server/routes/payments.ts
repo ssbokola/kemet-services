@@ -19,13 +19,23 @@ router.post('/wave/checkout', async (req: any, res) => {
     const userId = req.user.claims.sub;
     
     // Validate request
+    // customerPhone: le numéro Wave du client est indispensable pour PayDunya
+    // SOFTPAY. On l'accepte ici depuis le frontend (modale avant redirection).
+    // Format accepté : avec ou sans +225/225 (CI) ou +221/221 (SN), 8 chiffres
+    // minimum après le code pays.
     const checkoutSchema = z.object({
       courseId: z.string().min(1),
+      customerPhone: z
+        .string()
+        .trim()
+        .min(8, 'Numéro de téléphone invalide')
+        .max(20, 'Numéro de téléphone invalide')
+        .optional(),
       returnUrl: z.string().optional(),
       cancelUrl: z.string().optional(),
     });
 
-    const { courseId, returnUrl, cancelUrl } = checkoutSchema.parse(req.body);
+    const { courseId, customerPhone, returnUrl, cancelUrl } = checkoutSchema.parse(req.body);
     
     // Get course details
     const course = await storage.getCourseById(courseId);
@@ -76,17 +86,29 @@ router.post('/wave/checkout', async (req: any, res) => {
       paymentMethod: 'wave',
     });
 
-    // Create Wave checkout (use default phone based on country if user doesn't have one)
+    // Create Wave checkout.
+    // customerPhone : celui fourni par le frontend (modale avant redirection).
+    // Fallback sur un numéro par défaut uniquement si le front n'en fournit pas
+    // (ne devrait pas arriver en prod, mais on garde le fallback par sécurité).
     const defaultPhone = process.env.WAVE_COUNTRY === 'CI' ? '+2250000000000' : '+2210000000000';
+    const phoneForWave = (customerPhone && customerPhone.trim()) || defaultPhone;
+
+    // Base URL pour les callbacks / returns. En dev on tolère l'absence d'APP_BASE_URL
+    // en utilisant l'URL construite depuis l'entête Host (PayDunya callback_url doit
+    // être publique en prod, donc APP_BASE_URL doit être défini en production).
+    const appBaseUrl = process.env.APP_BASE_URL || `${req.protocol}://${req.get('host')}`;
+
     const waveResult = await createWaveCheckout({
       amount: coursePrice,
       customerName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email || 'Utilisateur',
       customerEmail: user.email || `user-${userId}@kemetservices.com`,
-      customerPhone: defaultPhone,
+      customerPhone: phoneForWave,
       orderId: order.id,
       description: `Formation: ${course.title}`,
-      returnUrl: returnUrl || `${process.env.APP_BASE_URL}/mon-compte`,
-      cancelUrl: cancelUrl || `${process.env.APP_BASE_URL}/formation/${course.slug}`,
+      // Après paiement, PayDunya redirige vers la page de retour côté client,
+      // qui polle /api/payments/wave/status/:orderId pour afficher le résultat.
+      returnUrl: returnUrl || `${appBaseUrl}/paiement/retour/${order.id}`,
+      cancelUrl: cancelUrl || `${appBaseUrl}/paiement/retour/${order.id}?cancelled=1`,
     });
 
     if (!waveResult.success) {
@@ -306,41 +328,45 @@ router.post('/wave/webhook', async (req, res) => {
 });
 
 // GET /api/payments/wave/status/:orderId - Check payment status
+//
+// Renvoie en plus les infos du cours (slug/titre) pour que la page de retour
+// (/paiement/retour/:orderId) puisse afficher un CTA "Accéder à ma formation"
+// sans requête additionnelle. Strictement owner-only.
 router.get('/wave/status/:orderId', async (req: any, res) => {
   try {
     // Check authentication
     if (!req.user) {
-      return res.status(401).json({ 
-        success: false, 
-        error: 'Authentification requise' 
+      return res.status(401).json({
+        success: false,
+        error: 'Authentification requise'
       });
     }
 
     const { orderId } = req.params;
     const userId = req.user.claims.sub;
-    
+
     // Get order
     const order = await storage.getOrderById(orderId);
-    
+
     if (!order) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Commande non trouvée' 
+      return res.status(404).json({
+        success: false,
+        error: 'Commande non trouvée'
       });
     }
 
     // Verify user owns this order
     if (order.userId !== userId) {
-      return res.status(403).json({ 
-        success: false, 
-        error: 'Accès non autorisé' 
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé'
       });
     }
 
     // If order has waveCheckoutId, check with PayDunya
     if (order.waveCheckoutId && order.status === 'pending') {
       const paymentStatus = await checkWavePaymentStatus(order.waveCheckoutId);
-      
+
       if (paymentStatus.success && paymentStatus.status !== order.status) {
         // Update order status if changed
         await storage.updateOrder(order.id, {
@@ -367,26 +393,35 @@ router.get('/wave/status/:orderId', async (req: any, res) => {
           }
         }
 
-        return res.json({
-          success: true,
-          status: paymentStatus.status,
-          transactionId: paymentStatus.transactionId,
-        });
+        // Ré-assigner le statut sur l'objet local pour qu'il soit renvoyé
+        // avec les bonnes infos plus bas (évite un double res.json).
+        order.status = paymentStatus.status;
+        order.waveTransactionId = paymentStatus.transactionId ?? order.waveTransactionId;
       }
     }
 
-    // Return current order status
+    // Récupérer les infos de la formation pour le CTA de la page de retour.
+    // On ne révèle que des champs publics (titre, slug).
+    let course: { id: string; title: string; slug: string } | null = null;
+    if (order.courseId) {
+      const c = await storage.getCourseById(order.courseId);
+      if (c) course = { id: c.id, title: c.title, slug: c.slug };
+    }
+
     res.json({
       success: true,
       status: order.status,
       transactionId: order.waveTransactionId,
+      amount: order.amount,
+      currency: order.currency,
+      course,
     });
 
   } catch (error) {
     console.error('Status check error:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Erreur lors de la vérification du statut' 
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la vérification du statut'
     });
   }
 });

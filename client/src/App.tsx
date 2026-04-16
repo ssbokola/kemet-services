@@ -61,6 +61,7 @@ import LessonViewer from "@/pages/LessonViewer";
 import QuizViewer from "@/pages/QuizViewer";
 import FinalQuizViewer from "@/pages/FinalQuizViewer";
 import CertificateVerification from "@/pages/CertificateVerification";
+import PaymentReturn from "@/pages/PaymentReturn";
 function Router() {
   return (
     <Switch>
@@ -78,6 +79,7 @@ function Router() {
       <Route path="/formation-quiz/:courseId" component={FinalQuizViewer} />
       <Route path="/certificats/:code" component={CertificateVerification} />
       <Route path="/certificats" component={CertificateVerification} />
+      <Route path="/paiement/retour/:orderId" component={PaymentReturn} />
       <Route path="/galerie" component={Galerie} />
       <Route path="/kemet-echo" component={KemetEcho} />
       <Route path="/diagnostic" component={Diagnostic} />

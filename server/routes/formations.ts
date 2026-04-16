@@ -193,7 +193,24 @@ router.post("/:id/enroll", isAuthenticated, async (req: any, res) => {
     if (!course) {
       return res.status(404).json({ success: false, error: "Formation non trouvée" });
     }
-    
+
+    // SÉCURITÉ : bloquer l'inscription gratuite aux formations payantes.
+    // Pour les formations dont le prix > 0, le seul chemin autorisé est le
+    // checkout Wave (/api/payments/wave/checkout). Sans ce guard, n'importe
+    // quel utilisateur authentifié pourrait contourner le paiement en appelant
+    // cette route directement.
+    const coursePrice = course.price ?? course.defaultPrice ?? 0;
+    if (coursePrice > 0) {
+      return res.status(403).json({
+        success: false,
+        error: "Cette formation est payante. Veuillez procéder au paiement via Wave.",
+        requiresPayment: true,
+        courseId: course.id,
+        slug: course.slug,
+        price: coursePrice,
+      });
+    }
+
     // Vérifier si l'utilisateur est déjà inscrit
     const existingEnrollment = await storage.getEnrollment(userId, courseId);
     if (existingEnrollment) {

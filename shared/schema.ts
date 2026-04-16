@@ -125,7 +125,7 @@ export const courses = pgTable("courses", {
   
   // Legacy fields (kept for backwards compatibility with online courses)
   duration: integer("duration"), // en minutes (pour cours en ligne)
-  price: integer("price"), // en centimes (pour cours en ligne)
+  price: integer("price"), // en FCFA (XOF), pour cours en ligne. NB : la colonne s'appelle "price" par historique, mais le montant est bien en FCFA unitaires, pas en centimes.
   
   isPublished: boolean("ispublished").notNull().default(false),
   thumbnail: text("thumbnail"),

@@ -97,7 +97,18 @@ export async function createWaveCheckout(params: WaveCheckoutParams): Promise<Wa
     : 'https://app.paydunya.com/sandbox-api/v1';
 
   try {
-    // Step 1: Create PayDunya checkout
+    // --- Appel PayDunya : création de l'invoice checkout ---
+    //
+    // On utilise le "checkout standard" PayDunya, qui renvoie une URL de
+    // page de paiement hébergée par PayDunya où le client choisit son moyen
+    // de paiement (Wave, Orange Money, carte, etc.).
+    //
+    // On N'UTILISE PLUS l'API SOFTPAY Wave (wave-ci / wave-senegal) car elle
+    // n'est pas accessible en sandbox sans activation manuelle côté compte
+    // marchand. Le checkout standard fonctionne immédiatement avec n'importe
+    // quel compte PayDunya (test ou live) et supporte Wave nativement.
+    //
+    // Doc : https://developers.paydunya.com/doc/FR/sanbox
     const checkoutPayload = {
       invoice: {
         total_amount: amount,
@@ -107,12 +118,20 @@ export async function createWaveCheckout(params: WaveCheckoutParams): Promise<Wa
         name: 'KEMET Services',
         website_url: process.env.APP_BASE_URL || 'https://kemetservices.com',
       },
-      custom_data: orderId,
+      // Pré-remplit les champs côté page PayDunya pour éviter au client
+      // de ressaisir ses infos. Ce n'est pas exigé par l'API.
+      customer: {
+        name: customerName,
+        email: customerEmail,
+        phone: customerPhone,
+      },
+      // custom_data est renvoyé tel quel dans l'IPN webhook (on y stocke notre orderId).
+      custom_data: { orderId },
       actions: {
         callback_url: `${process.env.APP_BASE_URL}/api/payments/wave/webhook`,
         return_url: returnUrl || `${process.env.APP_BASE_URL}/formations`,
         cancel_url: cancelUrl || `${process.env.APP_BASE_URL}/formations`,
-      }
+      },
     };
 
     const checkoutResponse = await fetch(`${PAYDUNYA_API_BASE}/checkout-invoice/create`, {
@@ -126,7 +145,24 @@ export async function createWaveCheckout(params: WaveCheckoutParams): Promise<Wa
       body: JSON.stringify(checkoutPayload),
     });
 
-    const checkoutData = await checkoutResponse.json();
+    // PayDunya répond typiquement en JSON, mais en cas d'erreur d'URL ou
+    // de config, le reverse-proxy Cloudflare peut renvoyer du HTML.
+    // On lit d'abord en texte pour loguer et éviter un .json() qui crash.
+    const rawBody = await checkoutResponse.text();
+    let checkoutData: any;
+    try {
+      checkoutData = JSON.parse(rawBody);
+    } catch {
+      console.error('[PAYDUNYA] Non-JSON response from /checkout-invoice/create', {
+        status: checkoutResponse.status,
+        contentType: checkoutResponse.headers.get('content-type'),
+        bodyPreview: rawBody.slice(0, 200),
+      });
+      return {
+        success: false,
+        error: `PayDunya a répondu en ${checkoutResponse.status}. Vérifiez vos clés API et le mode (test/live).`,
+      };
+    }
 
     if (!checkoutResponse.ok || checkoutData.response_code !== '00') {
       console.error('PayDunya checkout error:', checkoutData);
@@ -136,58 +172,25 @@ export async function createWaveCheckout(params: WaveCheckoutParams): Promise<Wa
       };
     }
 
-    const invoiceToken = checkoutData.token;
+    // checkoutData.response_text contient l'URL de la page de paiement
+    // (ex : https://paydunya.com/sandbox-checkout/invoice/test_xxx).
+    const invoiceToken: string = checkoutData.token;
+    const paymentUrl: string = checkoutData.response_text;
 
-    // Step 2: Create Wave SOFTPAY payment - different payload for each country
-    const isCI = process.env.WAVE_COUNTRY === 'CI';
-    
-    const wavePayload = isCI 
-      ? {
-          // Côte d'Ivoire payload
-          wave_ci_fullName: customerName,
-          wave_ci_email: customerEmail,
-          wave_ci_phone: customerPhone.replace(/\+225|225/, ''), // Remove country code for CI
-          wave_ci_payment_token: invoiceToken,
-        }
-      : {
-          // Senegal payload
-          wave_senegal_fullName: customerName,
-          wave_senegal_email: customerEmail,
-          wave_senegal_phone: customerPhone.replace(/\+221|221/, ''), // Remove country code for Senegal
-          wave_senegal_payment_token: invoiceToken,
-        };
-
-    const waveEndpoint = isCI
-      ? `${PAYDUNYA_API_BASE}/softpay/wave-ci`
-      : `${PAYDUNYA_API_BASE}/softpay/wave-senegal`;
-
-    const waveResponse = await fetch(waveEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'PAYDUNYA-MASTER-KEY': process.env.PAYDUNYA_MASTER_KEY || '',
-        'PAYDUNYA-PRIVATE-KEY': process.env.PAYDUNYA_PRIVATE_KEY || '',
-        'PAYDUNYA-TOKEN': process.env.PAYDUNYA_TOKEN || '',
-      },
-      body: JSON.stringify(wavePayload),
-    });
-
-    const waveData = await waveResponse.json();
-
-    if (!waveData.success) {
-      console.error('Wave SOFTPAY error:', waveData);
+    if (!paymentUrl || !invoiceToken) {
+      console.error('[PAYDUNYA] Missing paymentUrl or token in response', checkoutData);
       return {
         success: false,
-        error: waveData.message || 'Erreur lors de la création du paiement Wave',
+        error: 'Réponse PayDunya incomplète',
       };
     }
 
     return {
       success: true,
-      paymentUrl: waveData.url,
+      paymentUrl,
       checkoutId: invoiceToken,
-      fees: waveData.fees || 0,
-      message: waveData.message,
+      fees: 0,
+      message: checkoutData.description || 'Checkout invoice created',
     };
 
   } catch (error) {
