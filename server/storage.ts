@@ -70,6 +70,8 @@ export interface IStorage {
   createOrder(order: InsertOrder): Promise<Order>;
   getOrderById(id: string): Promise<Order | undefined>;
   updateOrder(id: string, updates: Partial<InsertOrder>): Promise<Order | undefined>;
+  getOrdersByUserId(userId: string): Promise<Order[]>;
+  getOrderWithContext(orderId: string): Promise<OrderWithContext | undefined>;
   
   // Modules
   createModule(module: InsertModule): Promise<Module>;
@@ -132,6 +134,25 @@ export interface IStorage {
 
   // Certificates (délivrés à la réussite du quiz final)
   getCertificateWithContext(verificationCode: string): Promise<CertificateWithContext | undefined>;
+}
+
+// Shape retournée par getOrderWithContext — contient tout ce qu'il faut pour
+// générer le reçu PDF (order + client + formation).
+export interface OrderWithContext {
+  order: Order;
+  user: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+  };
+  course: {
+    id: string;
+    title: string;
+    slug: string;
+    defaultDuration: number;
+    duration: number | null;
+  } | null;
 }
 
 // Shape retournée par getCertificateWithContext — tout ce qu'il faut pour
@@ -773,6 +794,68 @@ export class DatabaseStorage implements IStorage {
       .values(orderData)
       .returning();
     return order;
+  }
+
+  /**
+   * Liste les commandes d'un utilisateur, les plus récentes d'abord.
+   * Utilisé par GET /api/payments/my-orders pour alimenter la section
+   * "Mes commandes / reçus" sur /mon-compte.
+   */
+  async getOrdersByUserId(userId: string): Promise<Order[]> {
+    return await db
+      .select()
+      .from(orders)
+      .where(eq(orders.userId, userId))
+      .orderBy(desc(orders.createdAt));
+  }
+
+  /**
+   * Retourne une order avec son user et sa course joints, dans la shape
+   * attendue par le générateur de reçu PDF.
+   * Renvoie undefined si l'order n'existe pas (course null si la formation
+   * a été supprimée entre-temps, ce qui est rare mais possible).
+   */
+  async getOrderWithContext(orderId: string): Promise<OrderWithContext | undefined> {
+    const rows = await db
+      .select({
+        order: orders,
+        userId: users.id,
+        userFirstName: users.firstName,
+        userLastName: users.lastName,
+        userEmail: users.email,
+        courseId: courses.id,
+        courseTitle: courses.title,
+        courseSlug: courses.slug,
+        courseDefaultDuration: courses.defaultDuration,
+        courseDuration: courses.duration,
+      })
+      .from(orders)
+      .innerJoin(users, eq(orders.userId, users.id))
+      .leftJoin(courses, eq(orders.courseId, courses.id))
+      .where(eq(orders.id, orderId))
+      .limit(1);
+
+    if (rows.length === 0) return undefined;
+    const row = rows[0];
+
+    return {
+      order: row.order,
+      user: {
+        id: row.userId,
+        firstName: row.userFirstName,
+        lastName: row.userLastName,
+        email: row.userEmail,
+      },
+      course: row.courseId
+        ? {
+            id: row.courseId,
+            title: row.courseTitle!,
+            slug: row.courseSlug!,
+            defaultDuration: row.courseDefaultDuration!,
+            duration: row.courseDuration,
+          }
+        : null,
+    };
   }
 
   async getOrderById(id: string): Promise<Order | undefined> {

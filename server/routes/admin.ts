@@ -9,9 +9,9 @@ import {
   requireAdminAuth,
   createFirstAdmin
 } from '../auth';
-import { 
-  admins, 
-  trainingRegistrations, 
+import {
+  admins,
+  trainingRegistrations,
   contactRequests,
   insertContactRequestSchema,
   courses,
@@ -21,7 +21,9 @@ import {
   quizzes,
   quizQuestions,
   courseResources,
-  insertCourseResourceSchema
+  insertCourseResourceSchema,
+  orders,
+  users,
 } from '@shared/schema';
 import { sendWeeklyProgressEmails } from '../emails/progression';
 
@@ -334,6 +336,122 @@ router.get('/registrations', requireAdminAuth(), async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur lors de la récupération des inscriptions:', error);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/admin/orders — Dashboard admin des commandes (Chantier 4 Lot 2)
+// ---------------------------------------------------------------------------
+//
+// Liste paginée des commandes, avec filtres par statut et recherche sur
+// nom/email client ou titre de formation. Inclut les infos client + cours
+// pour éviter des queries secondaires côté frontend.
+router.get('/orders', requireAdminAuth(), async (req, res) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const offset = (page - 1) * limit;
+    const search = (req.query.search as string | undefined) || '';
+    const status = (req.query.status as string | undefined) || 'all';
+
+    // Construction du filtre WHERE
+    const whereClause = and(
+      search
+        ? sql`(
+            lower(coalesce(${users.firstName}, '')) LIKE lower(${`%${search}%`}) OR
+            lower(coalesce(${users.lastName}, '')) LIKE lower(${`%${search}%`}) OR
+            lower(coalesce(${users.email}, '')) LIKE lower(${`%${search}%`}) OR
+            lower(coalesce(${courses.title}, '')) LIKE lower(${`%${search}%`}) OR
+            lower(${orders.id}::text) LIKE lower(${`%${search}%`})
+          )`
+        : undefined,
+      status && status !== 'all' ? eq(orders.status, status) : undefined,
+    );
+
+    // Liste paginée avec joins user + course
+    const rows = await db
+      .select({
+        id: orders.id,
+        status: orders.status,
+        amount: orders.amount,
+        currency: orders.currency,
+        paymentMethod: orders.paymentMethod,
+        waveTransactionId: orders.waveTransactionId,
+        createdAt: orders.createdAt,
+        paidAt: orders.paidAt,
+        userId: users.id,
+        userFirstName: users.firstName,
+        userLastName: users.lastName,
+        userEmail: users.email,
+        courseId: courses.id,
+        courseTitle: courses.title,
+        courseSlug: courses.slug,
+      })
+      .from(orders)
+      .leftJoin(users, eq(orders.userId, users.id))
+      .leftJoin(courses, eq(orders.courseId, courses.id))
+      .where(whereClause)
+      .orderBy(desc(orders.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    // Total pour pagination
+    const totalRow = await db
+      .select({ count: count() })
+      .from(orders)
+      .leftJoin(users, eq(orders.userId, users.id))
+      .leftJoin(courses, eq(orders.courseId, courses.id))
+      .where(whereClause);
+
+    // Stats rapides par statut (pour les tuiles du dashboard)
+    const stats = await db
+      .select({
+        status: orders.status,
+        total: count(),
+        amountSum: sql<string>`COALESCE(SUM(${orders.amount}), 0)`,
+      })
+      .from(orders)
+      .groupBy(orders.status);
+
+    const enriched = rows.map((r) => ({
+      id: r.id,
+      status: r.status,
+      amount: r.amount,
+      currency: r.currency,
+      paymentMethod: r.paymentMethod,
+      waveTransactionId: r.waveTransactionId,
+      createdAt: r.createdAt,
+      paidAt: r.paidAt,
+      user: r.userId
+        ? {
+            id: r.userId,
+            firstName: r.userFirstName,
+            lastName: r.userLastName,
+            email: r.userEmail,
+          }
+        : null,
+      course: r.courseId
+        ? { id: r.courseId, title: r.courseTitle!, slug: r.courseSlug! }
+        : null,
+    }));
+
+    res.json({
+      orders: enriched,
+      pagination: {
+        page,
+        limit,
+        total: totalRow[0].count,
+        pages: Math.max(1, Math.ceil(totalRow[0].count / limit)),
+      },
+      stats: stats.map((s) => ({
+        status: s.status,
+        count: Number(s.total),
+        amountSum: Number(s.amountSum),
+      })),
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des commandes:', error);
     res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 });

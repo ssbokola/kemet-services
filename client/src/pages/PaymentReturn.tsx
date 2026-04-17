@@ -36,6 +36,7 @@ import {
   Mail,
   ArrowRight,
   ShoppingCart,
+  FileText,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -232,12 +233,33 @@ export default function PaymentReturn() {
                   Accéder à ma formation <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
-              {data.course && (
-                <Button asChild variant="outline" className="flex-1" data-testid="button-view-course">
-                  <Link href={`/formation/${data.course.slug}`}>Voir la fiche formation</Link>
-                </Button>
-              )}
+              <Button
+                asChild
+                variant="outline"
+                className="flex-1 border-amber-600 text-amber-700 hover:bg-amber-50"
+                data-testid="button-download-receipt"
+              >
+                <a
+                  href={`/api/payments/receipt/${orderId}/pdf`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Télécharger le reçu PDF
+                </a>
+              </Button>
             </div>
+            {data.course && (
+              <div className="text-center">
+                <Link
+                  href={`/formation/${data.course.slug}`}
+                  className="text-sm text-muted-foreground hover:text-foreground underline underline-offset-2"
+                  data-testid="link-view-course"
+                >
+                  Voir la fiche formation
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
       );

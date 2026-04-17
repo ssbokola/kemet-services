@@ -13,7 +13,18 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
-import { BookOpen, Mail, User as UserIcon, CheckCircle2, Clock, Award } from 'lucide-react';
+import {
+  BookOpen,
+  Mail,
+  User as UserIcon,
+  CheckCircle2,
+  Clock,
+  Award,
+  Receipt,
+  FileText,
+  XCircle,
+  LogOut,
+} from 'lucide-react';
 
 interface UserData {
   email?: string;
@@ -72,6 +83,19 @@ interface EnrolledFormation {
   quizResults?: QuizResultWithDetails[];
 }
 
+// Retourné par GET /api/payments/my-orders
+interface MyOrder {
+  id: string;
+  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  amount: number;
+  currency: string;
+  paymentMethod: string | null;
+  waveTransactionId: string | null;
+  createdAt: string;
+  paidAt: string | null;
+  course: { id: string; title: string; slug: string } | null;
+}
+
 export default function MonCompte() {
   const { user: authUser, isLoading, isAuthenticated } = useAuth();
   const user = authUser as UserData;
@@ -92,6 +116,17 @@ export default function MonCompte() {
   });
 
   const enrollments = enrollmentsData?.enrollments || [];
+
+  // Liste des commandes de l'utilisateur (payantes ou gratuites) pour la
+  // section "Mes commandes et reçus"
+  const { data: ordersData, isLoading: ordersLoading } = useQuery<{
+    success: boolean;
+    orders: MyOrder[];
+  }>({
+    queryKey: ['/api/payments/my-orders'],
+    enabled: isAuthenticated,
+  });
+  const orders = ordersData?.orders || [];
 
   if (isLoading) {
     return (
@@ -148,6 +183,28 @@ export default function MonCompte() {
                     <span data-testid="text-email">{user.email}</span>
                   </div>
                 </div>
+                <Button
+                  variant="outline"
+                  className="shrink-0"
+                  data-testid="button-logout"
+                  onClick={async () => {
+                    try {
+                      await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        credentials: 'include',
+                      });
+                    } catch {
+                      // On redirige quand même en cas d'erreur réseau — pire
+                      // cas : cookie non effacé côté serveur, le user devra
+                      // fermer son navigateur pour finaliser.
+                    } finally {
+                      window.location.href = '/';
+                    }
+                  }}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Se déconnecter
+                </Button>
               </div>
             </CardHeader>
           </Card>
@@ -335,6 +392,120 @@ export default function MonCompte() {
               </div>
             )}
           </div>
+
+          {/* Mes commandes et reçus — n'affiche que si le user a au moins une commande */}
+          {orders.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold font-serif text-foreground flex items-center gap-2">
+                  <Receipt className="w-6 h-6 text-primary" />
+                  Mes commandes et reçus
+                </h2>
+              </div>
+
+              <Card>
+                <CardContent className="p-0 divide-y" data-testid="list-orders">
+                  {orders.map((order) => {
+                    const isPaid = order.status === 'completed';
+                    const isPending = order.status === 'pending';
+                    const isCancelled = order.status === 'cancelled';
+                    const isFailed = order.status === 'failed';
+
+                    const statusBadge = isPaid ? (
+                      <Badge className="bg-emerald-600 hover:bg-emerald-700 gap-1">
+                        <CheckCircle2 className="w-3 h-3" />
+                        Payée
+                      </Badge>
+                    ) : isPending ? (
+                      <Badge variant="secondary" className="bg-blue-500 text-white hover:bg-blue-600 gap-1">
+                        <Clock className="w-3 h-3" />
+                        En attente
+                      </Badge>
+                    ) : isCancelled ? (
+                      <Badge variant="secondary" className="bg-amber-500 text-white hover:bg-amber-600 gap-1">
+                        Annulée
+                      </Badge>
+                    ) : isFailed ? (
+                      <Badge variant="destructive" className="gap-1">
+                        <XCircle className="w-3 h-3" />
+                        Échouée
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline">{order.status}</Badge>
+                    );
+
+                    const dateToShow = order.paidAt || order.createdAt;
+                    const formattedDate = format(new Date(dateToShow), 'dd MMMM yyyy', { locale: fr });
+                    const formattedAmount = `${order.amount.toLocaleString('fr-FR')} ${order.currency || 'XOF'}`;
+
+                    return (
+                      <div
+                        key={order.id}
+                        className="p-5 flex flex-col md:flex-row md:items-center gap-4"
+                        data-testid={`order-row-${order.id}`}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            {statusBadge}
+                            <span className="text-xs text-muted-foreground font-mono">
+                              #{order.id.slice(0, 8).toUpperCase()}
+                            </span>
+                          </div>
+                          <p className="font-medium text-foreground truncate" data-testid={`order-course-${order.id}`}>
+                            {order.course?.title || 'Formation indisponible'}
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-0.5">
+                            {isPaid ? 'Payée le' : 'Créée le'} {formattedDate}
+                            {order.paymentMethod && ` • ${order.paymentMethod === 'wave' ? 'Wave' : order.paymentMethod}`}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <div className="text-right">
+                            <p className="text-lg font-bold text-foreground" data-testid={`order-amount-${order.id}`}>
+                              {formattedAmount}
+                            </p>
+                          </div>
+
+                          {isPaid && (
+                            <Button
+                              asChild
+                              variant="outline"
+                              size="sm"
+                              className="border-amber-600 text-amber-700 hover:bg-amber-50"
+                              data-testid={`button-download-receipt-${order.id}`}
+                            >
+                              <a
+                                href={`/api/payments/receipt/${order.id}/pdf`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <FileText className="w-4 h-4 mr-2" />
+                                Reçu PDF
+                              </a>
+                            </Button>
+                          )}
+
+                          {(isPending || isCancelled || isFailed) && order.course && (
+                            <Button
+                              asChild
+                              variant="outline"
+                              size="sm"
+                              data-testid={`button-retry-order-${order.id}`}
+                            >
+                              <Link href={`/formation/${order.course.slug}`}>
+                                Réessayer
+                              </Link>
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           <Card>
             <CardHeader>

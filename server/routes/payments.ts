@@ -1,9 +1,40 @@
 import { Router } from 'express';
 import { storage } from '../storage';
 import { createWaveCheckout, verifyWaveWebhook, processWaveWebhook, checkWavePaymentStatus } from '../payments/wave';
+import { sendPaymentConfirmation } from '../emails/payment-confirmation';
+import { generateReceiptPdf } from '../services/receipt-pdf';
 import { z } from 'zod';
 
 const router = Router();
+
+/**
+ * Envoi de l'email de confirmation de paiement en fire-and-forget.
+ * N'interrompt JAMAIS le flow HTTP : tout échec est loggé mais non propagé.
+ *
+ * Utilisé aux deux endroits où une order passe en "completed" :
+ *   - webhook IPN PayDunya (cas nominal)
+ *   - polling de statut /wave/status/:orderId (cas où le webhook n'arrive pas,
+ *     typiquement en dev localhost)
+ */
+function dispatchPaymentConfirmationEmail(orderId: string, logPrefix: string = '[PAYMENT-EMAIL]') {
+  (async () => {
+    try {
+      const order = await storage.getOrderById(orderId);
+      if (!order || order.status !== 'completed' || !order.userId || !order.courseId) return;
+
+      const user = await storage.getUserById(order.userId);
+      const course = await storage.getCourseById(order.courseId);
+      if (!user || !course) {
+        console.warn(`${logPrefix} User ou course introuvable, skip`, { orderId, userId: order.userId, courseId: order.courseId });
+        return;
+      }
+
+      await sendPaymentConfirmation(user, course, order);
+    } catch (error) {
+      console.error(`${logPrefix} Échec envoi email (non-fatal):`, error);
+    }
+  })();
+}
 
 // POST /api/payments/wave/checkout - Create Wave checkout session
 router.post('/wave/checkout', async (req: any, res) => {
@@ -310,6 +341,12 @@ router.post('/wave/webhook', async (req, res) => {
           // we can manually reconcile if needed
         }
       }
+
+      // --- STEP 9: Envoyer l'email de confirmation de paiement (fire-and-forget) ---
+      // On n'envoie QUE si la transition vient d'avoir lieu (order.status précédent
+      // était différent de "completed" — on le sait grâce au step 6 d'idempotence
+      // qui aurait déjà renvoyé plus haut si order était déjà completed).
+      dispatchPaymentConfirmationEmail(order.id, `${logPrefix}[EMAIL]`);
     }
 
     console.log(`${logPrefix} SUCCESS`);
@@ -391,6 +428,12 @@ router.get('/wave/status/:orderId', async (req: any, res) => {
               progressPercent: 0,
             });
           }
+
+          // Envoyer l'email de confirmation de paiement (fire-and-forget).
+          // Ce chemin est emprunté quand le webhook IPN ne passe pas (ex: dev
+          // localhost, réseau marchand qui bloque). Évite le double envoi car
+          // on ne déclenche que sur la transition pending → completed.
+          dispatchPaymentConfirmationEmail(order.id, '[WAVE-STATUS][EMAIL]');
         }
 
         // Ré-assigner le statut sur l'objet local pour qu'il soit renvoyé
@@ -423,6 +466,144 @@ router.get('/wave/status/:orderId', async (req: any, res) => {
       success: false,
       error: 'Erreur lors de la vérification du statut'
     });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/payments/my-orders — liste des commandes de l'utilisateur connecté
+// ---------------------------------------------------------------------------
+//
+// Sert à alimenter la section "Mes commandes / reçus" sur la page /mon-compte.
+// Renvoie les infos nécessaires pour afficher chaque ligne + un lien de
+// téléchargement du reçu (uniquement pour les commandes "completed").
+// Strictement propriétaire (on ne renvoie que les orders du user connecté).
+router.get('/my-orders', async (req: any, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ success: false, error: 'Authentification requise' });
+    }
+    const userId = req.user.claims.sub;
+
+    const orders = await storage.getOrdersByUserId(userId);
+
+    // Enrichir chaque order avec le titre et le slug de la formation (pour affichage).
+    const enriched = await Promise.all(
+      orders.map(async (o) => {
+        let course: { id: string; title: string; slug: string } | null = null;
+        if (o.courseId) {
+          const c = await storage.getCourseById(o.courseId);
+          if (c) course = { id: c.id, title: c.title, slug: c.slug };
+        }
+        return {
+          id: o.id,
+          status: o.status,
+          amount: o.amount,
+          currency: o.currency,
+          paymentMethod: o.paymentMethod,
+          waveTransactionId: o.waveTransactionId,
+          createdAt: o.createdAt,
+          paidAt: o.paidAt,
+          course,
+        };
+      }),
+    );
+
+    res.json({ success: true, orders: enriched });
+  } catch (error) {
+    console.error('my-orders error:', error);
+    res.status(500).json({ success: false, error: 'Erreur lors de la récupération des commandes' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/payments/receipt/:orderId/pdf — télécharger le reçu PDF
+// ---------------------------------------------------------------------------
+//
+// Stream direct du PDF, pas de stockage disque. Strictement owner-only :
+// refuse avec 403 si l'utilisateur connecté n'est pas le propriétaire de
+// la commande. Refuse aussi si la commande n'est pas "completed" (pas de
+// reçu à émettre pour une transaction pending/failed/cancelled).
+router.get('/receipt/:orderId/pdf', async (req: any, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ success: false, error: 'Authentification requise' });
+    }
+    const requesterId = req.user.claims.sub;
+    const { orderId } = req.params;
+
+    const context = await storage.getOrderWithContext(orderId);
+    if (!context) {
+      return res.status(404).json({ success: false, error: 'Commande introuvable' });
+    }
+
+    // Strict : seul le propriétaire peut télécharger son reçu
+    if (context.user.id !== requesterId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès refusé — vous n\'êtes pas le propriétaire de cette commande',
+      });
+    }
+
+    if (context.order.status !== 'completed') {
+      return res.status(400).json({
+        success: false,
+        error: 'Aucun reçu disponible pour cette commande (statut : ' + context.order.status + ')',
+      });
+    }
+
+    if (!context.course) {
+      return res.status(400).json({
+        success: false,
+        error: 'Impossible de générer le reçu : formation introuvable',
+      });
+    }
+
+    // Headers pour téléchargement PDF
+    const receiptFilename = `recu-kemet-${context.order.id.slice(0, 8)}.pdf`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="${receiptFilename}"`);
+    res.setHeader('Cache-Control', 'private, max-age=0, no-cache');
+
+    // Le générateur attend le shape { order, user, course }. On construit un
+    // User minimal à partir du context (assez pour formatCustomerName).
+    generateReceiptPdf(
+      {
+        order: context.order,
+        user: {
+          id: context.user.id,
+          firstName: context.user.firstName,
+          lastName: context.user.lastName,
+          email: context.user.email,
+          // Champs inutilisés par le générateur mais exigés par le type User :
+          username: null,
+          password: null,
+          profileImageUrl: null,
+          role: 'participant',
+          createdAt: null,
+          updatedAt: null,
+          authType: 'local',
+          status: 'active',
+          isTemporaryPassword: false,
+          lastLoginAt: null,
+          passwordResetAt: null,
+          passwordResetToken: null,
+          passwordResetTokenExpiry: null,
+        } as any,
+        course: {
+          id: context.course.id,
+          title: context.course.title,
+          slug: context.course.slug,
+          defaultDuration: context.course.defaultDuration,
+          duration: context.course.duration,
+        } as any,
+      },
+      res,
+    );
+  } catch (error) {
+    console.error('Receipt PDF error:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, error: 'Erreur lors de la génération du reçu' });
+    }
   }
 });
 

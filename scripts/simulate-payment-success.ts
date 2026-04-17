@@ -13,8 +13,9 @@
  */
 import '../server/load-env';
 import { db } from '../server/db';
-import { orders, enrollments, users } from '../shared/schema';
+import { orders, enrollments, users, courses } from '../shared/schema';
 import { and, desc, eq } from 'drizzle-orm';
+import { sendPaymentConfirmation } from '../server/emails/payment-confirmation';
 
 const TEST_EMAIL = 'test-student@kemet.local';
 
@@ -74,6 +75,20 @@ async function main() {
       console.log(`✓ Enrollment créé`);
     } else {
       console.log(`✓ Enrollment existait déjà`);
+    }
+  }
+
+  // 5. Déclencher l'email de confirmation (en local sans GMAIL_APP_PASSWORD,
+  //    l'email sera juste loggé. En prod avec Gmail configuré, il partira.)
+  if (order.courseId) {
+    const [course] = await db.select().from(courses).where(eq(courses.id, order.courseId)).limit(1);
+    if (course) {
+      // Recharger l'order avec les valeurs mises à jour (paidAt, waveTransactionId)
+      const [updatedOrder] = await db.select().from(orders).where(eq(orders.id, order.id)).limit(1);
+      if (updatedOrder) {
+        const sent = await sendPaymentConfirmation(user, course, updatedOrder);
+        console.log(sent ? '✓ Email de confirmation envoyé (ou loggé en dev)' : '✗ Échec envoi email');
+      }
     }
   }
 

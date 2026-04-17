@@ -20,7 +20,8 @@ import {
   ArrowDown,
   Target,
   Activity,
-  Shield
+  Shield,
+  Receipt
 } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -140,6 +141,9 @@ export default function AdminDashboard() {
       case 'participants':
         setLocation('/admin/participants');
         break;
+      case 'orders':
+        setLocation('/admin/commandes');
+        break;
       case 'analytics':
         // TODO: implémenter analytics
         break;
@@ -164,6 +168,7 @@ export default function AdminDashboard() {
     { id: 'contacts', label: 'Contacts', icon: MessageSquare, badge: stats?.totalContacts },
     { id: 'courses', label: 'Formations', icon: BookOpen },
     { id: 'participants', label: 'Participants', icon: Users },
+    { id: 'orders', label: 'Commandes', icon: Receipt },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'email-auth', label: 'Authentification Email', icon: Shield },
     { id: 'spf', label: 'Config SPF', icon: Shield },

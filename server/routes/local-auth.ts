@@ -272,4 +272,53 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+// ---------- POST /api/auth/logout ----------
+//
+// Détruit la session du user connecté (participants locaux ET participants
+// Replit passent tous par ici en priorité — la route /api/logout de
+// replitAuth n'est montée qu'en prod Replit).
+router.post('/logout', (req: any, res) => {
+  const sessionId = req.sessionID;
+
+  // Logout côté Passport (si auth Replit) puis détruire la session côté serveur
+  const done = () => {
+    req.session?.destroy?.((err: any) => {
+      if (err) {
+        console.error(`[AUTH] Session destroy failed (session ${sessionId}):`, err);
+      }
+      // Effacer le cookie côté client
+      res.clearCookie('connect.sid');
+      res.json({ success: true, message: 'Déconnexion réussie' });
+    });
+  };
+
+  if (typeof req.logout === 'function') {
+    // req.logout signature varie selon la version de Passport (callback ou non)
+    try {
+      req.logout(done);
+    } catch {
+      done();
+    }
+  } else {
+    done();
+  }
+});
+
+// ---------- GET /api/auth/logout ----------
+// Alias GET pour faciliter le test via un simple clic / lien (pas de form nécessaire).
+// Après logout, redirige vers la page d'accueil.
+router.get('/logout', (req: any, res) => {
+  const done = () => {
+    req.session?.destroy?.(() => {
+      res.clearCookie('connect.sid');
+      res.redirect('/');
+    });
+  };
+  if (typeof req.logout === 'function') {
+    try { req.logout(done); } catch { done(); }
+  } else {
+    done();
+  }
+});
+
 export default router;
