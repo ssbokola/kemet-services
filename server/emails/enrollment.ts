@@ -1,5 +1,5 @@
 // Emails de confirmation d'inscription aux formations en ligne
-import { sendGmailNotification, getEmailTransporter, getEmailFromAddress } from "../gmail";
+import { sendGmailNotification, sendEmailUniversal } from "../gmail";
 import type { Course, User } from "@shared/schema";
 
 interface EnrollmentConfirmationData {
@@ -150,22 +150,13 @@ export async function sendEnrollmentConfirmation(
     
     const subject = `✅ Inscription confirmée - ${course.title}`;
     
-    // Utilise le transporter partagé (SMTP_* en priorité, GMAIL_* en fallback)
-    const transporter = getEmailTransporter();
-    if (transporter) {
-      try {
-        await transporter.sendMail({
-          from: `"Kemet Services" <${getEmailFromAddress()}>`,
-          to: user.email || '',
-          subject,
-          html: emailHTML,
-        });
-        return true;
-      } catch (error) {
-        console.error('Erreur envoi email enrollment:', error);
-        return false;
-      }
-    }
+    // Envoi universel (Resend API > SMTP > Gmail selon config)
+    const sent = await sendEmailUniversal({
+      to: user.email || '',
+      subject,
+      html: emailHTML,
+    });
+    if (sent) return true;
     
     // If no Gmail credentials, just log and return success (for development)
     console.log(`📧 Email enrollment prévu pour: ${user.email} - ${subject}`);

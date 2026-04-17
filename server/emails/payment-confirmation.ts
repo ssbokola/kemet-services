@@ -16,7 +16,7 @@
 
 import type { Course, User, Order } from '@shared/schema';
 import { renderReceiptPdfToBuffer } from '../services/receipt-pdf';
-import { getEmailTransporter, getEmailFromAddress } from '../gmail';
+import { sendEmailUniversal } from '../gmail';
 
 interface PaymentConfirmationData {
   user: User;
@@ -217,15 +217,6 @@ export async function sendPaymentConfirmation(
       return false;
     }
 
-    // Le transporter est partagé entre tous les emails et piloté par les
-    // variables d'environnement (SMTP_* en priorité, GMAIL_* en fallback).
-    // Graceful skip si aucune config valide (dev local).
-    const transporter = getEmailTransporter();
-    if (!transporter) {
-      console.log(`[PAYMENT-EMAIL] SMTP non configuré — email simulé pour ${user.email}: ${subject}`);
-      return true;
-    }
-
     // Générer le reçu PDF en mémoire pour le joindre. Si la génération échoue,
     // on envoie quand même l'email sans attachment (le user peut toujours
     // télécharger le reçu depuis /mon-compte).
@@ -243,19 +234,22 @@ export async function sendPaymentConfirmation(
       console.error('[PAYMENT-EMAIL] Échec génération PDF, envoi sans attachment:', pdfErr);
     }
 
-    await transporter.sendMail({
-      from: `"Kemet Services" <${getEmailFromAddress()}>`,
+    // Envoi universel (Resend API > SMTP > Gmail). Resend est utilisé en prod
+    // car Railway bloque le SMTP sortant. En dev local, SMTP fonctionne.
+    const sent = await sendEmailUniversal({
       to: user.email,
       subject,
       html: emailHTML,
       attachments,
     });
 
-    console.log(
-      `[PAYMENT-EMAIL] Email envoyé à ${user.email} pour order ${order.id}` +
-        (attachments.length ? ` (avec reçu PDF joint)` : ` (sans attachment)`),
-    );
-    return true;
+    if (sent) {
+      console.log(
+        `[PAYMENT-EMAIL] Email envoyé à ${user.email} pour order ${order.id}` +
+          (attachments.length ? ` (avec reçu PDF joint)` : ` (sans attachment)`),
+      );
+    }
+    return sent;
   } catch (error) {
     console.error('[PAYMENT-EMAIL] Échec envoi email de confirmation de paiement:', error);
     return false;

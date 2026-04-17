@@ -1,6 +1,6 @@
-// Service d'envoi d'email — utilise le transporter partagé (SMTP_* ou fallback GMAIL_*)
+// Service d'envoi d'email — utilise le helper universel (Resend > SMTP > Gmail)
 import nodemailer from 'nodemailer';
-import { getEmailTransporter, getEmailFromAddress } from './gmail';
+import { getEmailTransporter, getEmailFromAddress, sendEmailUniversal } from './gmail';
 
 interface EmailParams {
   to: string;
@@ -34,25 +34,14 @@ class EmailService {
   }
 
   async sendEmail(params: EmailParams): Promise<boolean> {
-    // Re-fetch au cas où la config aurait été ajoutée après le boot
-    if (!this.transporter) this.transporter = getEmailTransporter();
-    if (!this.transporter) {
-      console.warn('Email non envoyé (service désactivé):', params.subject);
-      return false;
-    }
-    try {
-      await this.transporter.sendMail({
-        from: `"Kemet Services" <${getEmailFromAddress()}>`,
-        to: params.to,
-        subject: params.subject,
-        text: params.text,
-        html: params.html,
-      });
-      return true;
-    } catch (error) {
-      console.error('Erreur envoi email:', error);
-      return false;
-    }
+    // Utilise le helper universel qui priorise Resend API (contournement
+    // du blocage SMTP de Railway), avec fallback SMTP/Gmail si disponible.
+    return await sendEmailUniversal({
+      to: params.to,
+      subject: params.subject,
+      html: params.html || params.text || '',
+      text: params.text,
+    });
   }
 
   async sendParticipantCredentials(credentials: ParticipantCredentials): Promise<boolean> {

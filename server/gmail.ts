@@ -1,23 +1,24 @@
-// Service d'envoi d'email — supporte n'importe quel SMTP (Hostinger, Gmail, etc.)
+// Service d'envoi d'email — multi-provider (Resend API > SMTP > Gmail fallback)
 //
 // Configuration via variables d'environnement, par ordre de priorité :
 //
-// 1. SMTP générique (recommandé — fonctionne avec Hostinger, OVH, SendGrid, etc.)
-//    - SMTP_HOST          (ex: smtp.hostinger.com)
-//    - SMTP_PORT          (465 pour SSL, 587 pour STARTTLS)
-//    - SMTP_SECURE        ("true" si port 465, sinon "false")
-//    - SMTP_USER          (l'adresse email utilisée pour l'auth — ex: infos@kemetservices.com)
-//    - SMTP_PASSWORD      (le mot de passe SMTP)
-//    - SMTP_FROM          (optionnel — l'adresse affichée dans le From, par défaut SMTP_USER)
+// 1. Resend API (recommandé pour Railway et autres hébergeurs cloud qui bloquent
+//    le SMTP sortant — utilise HTTPS donc jamais bloqué)
+//    - RESEND_API_KEY     (commence par `re_...`, récupérée sur resend.com)
+//    - SMTP_FROM          (adresse "From" — ex: infos@kemetservices.com)
+//                          → doit être un domaine vérifié dans Resend
 //
-// 2. Fallback Gmail (rétrocompat — pour ceux qui utilisent encore Gmail)
-//    - GMAIL_USER
-//    - GMAIL_APP_PASSWORD
+// 2. SMTP générique (fonctionne en local et sur les hébergeurs qui autorisent SMTP)
+//    - SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASSWORD, SMTP_FROM
 //
-// Si aucune des 2 configs n'est complète, les emails sont loggés mais pas envoyés
+// 3. Fallback Gmail (rétrocompat)
+//    - GMAIL_USER, GMAIL_APP_PASSWORD
+//
+// Si aucune config n'est complète, les emails sont loggés mais pas envoyés
 // (utile en dev local).
 import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
+import { Resend } from 'resend';
 
 let transporterCache: Transporter | null = null;
 
@@ -108,6 +109,107 @@ export function getEmailTransporter(): Transporter | null {
 // Alias local pour le reste du fichier (variable historique `gmailTransporter`)
 let gmailTransporter: Transporter | null = getEmailTransporter();
 
+// ---------------------------------------------------------------------------
+// Resend API — client singleton
+// ---------------------------------------------------------------------------
+
+let resendClient: Resend | null = null;
+function getResendClient(): Resend | null {
+  if (resendClient) return resendClient;
+  if (!process.env.RESEND_API_KEY) return null;
+  resendClient = new Resend(process.env.RESEND_API_KEY);
+  return resendClient;
+}
+
+/**
+ * Options universelles pour l'envoi d'un email.
+ * Compatible Resend API ET nodemailer SMTP (attachments au format Resend :
+ * { filename, content: Buffer, contentType }).
+ */
+export interface UniversalEmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+  replyTo?: string;
+  attachments?: Array<{
+    filename: string;
+    content: Buffer;
+    contentType?: string;
+  }>;
+  fromName?: string;
+}
+
+/**
+ * Envoi universel d'email avec sélection automatique du provider.
+ *
+ * Ordre de priorité :
+ *   1. Resend API (si RESEND_API_KEY définie) — HTTPS, jamais bloqué par l'hébergeur
+ *   2. SMTP / Gmail (via nodemailer) — peut être bloqué par Railway
+ *   3. No-op (log seulement) si aucune config
+ *
+ * Retourne true si envoyé, false si erreur.
+ */
+export async function sendEmailUniversal(options: UniversalEmailOptions): Promise<boolean> {
+  const fromAddress = getEmailFromAddress();
+  const fromName = options.fromName || 'Kemet Services';
+  const fromFormatted = `"${fromName}" <${fromAddress}>`;
+
+  // --- 1. Resend API (priorité) ---
+  const resend = getResendClient();
+  if (resend) {
+    try {
+      const resendAttachments = options.attachments?.map((a) => ({
+        filename: a.filename,
+        content: a.content,
+      }));
+      const { error } = await resend.emails.send({
+        from: fromFormatted,
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        text: options.text,
+        replyTo: options.replyTo,
+        attachments: resendAttachments,
+      });
+      if (error) {
+        console.error('[EMAIL][Resend] Erreur API:', error);
+        return false;
+      }
+      console.log(`[EMAIL][Resend] Envoyé à ${options.to}: ${options.subject}`);
+      return true;
+    } catch (err) {
+      console.error('[EMAIL][Resend] Exception:', err);
+      return false;
+    }
+  }
+
+  // --- 2. SMTP / Gmail (fallback) ---
+  const transporter = getEmailTransporter();
+  if (transporter) {
+    try {
+      await transporter.sendMail({
+        from: fromFormatted,
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        text: options.text,
+        replyTo: options.replyTo,
+        attachments: options.attachments,
+      });
+      console.log(`[EMAIL][SMTP] Envoyé à ${options.to}: ${options.subject}`);
+      return true;
+    } catch (err) {
+      console.error('[EMAIL][SMTP] Erreur envoi:', err);
+      return false;
+    }
+  }
+
+  // --- 3. No-op ---
+  console.warn(`[EMAIL] Aucune config provider — email non envoyé: ${options.subject} → ${options.to}`);
+  return false;
+}
+
 interface TrainingRegistration {
   id: string;
   trainingTitle: string;
@@ -127,14 +229,8 @@ export async function sendGmailNotification(
 ): Promise<boolean> {
   
   // Créer le transporteur si pas encore fait
-  if (!gmailTransporter) {
-    gmailTransporter = createGmailTransporter();
-  }
-
-  if (!gmailTransporter) {
-    console.log('📧 Gmail non configuré - notification non envoyée');
-    return false;
-  }
+  // Pas de guard sur gmailTransporter — sendEmailUniversal gère la sélection
+  // du provider (Resend > SMTP > Gmail). Il retournera false si aucun ne marche.
 
   const subject = `🎓 Nouvelle inscription - ${registration.trainingTitle}`;
   
@@ -249,28 +345,14 @@ Date: ${registration.createdAt.toLocaleDateString('fr-FR')}
 Consultez votre tableau de bord: https://kemetservices.com/inscriptions
 `;
 
-  const mailOptions = {
-    from: {
-      name: 'Kemet Services',
-      address: getEmailFromAddress()
-    },
+  // Envoi universel (Resend API > SMTP > Gmail)
+  return await sendEmailUniversal({
     to: adminEmail,
-    subject: subject,
-    text: textContent,
+    subject,
     html: htmlContent,
-    priority: 'high' as 'high',
-    replyTo: registration.email // Permet de répondre directement au participant
-  };
-
-  try {
-    const result = await gmailTransporter.sendMail(mailOptions);
-    console.log(`✅ Email Gmail envoyé avec succès à ${adminEmail}`);
-    console.log(`📧 Message envoyé avec succès`);
-    return true;
-  } catch (error) {
-    console.error('❌ Erreur lors de l\'envoi Gmail:', error);
-    return false;
-  }
+    text: textContent,
+    replyTo: registration.email,
+  });
 }
 
 // Fonction pour envoyer un email de confirmation au participant
@@ -278,15 +360,7 @@ export async function sendParticipantConfirmation(
   registration: TrainingRegistration
 ): Promise<boolean> {
   
-  // Créer le transporteur si pas encore fait
-  if (!gmailTransporter) {
-    gmailTransporter = createGmailTransporter();
-  }
-
-  if (!gmailTransporter) {
-    console.log('📧 Gmail non configuré - confirmation participant non envoyée');
-    return false;
-  }
+  // Pas de guard sur gmailTransporter — sendEmailUniversal gère Resend > SMTP > Gmail
 
   try {
     console.log(`▶️ Construction de l'email de confirmation pour ${registration.email}`);
@@ -443,19 +517,13 @@ Kemet Services
 Formation et Conseil Pharmaceutique
 `;
 
-  const mailOptions = {
-    from: `"Kemet Services" <${getEmailFromAddress()}>`,
-    to: registration.email,
-    subject: subject,
-    text: textContent,
-    html: htmlContent,
-    replyTo: getEmailFromAddress() // Email de réponse
-  };
-
     console.log(`▶️ Envoi de l'email de confirmation à ${registration.email}`);
-    await gmailTransporter.sendMail(mailOptions);
-    console.log(`✅ Email de confirmation envoyé avec succès à ${registration.email}`);
-    return true;
+    return await sendEmailUniversal({
+      to: registration.email,
+      subject,
+      html: htmlContent,
+      text: textContent,
+    });
   } catch (error) {
     console.error('❌ Erreur lors de la construction/envoi de la confirmation participant:', error);
     return false;
@@ -492,14 +560,8 @@ export async function sendKemetEchoNotification(
 ): Promise<boolean> {
   
   // Créer le transporteur si pas encore fait
-  if (!gmailTransporter) {
-    gmailTransporter = createGmailTransporter();
-  }
-
-  if (!gmailTransporter) {
-    console.log('📧 Gmail non configuré - notification non envoyée');
-    return false;
-  }
+  // Pas de guard sur gmailTransporter — sendEmailUniversal gère la sélection
+  // du provider (Resend > SMTP > Gmail). Il retournera false si aucun ne marche.
 
   const offerLabels: Record<string, string> = {
     'freemium': 'Freemium (Essai gratuit 30 jours)',
@@ -629,16 +691,14 @@ ${adminEmail}
   `;
 
   try {
-    await gmailTransporter.sendMail({
-      from: `"Kemet Echo Notifications" <${getEmailFromAddress()}>`,
+    return await sendEmailUniversal({
       to: adminEmail,
       subject,
-      text: textContent,
       html: htmlContent,
-      replyTo: request.email
+      text: textContent,
+      replyTo: request.email,
+      fromName: 'Kemet Echo Notifications',
     });
-    
-    return true;
   } catch (error) {
     console.error('❌ Erreur lors de l\'envoi de notification Kemet Echo:', error);
     return false;
@@ -675,34 +735,21 @@ interface SendGmailOptions {
 }
 
 export async function sendGmail(options: SendGmailOptions): Promise<boolean> {
-  // Créer le transporteur si pas encore fait
-  if (!gmailTransporter) {
-    gmailTransporter = createGmailTransporter();
-  }
-
-  if (!gmailTransporter) {
-    console.log('📧 Gmail non configuré - email non envoyé');
-    return false;
-  }
-
-  const mailOptions = {
-    from: {
-      name: 'Kemet Services',
-      address: getEmailFromAddress()
-    },
+  // Délègue à sendEmailUniversal qui choisit le provider (Resend > SMTP > Gmail).
+  return await sendEmailUniversal({
     to: options.to,
     subject: options.subject,
     html: options.html,
-    text: options.text || options.html.replace(/<[^>]*>/g, ''), // Fallback text version
-    replyTo: options.replyTo || getEmailFromAddress()
-  };
+    text: options.text,
+    replyTo: options.replyTo,
+  });
+}
 
+// Fonction _legacy conservée pour éviter de casser d'anciens imports si présents
+async function _legacySendGmailDeadCode(): Promise<boolean> {
   try {
-    await gmailTransporter.sendMail(mailOptions);
-    console.log(`✅ Email envoyé avec succès à ${options.to}`);
-    return true;
+    return false;
   } catch (error) {
-    console.error(`❌ Erreur lors de l'envoi de l'email à ${options.to}:`, error);
     return false;
   }
 }
