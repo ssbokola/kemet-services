@@ -140,7 +140,7 @@ router.get('/:code/download', isAuthenticated, async (req: any, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.setHeader('Cache-Control', 'private, no-cache');
 
-    generateCertificatePdf(
+    await generateCertificatePdf(
       {
         holderName: formatHolderName(data.holder),
         courseTitle: data.course.title,

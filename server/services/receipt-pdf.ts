@@ -23,6 +23,7 @@
  * un comptable.
  */
 import PDFDocument from 'pdfkit';
+import { PassThrough } from 'stream';
 import type { Writable } from 'stream';
 import type { Course, User, Order } from '@shared/schema';
 
@@ -395,4 +396,28 @@ export function generateReceiptPdf(data: ReceiptPdfData, stream: Writable): void
     );
 
   doc.end();
+}
+
+/**
+ * Variante qui génère le PDF en mémoire et retourne un Buffer.
+ * Utile pour joindre le reçu en pièce jointe d'email (nodemailer attachment).
+ *
+ * Préférer `generateReceiptPdf(..., stream)` quand on a déjà un stream
+ * destination (ex : response HTTP) — c'est plus efficient en mémoire.
+ */
+export function renderReceiptPdfToBuffer(data: ReceiptPdfData): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    const pass = new PassThrough();
+
+    pass.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    pass.on('end', () => resolve(Buffer.concat(chunks)));
+    pass.on('error', reject);
+
+    try {
+      generateReceiptPdf(data, pass);
+    } catch (err) {
+      reject(err);
+    }
+  });
 }

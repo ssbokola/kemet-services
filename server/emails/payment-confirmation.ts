@@ -15,6 +15,7 @@
 // jamais bloquer la réponse HTTP si l'email échoue.
 
 import type { Course, User, Order } from '@shared/schema';
+import { renderReceiptPdfToBuffer } from '../services/receipt-pdf';
 
 interface PaymentConfirmationData {
   user: User;
@@ -230,14 +231,35 @@ export async function sendPaymentConfirmation(
       },
     });
 
+    // Générer le reçu PDF en mémoire pour le joindre. Si la génération échoue,
+    // on envoie quand même l'email sans attachment (le user peut toujours
+    // télécharger le reçu depuis /mon-compte).
+    let attachments: Array<{ filename: string; content: Buffer; contentType: string }> = [];
+    try {
+      const pdfBuffer = await renderReceiptPdfToBuffer({ user, course, order });
+      attachments = [
+        {
+          filename: `recu-kemet-${order.id.slice(0, 8).toUpperCase()}.pdf`,
+          content: pdfBuffer,
+          contentType: 'application/pdf',
+        },
+      ];
+    } catch (pdfErr) {
+      console.error('[PAYMENT-EMAIL] Échec génération PDF, envoi sans attachment:', pdfErr);
+    }
+
     await transporter.sendMail({
       from: `"Kemet Services" <${process.env.GMAIL_USER}>`,
       to: user.email,
       subject,
       html: emailHTML,
+      attachments,
     });
 
-    console.log(`[PAYMENT-EMAIL] Email de confirmation envoyé à ${user.email} pour order ${order.id}`);
+    console.log(
+      `[PAYMENT-EMAIL] Email envoyé à ${user.email} pour order ${order.id}` +
+        (attachments.length ? ` (avec reçu PDF joint)` : ` (sans attachment)`),
+    );
     return true;
   } catch (error) {
     console.error('[PAYMENT-EMAIL] Échec envoi email de confirmation de paiement:', error);

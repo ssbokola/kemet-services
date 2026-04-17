@@ -6,6 +6,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seoPrerender } from "./seo-prerender";
+import { startWaveReconciliationJob } from "./jobs/reconcile-wave-orders";
 
 const app = express();
 app.use(express.json());
@@ -82,5 +83,12 @@ app.use((req, res, next) => {
   }
   server.listen(listenOptions, () => {
     log(`serving on port ${port}`);
+
+    // Démarrer les jobs de fond APRÈS que le serveur écoute.
+    // Le cron de réconciliation Wave tourne toutes les 15 min pour rattraper
+    // les orders "pending" dont le webhook IPN n'aurait pas été reçu.
+    if (process.env.DISABLE_BACKGROUND_JOBS !== 'true') {
+      startWaveReconciliationJob();
+    }
   });
 })();
