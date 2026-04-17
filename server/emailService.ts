@@ -1,5 +1,6 @@
-// Service d'envoi d'email via Gmail SMTP
+// Service d'envoi d'email — utilise le transporter partagé (SMTP_* ou fallback GMAIL_*)
 import nodemailer from 'nodemailer';
+import { getEmailTransporter, getEmailFromAddress } from './gmail';
 
 interface EmailParams {
   to: string;
@@ -26,28 +27,22 @@ class EmailService {
   private transporter: nodemailer.Transporter | null = null;
 
   constructor() {
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      console.warn("Variables d'environnement GMAIL_USER et GMAIL_APP_PASSWORD manquantes - service email désactivé");
-      return;
+    this.transporter = getEmailTransporter();
+    if (!this.transporter) {
+      console.warn("Config SMTP manquante (SMTP_* ou GMAIL_*) - service email désactivé");
     }
-
-    this.transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
-      },
-    });
   }
 
   async sendEmail(params: EmailParams): Promise<boolean> {
+    // Re-fetch au cas où la config aurait été ajoutée après le boot
+    if (!this.transporter) this.transporter = getEmailTransporter();
     if (!this.transporter) {
       console.warn('Email non envoyé (service désactivé):', params.subject);
       return false;
     }
     try {
       await this.transporter.sendMail({
-        from: `"Kemet Services" <${process.env.GMAIL_USER}>`,
+        from: `"Kemet Services" <${getEmailFromAddress()}>`,
         to: params.to,
         subject: params.subject,
         text: params.text,

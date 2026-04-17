@@ -1,5 +1,5 @@
 // Emails de confirmation d'inscription aux formations en ligne
-import { sendGmailNotification } from "../gmail";
+import { sendGmailNotification, getEmailTransporter, getEmailFromAddress } from "../gmail";
 import type { Course, User } from "@shared/schema";
 
 interface EnrollmentConfirmationData {
@@ -150,22 +150,12 @@ export async function sendEnrollmentConfirmation(
     
     const subject = `✅ Inscription confirmée - ${course.title}`;
     
-    // Create a minimal email sending function using nodemailer directly
-    const nodemailer = await import('nodemailer');
-    
-    // If Gmail credentials are available, use them
-    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
-      const transporter = nodemailer.default.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.GMAIL_USER,
-          pass: process.env.GMAIL_APP_PASSWORD,
-        },
-      });
-      
+    // Utilise le transporter partagé (SMTP_* en priorité, GMAIL_* en fallback)
+    const transporter = getEmailTransporter();
+    if (transporter) {
       try {
         await transporter.sendMail({
-          from: `"Kemet Services" <${process.env.GMAIL_USER}>`,
+          from: `"Kemet Services" <${getEmailFromAddress()}>`,
           to: user.email || '',
           subject,
           html: emailHTML,

@@ -1,36 +1,112 @@
-// Service d'envoi d'email via Gmail SMTP
+// Service d'envoi d'email — supporte n'importe quel SMTP (Hostinger, Gmail, etc.)
+//
+// Configuration via variables d'environnement, par ordre de priorité :
+//
+// 1. SMTP générique (recommandé — fonctionne avec Hostinger, OVH, SendGrid, etc.)
+//    - SMTP_HOST          (ex: smtp.hostinger.com)
+//    - SMTP_PORT          (465 pour SSL, 587 pour STARTTLS)
+//    - SMTP_SECURE        ("true" si port 465, sinon "false")
+//    - SMTP_USER          (l'adresse email utilisée pour l'auth — ex: infos@kemetservices.com)
+//    - SMTP_PASSWORD      (le mot de passe SMTP)
+//    - SMTP_FROM          (optionnel — l'adresse affichée dans le From, par défaut SMTP_USER)
+//
+// 2. Fallback Gmail (rétrocompat — pour ceux qui utilisent encore Gmail)
+//    - GMAIL_USER
+//    - GMAIL_APP_PASSWORD
+//
+// Si aucune des 2 configs n'est complète, les emails sont loggés mais pas envoyés
+// (utile en dev local).
 import nodemailer from 'nodemailer';
 import type { Transporter } from 'nodemailer';
 
-// Configuration Gmail SMTP
-const gmailConfig = {
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.GMAIL_USER, // votre adresse Gmail
-    pass: process.env.GMAIL_APP_PASSWORD // mot de passe d'application Gmail
-  }
-};
+let transporterCache: Transporter | null = null;
 
-// Créer le transporteur Gmail
-let gmailTransporter: Transporter | null = null;
-
-function createGmailTransporter() {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.log('⚠️ GMAIL_USER ou GMAIL_APP_PASSWORD non configuré - utilisation du système de fichiers');
-    return null;
-  }
-
-  try {
-    gmailTransporter = nodemailer.createTransport(gmailConfig);
-    console.log('✅ Transporteur Gmail configuré');
-    return gmailTransporter;
-  } catch (error) {
-    console.error('❌ Erreur lors de la configuration Gmail:', error);
-    return null;
-  }
+/**
+ * Renvoie l'adresse "From" à utiliser pour les emails sortants.
+ * SMTP_FROM > SMTP_USER > GMAIL_USER > fallback hardcodé.
+ */
+export function getEmailFromAddress(): string {
+  return (
+    process.env.SMTP_FROM ||
+    process.env.SMTP_USER ||
+    process.env.GMAIL_USER ||
+    'noreply@kemetservices.com'
+  );
 }
+
+/**
+ * Crée le transporter nodemailer en fonction des variables d'environnement.
+ * Priorité SMTP générique, fallback Gmail. Renvoie null si aucune config valide.
+ *
+ * Le transporter est cached — le même est retourné aux appels suivants.
+ */
+function createEmailTransporter(): Transporter | null {
+  if (transporterCache) return transporterCache;
+
+  // --- 1. SMTP générique (Hostinger, etc.) ---
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD) {
+    const port = parseInt(process.env.SMTP_PORT || '465', 10);
+    const secure = (process.env.SMTP_SECURE || (port === 465 ? 'true' : 'false')).toLowerCase() === 'true';
+
+    try {
+      transporterCache = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port,
+        secure,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASSWORD,
+        },
+      });
+      console.log(`✅ Transporteur SMTP configuré (${process.env.SMTP_HOST}:${port}, secure=${secure})`);
+      return transporterCache;
+    } catch (err) {
+      console.error('❌ Erreur config SMTP:', err);
+      return null;
+    }
+  }
+
+  // --- 2. Fallback Gmail (rétrocompat) ---
+  if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+    try {
+      transporterCache = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_APP_PASSWORD,
+        },
+      });
+      console.log('✅ Transporteur Gmail configuré (fallback)');
+      return transporterCache;
+    } catch (err) {
+      console.error('❌ Erreur config Gmail:', err);
+      return null;
+    }
+  }
+
+  // --- 3. Aucune config → no-op ---
+  console.log('⚠️ Aucune config email (SMTP_* ou GMAIL_*) — les emails ne seront pas envoyés');
+  return null;
+}
+
+// Alias rétrocompat pour ne pas casser les imports existants
+const createGmailTransporter = createEmailTransporter;
+
+/**
+ * Exporté pour que les autres fichiers emails puissent utiliser le même
+ * transporter sans reconfigurer nodemailer à chaque fois.
+ */
+export function getEmailTransporter(): Transporter | null {
+  if (!transporterCache) {
+    transporterCache = createEmailTransporter();
+  }
+  return transporterCache;
+}
+
+// Alias local pour le reste du fichier (variable historique `gmailTransporter`)
+let gmailTransporter: Transporter | null = getEmailTransporter();
 
 interface TrainingRegistration {
   id: string;
@@ -176,7 +252,7 @@ Consultez votre tableau de bord: https://kemetservices.com/inscriptions
   const mailOptions = {
     from: {
       name: 'Kemet Services',
-      address: process.env.GMAIL_USER || 'noreply@kemetservices.com'
+      address: getEmailFromAddress()
     },
     to: adminEmail,
     subject: subject,
@@ -368,12 +444,12 @@ Formation et Conseil Pharmaceutique
 `;
 
   const mailOptions = {
-    from: `"Kemet Services" <${process.env.GMAIL_USER}>`,
+    from: `"Kemet Services" <${getEmailFromAddress()}>`,
     to: registration.email,
     subject: subject,
     text: textContent,
     html: htmlContent,
-    replyTo: process.env.GMAIL_USER // Email de réponse
+    replyTo: getEmailFromAddress() // Email de réponse
   };
 
     console.log(`▶️ Envoi de l'email de confirmation à ${registration.email}`);
@@ -554,7 +630,7 @@ ${adminEmail}
 
   try {
     await gmailTransporter.sendMail({
-      from: `"Kemet Echo Notifications" <${process.env.GMAIL_USER}>`,
+      from: `"Kemet Echo Notifications" <${getEmailFromAddress()}>`,
       to: adminEmail,
       subject,
       text: textContent,
@@ -612,13 +688,13 @@ export async function sendGmail(options: SendGmailOptions): Promise<boolean> {
   const mailOptions = {
     from: {
       name: 'Kemet Services',
-      address: process.env.GMAIL_USER || 'noreply@kemetservices.com'
+      address: getEmailFromAddress()
     },
     to: options.to,
     subject: options.subject,
     html: options.html,
     text: options.text || options.html.replace(/<[^>]*>/g, ''), // Fallback text version
-    replyTo: options.replyTo || process.env.GMAIL_USER
+    replyTo: options.replyTo || getEmailFromAddress()
   };
 
   try {

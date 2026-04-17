@@ -16,6 +16,7 @@
 
 import type { Course, User, Order } from '@shared/schema';
 import { renderReceiptPdfToBuffer } from '../services/receipt-pdf';
+import { getEmailTransporter, getEmailFromAddress } from '../gmail';
 
 interface PaymentConfirmationData {
   user: User;
@@ -211,25 +212,19 @@ export async function sendPaymentConfirmation(
     const emailHTML = generatePaymentConfirmationHTML({ user, course, order });
     const subject = `✅ Paiement confirmé - ${course.title} - Kemet Services`;
 
-    // Graceful skip si Gmail pas configuré (dev local)
-    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-      console.log(`[PAYMENT-EMAIL] Gmail non configuré — email simulé pour ${user.email}: ${subject}`);
-      return true;
-    }
-
     if (!user.email) {
       console.warn('[PAYMENT-EMAIL] User sans email — envoi skippé', { userId: user.id });
       return false;
     }
 
-    const nodemailer = await import('nodemailer');
-    const transporter = nodemailer.default.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
-      },
-    });
+    // Le transporter est partagé entre tous les emails et piloté par les
+    // variables d'environnement (SMTP_* en priorité, GMAIL_* en fallback).
+    // Graceful skip si aucune config valide (dev local).
+    const transporter = getEmailTransporter();
+    if (!transporter) {
+      console.log(`[PAYMENT-EMAIL] SMTP non configuré — email simulé pour ${user.email}: ${subject}`);
+      return true;
+    }
 
     // Générer le reçu PDF en mémoire pour le joindre. Si la génération échoue,
     // on envoie quand même l'email sans attachment (le user peut toujours
@@ -249,7 +244,7 @@ export async function sendPaymentConfirmation(
     }
 
     await transporter.sendMail({
-      from: `"Kemet Services" <${process.env.GMAIL_USER}>`,
+      from: `"Kemet Services" <${getEmailFromAddress()}>`,
       to: user.email,
       subject,
       html: emailHTML,
