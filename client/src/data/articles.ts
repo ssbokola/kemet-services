@@ -293,6 +293,121 @@ En officine, nous savons tous qu'un petit oubli dans la gestion des stocks peut 
     tags: ['Stock', 'Erreurs courantes', 'Procédures', 'FEFO'],
     formationLiee: 'La Gestion des Stocks et Approvisionnements',
     consultingPackLie: { name: 'WAYO — Gestion Stock', url: '/consulting#wayo' }
+  },
+  {
+    id: 'fdfp-financer-formation-pharmacie-cote-ivoire',
+    title: '💰 FDFP : comment faire financer vos formations pharmacie en Côte d\'Ivoire',
+    excerpt: 'Chaque mois, votre pharmacie verse au FDFP une taxe destinée à la formation. Huit pharmaciens sur dix ne récupèrent jamais cet argent. Voici le guide pour changer ça.',
+    content: `
+# 💰 FDFP : comment faire financer vos formations pharmacie en Côte d'Ivoire
+
+## 💬 Introduction
+
+Un matin, avec un confrère pharmacien à Yopougon, j'ai eu cette conversation qui m'a marqué :
+
+> — *Serge, on vient de faire une formation qualité pour mes 6 assistants. Ça m'a coûté 1,8 million.*
+> — *OK. Et tu as sollicité le FDFP ?*
+> — *Le FDFP ? Qu'est-ce que c'est ?*
+
+Ce confrère cotise au FDFP depuis **douze ans**. Sans le savoir, il avait laissé **plusieurs millions** dormir, pour finalement payer ses formations de sa poche.
+
+Il n'est pas un cas isolé. **Huit pharmaciens sur dix** ignorent comment fonctionne ce dispositif. Cet article est pour eux.
+
+---
+
+## 🏛️ Le FDFP en 3 phrases
+
+Le **Fonds de Développement de la Formation Professionnelle** (FDFP) collecte chaque mois une taxe auprès de toutes les entreprises privées ivoiriennes, calculée sur votre masse salariale.
+
+Cet argent est ensuite **reversé aux entreprises qui forment leurs salariés**. En clair : vous cotisez déjà, autant aller chercher ce qui vous revient.
+
+Pour une pharmacie avec **2 millions de salaires mensuels**, cela représente environ **400 000 FCFA de cotisations par an**. Imaginez ça, capitalisé sur 10 ans.
+
+---
+
+## ✅ Qui peut en bénéficier ?
+
+**Toute pharmacie qui cotise à la CNPS**, donc toutes celles qui ont au moins un salarié déclaré. Pharmacies individuelles, SARL, SA, peu importe la taille.
+
+Et les publics formables couvrent toute votre équipe : titulaire, pharmaciens adjoints, préparateurs, caissières, livreurs, même stagiaires.
+
+---
+
+## 📅 Les 3 dates-clés à ne pas manquer
+
+Le cycle FDFP s'étale sur plusieurs mois. **Trois deadlines** structurent tout le dispositif — en rater une, c'est perdre des cotisations entières.
+
+### 📝 1. Le dépôt du Plan de Formation
+
+En fin d'année, vous soumettez votre plan prévisionnel pour l'année suivante : salariés concernés, thèmes, organismes choisis, budget. Sans ce plan déposé à temps, **aucun remboursement ne sera possible** ensuite.
+
+*Dates récentes : 31 octobre 2024 (pour le plan 2025), 30 novembre 2022 (pour le plan 2023).*
+
+### 🎓 2. La réalisation des formations
+
+Durant l'année d'exercice, vous exécutez les formations prévues. Conservez **toutes** les preuves : feuilles de présence, attestations, factures acquittées. Ce sont ces documents qui justifieront le remboursement.
+
+### 💰 3. Le dépôt du Dossier de Demande de Remboursement (DDR)
+
+Une fois les formations faites, vous déposez votre DDR pour vous faire rembourser. C'est là que beaucoup "oublient" — et laissent leur argent au FDFP.
+
+*Exemple : la clôture de l'exercice 2021 était fixée au 31 août 2023, soit environ 2 ans après.*
+
+### ⚠️ Les dates exactes varient chaque année
+
+Le FDFP communique son calendrier annuel sur son site officiel **fdfp.ci** ou au **+225 27 21 75 05 05**.
+
+---
+
+## ❌ Les 3 erreurs qui coûtent cher
+
+### • Rater la deadline du plan de formation
+Les cotisations de l'année sont perdues. Aucun recours possible.
+
+### • Choisir un organisme non agréé FDFP
+Le formateur était brillant ? Peu importe. **Sans agrément, zéro remboursement.** Vérifiez toujours avant de signer.
+
+### • Ne jamais déposer la DDR
+Le piège le plus tragique : vous avez fait les formations, payé de votre poche, conservé les preuves… puis vous oubliez de déposer le dossier. Votre argent reste au FDFP.
+
+---
+
+## 🎯 Comment Kemet Services peut vous aider
+
+Avant même de déposer votre plan de formation, la vraie question est : **quelles formations vont réellement faire bouger les lignes dans votre pharmacie ?**
+
+C'est là que Kemet Services intervient :
+
+### • Diagnostiquer les vrais freins de votre officine
+Trésorerie, stock, équipe, qualité — un audit honnête avant de choisir quoi que ce soit.
+
+### • Prioriser les formations à fort impact
+Pas les plus à la mode, pas les moins chères : celles qui vont transformer votre chiffre d'affaires et votre sérénité.
+
+### • Vous orienter vers les organismes agréés FDFP
+Un écosystème existe en Côte d'Ivoire. Encore faut-il savoir qui vaut quoi.
+
+### • Suivre dans la durée
+Une formation sans suivi, c'est de l'information vite oubliée. Notre accompagnement assure que ça change vraiment quelque chose sur le terrain.
+
+> **Note de transparence** : Kemet Services prépare actuellement son agrément FDFP pour proposer directement ses propres programmes au remboursement. En attendant, nous nous positionnons comme **conseil stratégique** — le partenaire qui vous aide à transformer votre budget formation en vrai levier de performance.
+
+---
+
+## 🧭 Conclusion
+
+Le FDFP, ce n'est pas un "truc de grande entreprise". C'est **votre argent**, que vous versez chaque mois en silence, et que vous avez parfaitement le droit de récupérer pour former votre équipe.
+
+> **À retenir :** Si vous avez au moins 1 salarié en Côte d'Ivoire, **vous cotisez déjà au FDFP**. La seule question qui reste : allez-vous enfin aller chercher cet argent ?
+
+**Kemet Services** accompagne chaque année des pharmaciens dans le pilotage de leur stratégie de formation 💚.
+    `,
+    author: 'Dr SONHON Bokola Tinni',
+    date: '2026-04-18',
+    readTime: '5 min',
+    category: 'finance',
+    tags: ['FDFP', 'Financement', 'Formation', 'Pharmacie', 'Côte d\'Ivoire'],
+    consultingPackLie: { name: 'Diagnostic Kemet', url: '/diagnostic' }
   }
 ];
 
