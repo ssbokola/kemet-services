@@ -408,6 +408,162 @@ Le FDFP, ce n'est pas un "truc de grande entreprise". C'est **votre argent**, qu
     category: 'finance',
     tags: ['FDFP', 'Financement', 'Formation', 'Pharmacie', 'Côte d\'Ivoire'],
     consultingPackLie: { name: 'Diagnostic Kemet', url: '/diagnostic' }
+  },
+  {
+    id: '7-indicateurs-tresorerie-pharmacie',
+    title: '💹 Trésorerie pharmacie : les 7 indicateurs que tout pharmacien doit suivre',
+    excerpt: 'Ton chiffre d\'affaires grimpe, mais ta trésorerie s\'assèche ? Tu pilotes peut-être avec un seul compteur. Voici les 7 indicateurs qui font la différence entre une pharmacie qui tourne et une pharmacie qui gagne vraiment de l\'argent.',
+    content: `
+# 💹 Trésorerie pharmacie : les 7 indicateurs que tout pharmacien doit suivre
+
+## 💬 Introduction
+
+Il était 19h. Mon confrère venait de fermer sa pharmacie à Cocody. Il m'a appelé, la voix tendue :
+
+> — *Serge, je ne comprends pas. Mon chiffre d'affaires a augmenté de 18 % cette année. Et pourtant, j'ai jamais été aussi serré en trésorerie. Comment c'est possible ?*
+
+Je lui ai posé une seule question : *"Tu suis quels indicateurs ?"*
+
+Long silence. Puis : *"Mon CA mensuel. Et… c'est tout."*
+
+Voilà le problème de beaucoup d'officines en Côte d'Ivoire : **on pilote à vue, avec un seul compteur sur le tableau de bord**. Le CA. Alors qu'une pharmacie rentable peut parfaitement couler si elle ne surveille pas sa trésorerie.
+
+Voici les **7 indicateurs** que j'ai mis en place avec mes confrères. Ceux qui font la différence entre *"je travaille beaucoup"* et *"je gagne vraiment de l'argent"*.
+
+---
+
+## 1️⃣ Le solde de trésorerie net
+
+**C'est quoi ?** L'argent réellement disponible maintenant : caisse + banque, moins les chèques émis non encore débités, moins les dettes exigibles à très court terme.
+
+**Pourquoi c'est crucial ?** C'est la vérité nue de ta santé financière. Un solde en banque de 5 M FCFA avec 6 M de dettes à payer lundi = **tu es déjà en rouge**, même si ton relevé dit le contraire.
+
+**Fréquence de suivi :** quotidienne (oui, tous les jours).
+
+---
+
+## 2️⃣ Le délai moyen de paiement client (DMC)
+
+**C'est quoi ?** Le nombre de jours entre le moment où tu vends (notamment au tiers-payant) et le moment où tu es payé.
+
+**Pourquoi c'est crucial ?** En Côte d'Ivoire, le tiers-payant peut représenter 30 à 70 % du CA d'une officine. Si tes mutuelles mettent 90 jours à payer au lieu de 30, tu avances de la trésorerie à leur place. **Plus ton DMC est long, plus ton officine finance les mutuelles à sa place.**
+
+**Objectif réaliste :** moins de 45 jours.
+
+---
+
+## 3️⃣ Le délai moyen de paiement fournisseur (DMF)
+
+**C'est quoi ?** Le nombre de jours moyens que tu prends pour payer tes grossistes.
+
+**Pourquoi c'est crucial ?** Si tes fournisseurs te laissent 30 jours et que tes clients te paient à 60, tu finances 30 jours d'écart **de ta poche**. C'est là que la trésorerie fond.
+
+**Objectif :** DMF supérieur ou égal au DMC (ou s'en rapprocher le plus possible).
+
+---
+
+## 4️⃣ Le Besoin en Fonds de Roulement (BFR)
+
+**C'est quoi ?** La différence entre ce que tu as **immobilisé** (stock + créances clients) et ce que tu **dois** (dettes fournisseurs).
+
+**Formule simple :**
+> BFR = Stock + Créances clients − Dettes fournisseurs
+
+**Pourquoi c'est crucial ?** C'est l'argent qui "dort" dans ton cycle d'exploitation. Plus ton BFR est élevé, plus tu dois avoir de trésorerie pour tourner. **Une officine qui double son CA sans surveiller son BFR peut paradoxalement se retrouver à sec.**
+
+---
+
+## 5️⃣ Le taux de marque (marge brute sur CA)
+
+**C'est quoi ?** La part de ton chiffre d'affaires qui te reste après déduction du coût d'achat des produits vendus.
+
+**Formule :**
+> **Taux de marque = (CA HT − Coût d'achat des ventes) / CA HT × 100**
+
+C'est l'indicateur que tu pilotes en pratique — celui qui apparaît dans ton compte de résultat.
+
+*(À ne pas confondre avec le "taux de marge", calculé sur le coût d'achat et non sur le CA.)*
+
+**Dit autrement** : le taux de marge te dit si tu achètes bien, le taux de marque te dit si tu peux vivre avec ce que tu vends.
+
+Dans la pratique officinale, le **taux de marge** est surtout utile au niveau produit (*est-ce que ce générique me rapporte plus que l'éthique ?*) alors que le **taux de marque** est l'outil de pilotage global (*est-ce que ma marge couvre ma structure de coûts ?*).
+
+**En pratique**, le taux de marque sectoriel d'une officine ivoirienne oscille **entre 25 et 35 %**, selon le mix produits :
+
+### • Plus la part de parapharmacie et de médicaments non sociaux est importante
+Taux plus élevé, qui peut tirer vers le haut de la fourchette.
+
+### • Plus la part de médicaments sociaux (SMEG) est importante
+Taux plus bas, plutôt vers 25 %.
+
+**Si ton taux est anormalement bas** (sous 25 %), ce n'est souvent **pas un problème de volume**, c'est :
+
+### • Un mix produits déséquilibré
+Trop de médicaments sociaux peu rémunérateurs.
+
+### • Des prix d'achat mal négociés
+Les grossistes et les conditions commerciales se négocient, bien plus que la plupart des confrères ne l'imaginent.
+
+### • Un inventaire mal valorisé
+Des stocks dépréciés, périmés ou invendables que l'on n'a jamais sortis comptablement.
+
+---
+
+## 6️⃣ La rotation du stock
+
+**C'est quoi ?** Combien de fois ton stock tourne dans l'année.
+
+**Formule :**
+> Rotation = Coût d'achat annuel des ventes / Stock moyen
+
+**Pourquoi c'est crucial ?** Un stock qui tourne 3 fois par an, c'est **4 mois** d'argent figé dans tes étagères. Un stock qui tourne 6 fois, c'est 2 mois. La différence ? Des millions de FCFA qui dorment ou qui respirent.
+
+**Objectif raisonnable en officine :** 6 à 10 rotations par an (selon la typologie de ta clientèle).
+
+---
+
+## 7️⃣ Le seuil de rentabilité (point mort)
+
+**C'est quoi ?** Le CA minimum que tu dois réaliser pour **ne pas perdre d'argent**.
+
+**Formule simplifiée :**
+> Point mort = Charges fixes / Taux de marge sur coûts variables
+
+**Pourquoi c'est crucial ?** Sans ce chiffre, tu ne sais pas à quel moment de la journée (ou du mois) tu commences réellement à **gagner**. Beaucoup de pharmaciens découvrent avec effroi que leur point mort est **supérieur à leur CA actuel** — ils perdent de l'argent sans le savoir.
+
+---
+
+## 🎯 Comment mettre ça en place chez toi
+
+Ces 7 indicateurs, ce n'est pas de la théorie. Ce sont les mêmes que j'utilise chaque mois avec les pharmacies que j'accompagne. Le vrai secret, ce n'est pas de les **calculer** — c'est de les **suivre régulièrement**, de les **comparer dans le temps**, et d'**agir** dès qu'un signal rouge apparaît.
+
+Kemet Services t'aide à :
+
+### • Construire ton tableau de bord mensuel
+Un fichier simple, qui consolide tes 7 indicateurs et t'alerte en cas de dérive.
+
+### • Interpréter les chiffres
+Un indicateur dégradé ne dit pas pourquoi. Notre regard externe identifie la cause réelle (prix d'achat, organisation, politique de stock…).
+
+### • Mettre en place un plan d'action
+Pas de blabla : des décisions concrètes, chiffrées, avec un calendrier.
+
+---
+
+## 🧭 Conclusion
+
+Une pharmacie, ce n'est pas qu'un comptoir et un stock. C'est une **entreprise** avec une trésorerie qui peut tuer l'officine la plus populaire du quartier si elle n'est pas pilotée.
+
+> **À retenir :** Si tu ne suis que ton CA, tu ne pilotes pas ta pharmacie — tu la regardes fonctionner. Les 7 indicateurs ci-dessus font la différence entre un pharmacien et un entrepreneur pharmaceutique.
+
+**Kemet Services** t'accompagne dans la mise en place d'un pilotage financier rigoureux de ton officine 💚.
+    `,
+    author: 'Dr SONHON Bokola Tinni',
+    date: '2026-04-19',
+    readTime: '6 min',
+    category: 'finance',
+    tags: ['Trésorerie', 'Finance', 'Indicateurs', 'BFR', 'Marge', 'Pharmacie'],
+    consultingPackLie: { name: 'Diagnostic Kemet', url: '/diagnostic' }
   }
 ];
 
